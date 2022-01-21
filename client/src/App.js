@@ -1,25 +1,50 @@
-import logo from './logo.svg';
-import './App.css';
+import React, {Fragment, Suspense} from "react"
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Redirect,
+} from "react-router-dom"
+import Login from "./components/Login"
+import './scss/index.scss'
+import {useDispatch} from "react-redux";
+import Header from "./components/Header";
+import SideBar from "./components/SideBar";
 
-function App() {
+const App = () => {
+  
+  const dispatch = useDispatch()
+  
+  const PrivateRedirect = props => {
+    // const token = localStorage.getItem(AUTH_TOKEN_KEY)
+    
+    // const isAuthUser = token !== null
+    
+    // if (!isAuthUser) return <Redirect to="/login"/>;
+    // dispatch(updateUser())
+    return (
+      <>
+        <Header/>
+        <SideBar/>
+        <Route {...props} />
+      </>
+    )
+  };
+  
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    <Fragment>
+      <Router>
+        <Suspense fallback={<div>Loading...</div>}>
+          <Switch>
+            <Route path="/login">
+              <Login/>
+            </Route>
+            <Route render={() => <Redirect to='/login'/>}/>
+          </Switch>
+        </Suspense>
+      </Router>
+    </Fragment>
+  )
 }
 
-export default App;
+export default App
