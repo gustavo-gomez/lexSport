@@ -1,0 +1,50 @@
+.page-container {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  background-color: aquamarine;
+
+  .login {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    width: 20%;
+    height: fit-content;
+    position: relative;
+    top: 25%;
+    background-color: white;
+    padding: 30px;
+    border-radius: 15px;
+
+    .actions {
+      display: flex;
+      justify-content: space-evenly;
+      margin-bottom: 15px;
+
+      .selected{
+        color: #084ea8;
+        text-decoration: underline;
+      }
+
+      label {
+        cursor: pointer;
+      }
+
+    }
+
+    button {
+      height: 2.2rem;
+      border-radius: 8px;
+      cursor: pointer;
+      border: none;
+      color: white;
+      background-color: #4385f4;
+      font-size: 17px;
+    }
+    .is-admin{
+      margin-bottom: 10px;
+    }
+  }
+
+}
+

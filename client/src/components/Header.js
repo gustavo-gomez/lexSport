@@ -2,16 +2,16 @@ import React from 'react'
 import '../scss/components/header.scss'
 import {useDispatch, useSelector} from 'react-redux'
 import {auth, logout} from "../slices/authSlice";
-import {useHistory} from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 
 const Header = () => {
 	const {loggedUser: {first_name, last_name, role_admin}} = useSelector(auth)
 	const isAdmin = role_admin === 1
 	const dispatch = useDispatch()
-	const history = useHistory()
+	const navigate = useNavigate()
 	
 	const logOut = () => {
-		history.push('/login')
+		navigate('/login')
 		dispatch(logout())
 	}
 	

@@ -1,0 +1,15 @@
+.header-container {
+  height: 4rem;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #323232;
+  padding: 0 10px;
+  color: white;
+  font-weight: 500;
+
+  span{
+    cursor: pointer;
+  }
+}
