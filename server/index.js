@@ -1,6 +1,7 @@
 import express from 'express'
 import bodyParser from 'body-parser'
 import cors from 'cors'
+import authentication from "./routes/authentication";
 
 const PORT = process.env.PORT || 9000
 const PROD = process.env.NODE_ENV === 'production'
@@ -17,7 +18,7 @@ app.get('/', (req, res) => {
 	res.sendFile(__dirname + '/client/index.html')
 })
 
-// app.use('/', authentication)
+app.use('/', authentication)
 // app.use('/timezones', timezones)
 // app.use('/users', users)
 

@@ -11,7 +11,7 @@ export const getConnection = async () => {
 		host: DB_CONNECT_URL,
 		user: DB_USERNAME,
 		password: DB_PASSWORD,
-		database: 'timezoneproject',
+		database: 'lexsport',
 		port: DB_PORT
 	})
 }

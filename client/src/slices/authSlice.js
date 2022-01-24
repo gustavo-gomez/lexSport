@@ -1,5 +1,5 @@
 import {createSlice, createAsyncThunk} from '@reduxjs/toolkit'
-import {loadUserAPI, loginAPI, newUserAPI} from "../utils/apiUtils"
+import {loginAPI} from "../utils/apiUtils"
 import isEmpty from "lodash/isEmpty"
 import jwtDecode from 'jwt-decode'
 
@@ -16,8 +16,8 @@ const initialState = {
 export const login = createAsyncThunk(
 	'auth/login',
 	async ({email, password}, thunkAPI) => {
-		const {responseCode, data, responseMessage} = await loginAPI(email, password)
-		if (responseCode === 0) {
+		const {data, responseMessage, isError} = await loginAPI(email, password)
+		if (!isError) {
 			return data
 		} else {
 			return thunkAPI.rejectWithValue({responseMessage})
@@ -51,6 +51,7 @@ export const authSlice = createSlice({
 				localStorage.setItem(AUTH_TOKEN_KEY, worker?.token)
 			})
 			.addCase(login.rejected, (state, {payload}) => {
+				console.log('payload: ', payload)
 				const {responseMessage = ''} = payload
 				state.isLoading = false
 				state.error = isEmpty(responseMessage) ? null : responseMessage

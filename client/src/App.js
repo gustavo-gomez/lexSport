@@ -18,10 +18,11 @@ const App = () => {
 	const dispatch = useDispatch()
 	
 	const PrivateRedirect = ({children, redirectTo}) => {
+		console.log('PrivateRedirect')
 		const token = localStorage.getItem(AUTH_TOKEN_KEY)
 		
 		const isAuthUser = token !== null
-		
+		console.log('isAuthUser: ', isAuthUser)
 		if (isAuthUser) return children
 		else return <Navigate to={redirectTo}/>
 		// dispatch(updateUser())
@@ -33,21 +34,20 @@ const App = () => {
 		<BrowserRouter>
 			<Suspense fallback={<div>Loading...</div>}>
 				<Routes>
-					<Route index element={<Login/>}/>
+					<Route path="/" index element={<Login/>}/>
 					<Route
 						path="/home"
 						render={() => (
-							<PrivateRedirect redirectTo="/login">
+							<PrivateRedirect redirectTo="/">
 								<Home/>
 							</PrivateRedirect>
 						)}
 					/>
+					// Default redirect to Login
 					<Route
 						path="*"
 						element={<Navigate to="/" />}
 					/>
-					{/*<Route path="*" element={<Login />} />*/}
-					{/*<Route render={() => <Redirect to='/login'/>}/>*/}
 				</Routes>
 			</Suspense>
 		</BrowserRouter>

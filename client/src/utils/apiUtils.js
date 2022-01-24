@@ -8,8 +8,8 @@ export const ENDPOINTS = {
 	LOGIN: '/login',
 }
 
-export const loginAPI = async (email, password) => {
-	return await callAPI('post', BASE_URL + ENDPOINTS.LOGIN, {email, password})
+export const loginAPI = async (user, password) => {
+	return await callAPI('post', BASE_URL + ENDPOINTS.LOGIN, {user, password})
 }
 
 const callAPI = async (method, url, body) => {
@@ -28,6 +28,11 @@ const callAPI = async (method, url, body) => {
 		const {data} = await axios(url, config)
 		return data
 	} catch (error) {
-		console.error(`Error on request: ${error}`)
+		console.log('error: ', error?.response);
+		return {
+			isError: true,
+			responseCode: error?.response?.status,
+			responseMessage: error?.response?.data?.responseMessage || 'Error'
+		}
 	}
 }
