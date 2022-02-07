@@ -34,9 +34,6 @@ export const authSlice = createSlice({
 			state.loggedUser = null
 			state.error = null
 		},
-		updateUser: (state, action) => {
-			state.loggedUser = jwtDecode(localStorage.getItem(AUTH_TOKEN_KEY))
-		}
 	},
 	extraReducers: (builder) => {
 		builder
