@@ -11,6 +11,7 @@ CREATE TABLE IF NOT EXISTS `workers`
     password    VARCHAR(255)         DEFAULT NULL,
     role_admin  TINYINT(4)  NOT NULL DEFAULT '0',
     can_login   TINYINT(4)  NOT NULL DEFAULT '0',
+    old_worker  TINYINT(4)  NOT NULL DEFAULT '0',
     create_date TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (id)
 ) ENGINE = InnoDB
@@ -19,13 +20,14 @@ CREATE TABLE IF NOT EXISTS `workers`
 
 CREATE TABLE IF NOT EXISTS `products`
 (
-    id          VARCHAR(40)   NOT NULL,
-    code        VARCHAR(40)   NOT NULL,
-    name        VARCHAR(50)   NOT NULL,
-    description VARCHAR(255)           DEFAULT NULL,
-    price_low   DECIMAL(5, 2) NOT NULL,
-    price_high  DECIMAL(5, 2) NOT NULL,
-    create_date TIMESTAMP     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    id                VARCHAR(40)   NOT NULL,
+    code              VARCHAR(40)   NOT NULL,
+    name              VARCHAR(50)   NOT NULL,
+    description       VARCHAR(255)           DEFAULT NULL,
+    making_price_low  DECIMAL(5, 2) NOT NULL,
+    making_price_high DECIMAL(5, 2) NOT NULL,
+    fill_price        DECIMAL(5, 2)          default 0.00,
+    create_date       TIMESTAMP     NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (id)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8;

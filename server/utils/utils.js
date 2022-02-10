@@ -1,7 +1,11 @@
 import map from "lodash/map.js";
+import transform from "lodash/transform";
+import isArray from "lodash/isArray";
+import camelCase from "lodash/camelCase";
+import isObject from "lodash/isObject";
 
 
-export const getGenericErrorResponse = (message = 'Contacte al administrador') => ({
+export const getGenericMessage = (message = 'Contacte al administrador') => ({
 	responseMessage: message
 })
 
@@ -26,5 +30,11 @@ export const HTTP_STATUS_CODES = {
 	FORBIDDEN: 403,
 	NOT_FOUND: 404,
 	CONFLICT: 409,
-	INTERNAL_SERVER_ERROR: 500
+	INTERNAL_SERVER_ERROR: 500,
+
 }
+
+export const camelize = obj => obj === null ? null : transform(obj, (acc, value, key, target) => {
+	const camelKey = isArray(target) ? key : camelCase(key);
+	acc[camelKey] = (isObject(value) && !(value instanceof Date)) ? camelize(value) : value;
+});

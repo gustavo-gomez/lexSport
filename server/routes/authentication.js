@@ -2,7 +2,7 @@ import {Router} from 'express'
 import {loadWorkerByUSerService} from "../services/workerService.js";
 import {
 	getSuccessResponse,
-	getGenericErrorResponse,
+	getGenericMessage,
 	HTTP_STATUS_CODES,
 	validationErrorsToArray
 } from "../utils/utils.js";
@@ -20,18 +20,18 @@ const loginValidator = [
 router.post('/login', [loginValidator], async (req, res) => {
 	try {
 		const {errors} = validationResult(req)
-		
+
 		if (!isEmpty(errors))
-			return res.status(HTTP_STATUS_CODES.BAD_REQUEST).json(getGenericErrorResponse(validationErrorsToArray(errors)))
-		
+			return res.status(HTTP_STATUS_CODES.BAD_REQUEST).json(getGenericMessage(validationErrorsToArray(errors)))
+
 		const {user, password} = req.body
 		const userDB = await loadWorkerByUSerService(user)
-		
-		const loginError = getGenericErrorResponse('Usuario o contraseña incorrectos')
-		
+
+		const loginError = getGenericMessage('Usuario o contraseña incorrectos')
+
 		if (userDB?.length === 0)
 			return res.status(HTTP_STATUS_CODES.FORBIDDEN).send(loginError)
-		
+
 		const {password: dbUserPassword} = userDB[0]
 		if (dbUserPassword === password) {
 			const cleanedWorker = omit(userDB[0], ['password'])
@@ -42,7 +42,7 @@ router.post('/login', [loginValidator], async (req, res) => {
 		}
 	} catch (e) {
 		console.log('Error: ', e)
-		return res.json(getGenericErrorResponse())
+		return res.json(getGenericMessage())
 	}
 })
 
