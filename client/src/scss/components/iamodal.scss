@@ -1,0 +1,5 @@
+@import '../abstracts/placeholders';
+
+.ia-modal-container{
+  @extend %display-flex-center;
+}
