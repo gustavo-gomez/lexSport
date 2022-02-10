@@ -6,14 +6,26 @@ const BASE_URL = process.env.REACT_APP_LEX_SPORT_IP_BACKEND || 'http://192.168.1
 
 export const ENDPOINTS = {
 	LOGIN: '/login',
+	WORKERS: '/workers',
+	PRODUCTS: '/products',
 }
 
 export const loginAPI = async (user, password) => {
 	return await callAPI('post', BASE_URL + ENDPOINTS.LOGIN, {user, password})
 }
 
+// Get all costureras
+export const getAllCosturerasAPI = async () => {
+	return await callAPI('get', BASE_URL + ENDPOINTS.WORKERS)
+}
+
+// Get all products
+export const getAllProductsAPI = async () => {
+	return await callAPI('get', BASE_URL + ENDPOINTS.PRODUCTS)
+}
+
 const callAPI = async (method, url, body) => {
-	
+
 	const authToken = localStorage.getItem(AUTH_TOKEN_KEY)
 	const config = {
 		method,
@@ -23,7 +35,7 @@ const callAPI = async (method, url, body) => {
 		},
 		data: body || null
 	}
-	
+
 	try {
 		const {data} = await axios(url, config)
 		return data
