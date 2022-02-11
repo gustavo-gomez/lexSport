@@ -1,0 +1,32 @@
+.users-table {
+  display: flex;
+  flex-direction: column;
+  width: 60%;
+
+  .icon {
+    cursor: pointer;
+    margin-right: 10px;
+  }
+
+  h2 {
+    align-self: center;
+  }
+
+  .icon {
+    cursor: pointer;
+  }
+}
+
+.new-worker-section {
+  display: flex;
+  flex-direction: column;
+  width: 40%;
+  margin-top: 20px;
+  align-items: center;
+}
+
+@media (max-width: 600px) {
+  .users-table {
+    width: 90%;
+  }
+}

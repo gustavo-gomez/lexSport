@@ -2,4 +2,5 @@
 
 .ia-modal-container{
   @extend %display-flex-center;
+  overflow-y: scroll;
 }

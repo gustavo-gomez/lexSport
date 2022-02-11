@@ -1,32 +1,7 @@
-.sidebar-container {
-  position: absolute;
-  left: 0;
-  top: 4rem;
-  bottom: 0;
-  //overflow-y: auto;
-  //overflow-x: hidden;
-  min-width: 250px;
-  background-color: white;
-  //z-index: 999;
-  box-shadow: 4px 4px 25px rgba(109, 105, 105, 0.15);
-  display: flex;
-  justify-content: center;
-  padding: 20px 0;
+.selected-menu {
+  color: #1876d2;
 
-  .menu {
-    display: flex;
-    flex-direction: column;
-
-    .selected {
-      color: blue
-    }
-
-    span {
-      cursor: pointer;
-      margin-bottom: 15px;
-    }
+  svg {
+    color: #1876d2;
   }
-
-
 }
-
