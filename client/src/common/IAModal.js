@@ -8,7 +8,7 @@ const IAModal = ({isOpen, handleClose, child}) => {
 	return (
 		<Modal
 			open={isOpen}
-			onClose={handleClose}
+			// onClose={handleClose}
 			className={'ia-modal-container'}
 		>
 			<>
