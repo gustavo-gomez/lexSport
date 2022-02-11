@@ -1,9 +1,10 @@
 import {
 	loadAllCostureras,
 	loadWorkerById,
-	loadWorkerByUser, newCosturera, updateCosturera
+	loadWorkerByUser,
+	newCosturera,
+	updateCosturera
 } from "../repositories/workerRepository.js";
-import omit from "lodash/omit.js";
 import {camelize} from "../utils/utils";
 
 export const loadWorkerByUSerService = async user => {

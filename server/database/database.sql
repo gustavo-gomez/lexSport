@@ -34,12 +34,13 @@ CREATE TABLE IF NOT EXISTS `products`
 
 CREATE TABLE IF NOT EXISTS `activities`
 (
-    id          VARCHAR(40)  NOT NULL,
-    worker_id   VARCHAR(40)  NOT NULL,
-    product_id  VARCHAR(40)  NOT NULL,
-    name        VARCHAR(50)  NOT NULL,
-    description VARCHAR(255) NOT NULL,
-    create_date TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    id          VARCHAR(40)   NOT NULL,
+    worker_id   VARCHAR(40)   NOT NULL,
+    product_id  VARCHAR(40)   NOT NULL,
+    quantity    TINYINT(4)    NOT NULL,
+    action      VARCHAR(50)   NOT NULL,
+    price       DECIMAL(5, 2) NOT NULL,
+    create_date TIMESTAMP     NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (id),
     FOREIGN KEY (worker_id) REFERENCES `workers` (id),
     FOREIGN KEY (product_id) REFERENCES `products` (id)

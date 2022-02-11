@@ -41,22 +41,33 @@ router.post('/', [newUserFormValidator, verifyAuthJWTokenMiddleware], async (req
 		const {worker} = req.body
 		await newCostureraService(worker)
 
-		return res.status(HTTP_STATUS_CODES.CREATED).json(getGenericMessage('Costurera creada con exito'))
+		return res.status(HTTP_STATUS_CODES.CREATED).json(getGenericMessage('Costurera creada con éxito'))
 	} catch (e) {
 		console.log('Error: ', e)
 		return res.json(getGenericMessage())
 	}
 })
 
+const updateUserFormValidator = [
+	check('worker.firstName', 'Nombres es requerido').exists(),
+	check('worker.lastName', 'Apellidos es requerido').exists(),
+	check('worker.phone', 'Celular es requerido').exists(),
+	check('worker.oldWorker', 'Costurera antigua es requerido').exists()
+]
 //update costurera
-router.put('/:id', [verifyAuthJWTokenMiddleware], async (req, res) => {
+router.put('/:id', [updateUserFormValidator, verifyAuthJWTokenMiddleware], async (req, res) => {
 	try {
+
+		const {errors} = validationResult(req)
+
+		if (!isEmpty(errors))
+			return res.status(HTTP_STATUS_CODES.BAD_REQUEST).json(getGenericMessage(validationErrorsToArray(errors)))
+
 		const {id} = req.params
 		const {worker} = req.body
 
 		const workerDB = await loadWorkerByIdService(id)
 
-		console.log(worker)
 		if (isEmpty(workerDB?.[0]))
 			return res.status(HTTP_STATUS_CODES.BAD_REQUEST).json(getGenericMessage('Costurera no encontrada'))
 
