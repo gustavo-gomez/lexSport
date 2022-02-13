@@ -4,6 +4,7 @@ import cors from 'cors'
 import authentication from "./routes/authentication"
 import workers from "./routes/workers"
 import products from "./routes/products"
+import activity from "./routes/activity"
 
 const PORT = process.env.PORT || 9000
 const PROD = process.env.NODE_ENV === 'production'
@@ -23,6 +24,7 @@ app.get('/', (req, res) => {
 app.use('/', authentication)
 app.use('/workers', workers)
 app.use('/products', products)
+app.use('/activity', activity)
 
 
 if (PROD) {
