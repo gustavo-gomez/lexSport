@@ -1,6 +1,6 @@
 import React from 'react'
-import Modal from '@mui/material/Modal';
-import PropTypes from "prop-types";
+import Modal from '@mui/material/Modal'
+import PropTypes from 'prop-types'
 import '../scss/components/iamodal.scss'
 
 const IAModal = ({isOpen, handleClose, child}) => {
