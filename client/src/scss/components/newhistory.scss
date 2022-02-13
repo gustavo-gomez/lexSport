@@ -1,0 +1,37 @@
+@import '../abstracts/placeholders';
+
+.history-container {
+  @extend %display-flex-center;
+  flex-direction: column;
+  width: 100%;
+
+  .history-row {
+    display: flex;
+    flex-direction: row;
+    width: 50%;
+    flex-wrap: wrap;
+    padding-bottom: 20px;
+    align-items: center;
+
+    .MuiAutocomplete-root, .MuiTextField-root {
+      flex: 1;
+      min-width: 100px;
+      margin-right: 20px;
+    }
+  }
+
+  .fab-container {
+    display: flex;
+    justify-content: space-between;
+    width: 50%;
+  }
+}
+
+
+@media (max-width: 850px) {
+  .history-container {
+    .history-row, .fab-container {
+      width: 90%;
+    }
+  }
+}
