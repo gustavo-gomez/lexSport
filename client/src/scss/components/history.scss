@@ -1,0 +1,14 @@
+.history-table {
+  display: flex;
+  flex-direction: column;
+  width: 98%;
+  height: 100%;
+
+  h2 {
+    align-self: center;
+  }
+
+}
+
+@media (max-width: 600px) {
+}
