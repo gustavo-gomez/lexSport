@@ -5,18 +5,33 @@
   flex-direction: column;
   width: 100%;
 
+  .MuiTextField-root {
+    margin-bottom: 20px;
+  }
+
   .history-row {
     display: flex;
     flex-direction: row;
     width: 50%;
     flex-wrap: wrap;
-    padding-bottom: 20px;
+    margin-bottom: 20px;
     align-items: center;
+    padding: 15px 10px 15px 15px;
+    position: relative;
 
     .MuiAutocomplete-root, .MuiTextField-root {
       flex: 1;
       min-width: 150px;
       margin-right: 20px;
+    }
+
+    .delete-row {
+      position: absolute;
+      right: -5px;
+      top: -5px;
+      cursor: pointer;
+      height: 30px;
+      width: 30px;
     }
   }
 

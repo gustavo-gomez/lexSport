@@ -10,9 +10,10 @@ import IATextInput from '../common/IATextInput'
 import isEmpty from 'lodash/isEmpty'
 import IATimeDatePicker from '../common/IATimeDatePicker'
 import FloatingButton from '../common/FloatingButton'
-import ClearOutlinedIcon from '@mui/icons-material/ClearOutlined'
+import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined'
 import LoadingButton from '@mui/lab/LoadingButton'
 import { newActivitiesAPI } from '../utils/apiUtils'
+import { useNavigate } from 'react-router-dom'
 
 const actionsData = [
 	{
@@ -24,7 +25,8 @@ const actionsData = [
 		id: 'fill'
 	}
 ]
-const ACTIONS = {
+
+export const ACTIONS = {
 	MAKE: 'make',
 	FILL: 'fill',
 }
@@ -58,6 +60,7 @@ const NewHistory = () => {
 
 	const { width } = useDimension()
 	const dispatch = useDispatch()
+	const navigate = useNavigate()
 
 	useEffect(() => {
 		dispatch(getAllProducts())
@@ -82,7 +85,6 @@ const NewHistory = () => {
 	const deleteRow = (index) => {
 		const newData = [...newHistoryData]
 		newData.splice(index, 1)
-
 
 		const newErrors = [...errors]
 		newErrors.splice(index, 1)
@@ -147,18 +149,15 @@ const NewHistory = () => {
 				price: historyItem.quantity * pricexProduct
 			}
 		})
-		console.log('time saveee: ', activityDate)
-		console.log('time save: ', activityDate.getTime())
 		await newActivitiesAPI(activityDate.getTime(), newData)
 		setIsLoading(false)
+		navigate('/historial')
 	}
 
 	// show action select (make, fill) only if the product has fill price
 	const showAction = (product) => {
 		return product && product?.fillPrice !== '0.00'
 	}
-
-	console.log('activityDate', activityDate)
 
 	return (
 		<div
@@ -175,11 +174,10 @@ const NewHistory = () => {
 				{
 					newHistoryData.map((item, index) => {
 						const selectedProduct = productList.find(p => p.id === item.productId)
-						console.log('selectedProduct: ', selectedProduct)
 						return (
 							<div
 								key={index}
-								className="history-row"
+								className="history-row card"
 							>
 								<IASelect
 									label={'Costurera'}
@@ -246,7 +244,11 @@ const NewHistory = () => {
 								}
 								{
 									index !== 0 &&
-									<ClearOutlinedIcon style={{ color: 'red' }} onClick={() => deleteRow(index)}/>
+									<CancelOutlinedIcon
+										className={'delete-row'}
+										style={{ color: 'red' }}
+										onClick={() => deleteRow(index)}
+									/>
 								}
 							</div>
 						)
