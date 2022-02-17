@@ -1,11 +1,45 @@
 import { Router } from 'express'
-import { getGenericMessage, HTTP_STATUS_CODES, validationErrorsToArray } from '../utils/utils.js'
+import { getGenericMessage, getSuccessResponse, HTTP_STATUS_CODES, validationErrorsToArray } from '../utils/utils.js'
 import { verifyAuthJWTokenMiddleware } from '../utils/passUtils.js'
 import { check, validationResult } from 'express-validator'
 import isEmpty from 'lodash/isEmpty'
-import { newActivityService } from '../services/activityService'
+import { getActivitiesService, newActivityService } from '../services/activityService'
+import { loadAllCosturerasService } from '../services/workerService'
+import { loadAllProductsService } from '../services/productsService'
+import { orderBy } from 'lodash'
 
 const router = Router()
+
+// get activities
+router.get('/', [verifyAuthJWTokenMiddleware], async (req, res) => {
+	try {
+		const { startDate, endDate } = req.query
+		const activitiesDB = await getActivitiesService(startDate, endDate)
+		const workers = await loadAllCosturerasService()
+		const products = await loadAllProductsService()
+
+		const activities = orderBy(activitiesDB, 'date', 'desc').map(activity => {
+			const worker = workers.find(worker => worker.id === activity.workerId)
+			const product = products.find(product => product.id === activity.productId)
+			return {
+				id: activity?.id,
+				price: activity?.price,
+				action: activity?.action,
+				quantity: activity?.quantity,
+				date: activity?.date,
+				worker: `${worker?.lastName}, ${worker?.firstName}`,
+				product: product?.name,
+				productCode: product?.code,
+			}
+		})
+
+		return res.json(getSuccessResponse({ activities }))
+
+	} catch ( e ) {
+		console.log('Error: ', e)
+		return res.json(getGenericMessage())
+	}
+})
 
 const newActivityValidator = [
 	check('activities', 'Actividad es requerida').not().isEmpty(),
