@@ -1,16 +1,16 @@
-import React, {useEffect, useState} from 'react'
+import React, { useEffect, useState } from 'react'
 import '../scss/base/base.scss'
-import {useDispatch, useSelector} from 'react-redux'
-import {auth, AUTH_TOKEN_KEY, login} from "../slices/authSlice"
-import jwtDecode from "jwt-decode"
+import { useDispatch, useSelector } from 'react-redux'
+import { auth, AUTH_TOKEN_KEY, login } from '../slices/authSlice'
+import jwtDecode from 'jwt-decode'
 import LoadingButton from '@mui/lab/LoadingButton'
-import {hashPassword} from "../utils/passUtils";
-import CssBaseline from '@mui/material/CssBaseline';
-import TextField from '@mui/material/TextField';
-import Box from '@mui/material/Box';
-import Container from '@mui/material/Container';
-import {createTheme, ThemeProvider} from '@mui/material/styles';
-import {useNavigate, Navigate} from "react-router-dom";
+import { hashPassword } from '../utils/passUtils'
+import CssBaseline from '@mui/material/CssBaseline'
+import TextField from '@mui/material/TextField'
+import Box from '@mui/material/Box'
+import Container from '@mui/material/Container'
+import { createTheme, ThemeProvider } from '@mui/material/styles'
+import { useNavigate } from 'react-router-dom'
 
 const initialData = {
 	email: '',
@@ -26,18 +26,18 @@ const Login = () => {
 	const [message, setMessage] = useState(null)
 	const {error, isLoading} = useSelector(auth)
 	const dispatch = useDispatch()
-	const theme = createTheme();
-	const navigate = useNavigate();
-	
+	const theme = createTheme()
+	const navigate = useNavigate()
+
 	useEffect(() => {
 		const token = localStorage.getItem(AUTH_TOKEN_KEY)
 		console.log('token: ', token)
 		if (token !== null) {
 			const user = jwtDecode(token)
-			navigate('/home')
+			navigate('/dashboard')
 		}
 	})
-	
+
 	// const submit = async () => {
 	// 	hashPassword(data.password)
 	// 	if (isValidForm()) {
@@ -63,13 +63,13 @@ const Login = () => {
 		const data = new FormData(e.currentTarget)
 		const email = data.get('email')
 		const hashPass = hashPassword(data.get('password'))
-		
+
 		dispatch(login({email, password: hashPass}))
 	}
-	
+
 	console.log('error', error)
 	console.log('isLoading', isLoading)
-	
+
 	return (
 		<ThemeProvider theme={theme}>
 			<Container component="main" maxWidth="xs">
