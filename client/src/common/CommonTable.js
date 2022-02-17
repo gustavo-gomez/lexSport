@@ -28,7 +28,7 @@ const CommonTable = ({tableHeader, body, onClickRow}) => {
 				<TableBody>
 					{map(body, (row, index) => (
 						<TableRow
-							key={`${row.name}`}
+							key={`${row.id}-${index}`}
 							sx={{'&:last-child td, &:last-child th': {border: 0}}}
 							// onClick={() => onClickRow(index)}
 							className='table-row-body'

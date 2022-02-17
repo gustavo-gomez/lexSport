@@ -7,8 +7,8 @@ export const loadProductByIdService = async id => {
 	return camelize(usersDB)
 }
 
-export const loadAllProductsService = async user => {
-	const usersDB = await loadAllProducts(user)
+export const loadAllProductsService = async () => {
+	const usersDB = await loadAllProducts()
 	return camelize(usersDB)
 }
 

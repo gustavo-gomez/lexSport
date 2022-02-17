@@ -13,7 +13,7 @@ export const loadProductById = async id => {
 	return rows || []
 }
 
-export const loadAllProducts = async user => {
+export const loadAllProducts = async () => {
 	const connection = await getConnection()
 	const sql = `
       select *

@@ -37,7 +37,7 @@ CREATE TABLE IF NOT EXISTS `activities`
     id          VARCHAR(40)   NOT NULL,
     worker_id   VARCHAR(40)   NOT NULL,
     product_id  VARCHAR(40)   NOT NULL,
-    quantity    TINYINT(4)    NOT NULL,
+    quantity    TINYINT(40)   NOT NULL,
     action      VARCHAR(50)   NOT NULL,
     price       DECIMAL(5, 2) NOT NULL,
     date        BIGINT(8)     NOT NULL,

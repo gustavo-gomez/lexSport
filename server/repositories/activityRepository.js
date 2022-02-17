@@ -2,7 +2,7 @@ import { getConnection } from '../database/conectDB.js'
 import { uuid } from 'uuidv4'
 import map from 'lodash/map'
 
-export const newActivity = async (activities = [], dateMillis = new Date().getTime()) => {
+export const newActivities = async (activities = [], dateMillis = new Date().getTime()) => {
 	const connection = await getConnection()
 	let sql = `
       INSERT INTO activities (id, worker_id, product_id, quantity, action, price, date)
@@ -22,6 +22,17 @@ export const newActivity = async (activities = [], dateMillis = new Date().getTi
 	})
 
 	const [rows] = await connection.execute(sql, values)
+	await connection.end()
+	return rows || []
+}
+
+export const loadActivities = async (startDate, endDate) => {
+	const connection = await getConnection()
+	let sql = `
+      SELECT * FROM activities
+      WHERE date >= ? and date <= ?
+	`
+	const [rows] = await connection.execute(sql, [startDate, endDate])
 	await connection.end()
 	return rows || []
 }
