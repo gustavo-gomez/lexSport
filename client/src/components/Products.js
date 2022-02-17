@@ -112,7 +112,7 @@ const Products = () => {
 				}
 			</div>
 			{
-				width >= 850 ?
+				width >= 900 ?
 					(
 						showNewProductForm &&
 						<div
