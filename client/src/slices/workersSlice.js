@@ -5,7 +5,7 @@ export const AUTH_TOKEN_KEY = 'authTokenLexSport'
 
 const initialState = {
 	workerList: [],
-	isLoading: null,
+	isLoading: false,
 }
 
 export const getAllCostureras = createAsyncThunk(
