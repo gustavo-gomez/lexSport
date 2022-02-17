@@ -7,6 +7,7 @@ import TextField from '@mui/material/TextField'
 import PropTypes from 'prop-types'
 import DateAdapter from '@mui/lab/AdapterMoment'
 import LocalizationProvider from '@mui/lab/LocalizationProvider'
+import { MOBILE_WIDTH } from '../utils/utils'
 
 const IATimeDatePicker = ({ value, label, handleChange }) => {
 
@@ -24,7 +25,7 @@ const IATimeDatePicker = ({ value, label, handleChange }) => {
 	return (
 		<LocalizationProvider dateAdapter={DateAdapter}>
 			{
-				width >= 900 ?
+				width >= MOBILE_WIDTH ?
 					<DesktopDatePicker
 						{...props}
 					/>

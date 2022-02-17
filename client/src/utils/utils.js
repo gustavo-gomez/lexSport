@@ -2,6 +2,7 @@ import startCase from 'lodash/startCase'
 import camelCase from 'lodash/camelCase'
 import moment from 'moment'
 
+export const MOBILE_WIDTH = 900
 export const PERU_TIME_OFFSET = -5
 export const MILLISECONDS_IN_ONE_HOUR = 3600 * 1000
 export const MILLISECONDS_IN_ONE_DAY = MILLISECONDS_IN_ONE_HOUR * 24

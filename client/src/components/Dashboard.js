@@ -5,18 +5,18 @@ import {auth} from "../slices/authSlice";
 import { useLocation} from "react-router-dom";
 
 
-const Home = () => {
+const Dashboard = () => {
 	// const {loggedUser} = useSelector(auth)
 	// const {role_admin} = loggedUser
 	// const isAdmin = role_admin === 1
 	// const navigate = useNavigate()
 	// const location = useLocation()
-	
+
 	return (
-		<div className='sidebar-container'>
+		<div >
 			home
 		</div>
 	);
 }
 
-export default Home
+export default Dashboard

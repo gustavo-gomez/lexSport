@@ -10,6 +10,7 @@ import NewProduct from "./NewProduct";
 import IAModal from "../common/IAModal";
 import FloatingButton from "../common/FloatingButton";
 import EditIcon from "@mui/icons-material/Edit";
+import { MOBILE_WIDTH } from '../utils/utils'
 
 const tableHeader = [
 	{
@@ -112,7 +113,7 @@ const Products = () => {
 				}
 			</div>
 			{
-				width >= 900 ?
+				width >= MOBILE_WIDTH ?
 					(
 						showNewProductForm &&
 						<div
