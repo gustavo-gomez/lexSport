@@ -28,12 +28,12 @@ const menuOptions = [
 	{
 		name: 'Costureras',
 		icon: <PersonOutlineOutlinedIcon/>,
-		path: '/workers'
+		path: '/trabajadores'
 	},
 	{
 		name: 'Productos',
 		icon: <Inventory2OutlinedIcon/>,
-		path: '/products'
+		path: '/productos'
 	},
 	{
 		name: 'Historial',
