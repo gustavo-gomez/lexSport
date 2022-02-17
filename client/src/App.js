@@ -1,22 +1,20 @@
-import React, {Suspense} from "react"
-import {BrowserRouter, Navigate, Route, Routes} from "react-router-dom"
-import Login from "./components/Login"
+import React, { Suspense } from 'react'
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
+import Login from './components/Login'
 import './scss/index.scss'
-import {useDispatch} from "react-redux";
-import Header from "./components/Header";
-import SideBar from "./components/SideBar";
-import {AUTH_TOKEN_KEY} from "./slices/authSlice";
-import Dashboard from "./components/Dashboard";
-import Products from "./components/Products";
-import Workers from "./components/Workers";
+import { useDispatch } from 'react-redux'
+import Header from './components/Header'
+import SideBar from './components/SideBar'
+import { AUTH_TOKEN_KEY } from './slices/authSlice'
+import Dashboard from './components/Dashboard'
+import Products from './components/Products'
+import Workers from './components/Workers'
 import NewHistory from './components/NewHistory'
+import History from './components/History'
 
 const App = () => {
 
-	const dispatch = useDispatch()
-	// const {width, height} = useDimension()
-	// console.log(width)
-	const PrivateRedirect = ({children, redirectTo}) => {
+	const PrivateRedirect = ({ children, redirectTo }) => {
 		return localStorage.getItem(AUTH_TOKEN_KEY) !== null
 			?
 			<>
@@ -25,7 +23,7 @@ const App = () => {
 				{children}
 			</> :
 			<Navigate to={redirectTo}/>
-	};
+	}
 
 
 	return (
@@ -42,7 +40,7 @@ const App = () => {
 						}
 					/>
 					<Route
-						path="/workers"
+						path="/trabajadores"
 						element={
 							<PrivateRedirect redirectTo="/">
 								<Workers/>
@@ -50,7 +48,7 @@ const App = () => {
 						}
 					/>
 					<Route
-						path="/products"
+						path="/productos"
 						element={
 							<PrivateRedirect redirectTo="/">
 								<Products/>
@@ -58,10 +56,18 @@ const App = () => {
 						}
 					/>
 					<Route
-						path="/historial"
+						path="/historial/nuevo"
 						element={
 							<PrivateRedirect redirectTo="/">
 								<NewHistory/>
+							</PrivateRedirect>
+						}
+					/>
+					<Route
+						path="/historial"
+						element={
+							<PrivateRedirect redirectTo="/">
+								<History/>
 							</PrivateRedirect>
 						}
 					/>
