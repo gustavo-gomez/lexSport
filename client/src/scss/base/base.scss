@@ -9,7 +9,7 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   height: 100%;
-  background-color: white;
+  background-color: #fafafa;
 }
 
 html, body {
@@ -24,11 +24,8 @@ html, body {
   padding-left: $drawer-width;
   overflow-y: scroll;
   width: calc(100% - #{$drawer-width});
-  //margin: 20px;
-  padding-bottom: 20px;
+  padding-bottom: 50px;
   display: flex;
-  flex-direction: row;
-  //@extend %display-flex-center;
 }
 
 .buttons {
@@ -49,10 +46,17 @@ html, body {
   }
 }
 
-@media (max-width: 600px) {
+.card {
+  background-color: rgb(255, 255, 255);
+  border-radius: 15px;
+  box-shadow: rgba(103, 101, 101, 0.15) 4px 4px 25px;
+}
+
+@media (max-width: 900px) {
   .content-wrapper {
     padding-left: 0;
     width: 100%;
+    justify-content: center;
   }
 }
 
