@@ -60,8 +60,8 @@ const Header = () => {
 					color="primary"
 					position="sticky"
 					sx={{
-						width: {sm: `calc(100% - ${drawerWidth}px)`},
-						ml: {sm: `${drawerWidth}px`},
+						width: {md: `calc(100% - ${drawerWidth}px)`},
+						ml: {md: `${drawerWidth}px`},
 					}}
 					elevation={0}
 				>
@@ -71,7 +71,7 @@ const Header = () => {
 							aria-label="open drawer"
 							edge="start"
 							onClick={() => dispatch(toggleDrawer())}
-							sx={{ mr: 2, display: { sm: 'none' } }}
+							sx={{ mr: 2, display: { md: 'none' } }}
 						>
 							<MenuIcon />
 						</IconButton>
