@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import '../scss/base/base.scss'
 import { useDispatch, useSelector } from 'react-redux'
 import { auth, AUTH_TOKEN_KEY, login } from '../slices/authSlice'
@@ -11,6 +11,7 @@ import Box from '@mui/material/Box'
 import Container from '@mui/material/Container'
 import { createTheme, ThemeProvider } from '@mui/material/styles'
 import { useNavigate } from 'react-router-dom'
+import logo from '../images/lex_sport.png'
 
 const initialData = {
 	email: '',
@@ -22,9 +23,7 @@ const initialData = {
 }
 
 const Login = () => {
-	let [data, setData] = useState({...initialData})
-	const [message, setMessage] = useState(null)
-	const {error, isLoading} = useSelector(auth)
+	const { isLoading } = useSelector(auth)
 	const dispatch = useDispatch()
 	const theme = createTheme()
 	const navigate = useNavigate()
@@ -34,41 +33,19 @@ const Login = () => {
 		console.log('token: ', token)
 		if (token !== null) {
 			const user = jwtDecode(token)
+			console.log('decode user: ', user)
 			navigate('/dashboard')
 		}
 	})
 
-	// const submit = async () => {
-	// 	hashPassword(data.password)
-	// 	if (isValidForm()) {
-	// 		if (isSignIn) {
-	// 			dispatch(login({email: data.email, password: data.password}))
-	// 		} else {
-	// 			dispatch(signUp({
-	// 				user: {
-	// 					email: data.email,
-	// 					password: hashPassword(data.password),
-	// 					firstName: data.firstName,
-	// 					lastName: data.lastName,
-	// 					roleAdmin: data.isAdmin
-	// 				}
-	// 			}))
-	// 			setMessage(null)
-	// 			changeAction(true)
-	// 		}
-	// 	}
-	// }
 	const handleSubmit = (e) => {
 		e.preventDefault()
 		const data = new FormData(e.currentTarget)
 		const email = data.get('email')
 		const hashPass = hashPassword(data.get('password'))
 
-		dispatch(login({email, password: hashPass}))
+		dispatch(login({ email, password: hashPass }))
 	}
-
-	console.log('error', error)
-	console.log('isLoading', isLoading)
 
 	return (
 		<ThemeProvider theme={theme}>
@@ -82,10 +59,20 @@ const Login = () => {
 						alignItems: 'center',
 					}}
 				>
+					<Box display="flex" alignItems="center" p={1}>
+						<Box flexGrow={1}>
+							<img
+								src={logo}
+								alt="logo"
+								style={{ width: '98%' }}
+								loading={'lazy'}
+							/>
+						</Box>
+					</Box>
 					<Box
 						component="form"
 						onSubmit={handleSubmit}
-						sx={{mt: 1}
+						sx={{ mt: 1 }
 						}
 					>
 						<TextField
