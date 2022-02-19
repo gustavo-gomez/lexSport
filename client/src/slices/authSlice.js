@@ -29,11 +29,15 @@ export const authSlice = createSlice({
 	name: 'auth',
 	initialState,
 	reducers: {
+		updateLoggedUser: (state, {payload}) => {
+			state.loggedUser = payload
+		},
 		logout: (state, action) => {
 			localStorage.removeItem(AUTH_TOKEN_KEY)
 			state.loggedUser = null
 			state.error = null
-		},
+			window.location.reload()
+		}
 	},
 	extraReducers: (builder) => {
 		builder
@@ -48,7 +52,6 @@ export const authSlice = createSlice({
 				localStorage.setItem(AUTH_TOKEN_KEY, worker?.token)
 			})
 			.addCase(login.rejected, (state, {payload}) => {
-				console.log('payload: ', payload)
 				const {responseMessage = ''} = payload
 				state.isLoading = false
 				state.error = isEmpty(responseMessage) ? null : responseMessage
@@ -57,7 +60,7 @@ export const authSlice = createSlice({
 })
 
 
-export const {logout, updateUser} = authSlice.actions
+export const {logout, updateLoggedUser} = authSlice.actions
 
 export const auth = (state) => state.auth
 
