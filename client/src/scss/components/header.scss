@@ -1,15 +1,12 @@
 .header-container {
-  height: 4rem;
-  right: 0;
+.toolbar{
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  background-color: #323232;
-  padding: 0 10px;
-  color: white;
-  font-weight: 500;
+  padding-right: 0;
 
-  span{
-    cursor: pointer;
+  .MuiIconButton-root {
+    margin-right: 0;
   }
+}
+
 }

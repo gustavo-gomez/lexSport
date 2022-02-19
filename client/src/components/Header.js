@@ -1,8 +1,8 @@
 import React from 'react'
 import '../scss/components/header.scss'
 import { useDispatch, useSelector } from 'react-redux'
-import { logout } from '../slices/authSlice'
-import { generalSettings, toggleDrawer } from '../slices/generalSettingsSlice'
+import { auth, logout } from '../slices/authSlice'
+import { toggleDrawer } from '../slices/generalSettingsSlice'
 import { useNavigate } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import AppBar from '@mui/material/AppBar'
@@ -13,23 +13,20 @@ import Typography from '@mui/material/Typography'
 import useScrollTrigger from '@mui/material/useScrollTrigger'
 import Slide from '@mui/material/Slide'
 
-const lightColor = 'rgba(255, 255, 255, 0.7)';
-const drawerWidth = 240;
+const lightColor = 'rgba(255, 255, 255, 0.7)'
+const drawerWidth = 240
 
 function HideOnScroll(props) {
-	const { children, window } = props;
-	// Note that you normally won't need to set the window ref as useScrollTrigger
-	// will default to window.
-	// This is only being set here because the demo is in an iframe.
+	const { children, window } = props
 	const trigger = useScrollTrigger({
 		target: window ? window() : undefined,
-	});
+	})
 
 	return (
 		<Slide appear={false} direction="down" in={!trigger}>
 			{children}
 		</Slide>
-	);
+	)
 }
 
 HideOnScroll.propTypes = {
@@ -39,14 +36,14 @@ HideOnScroll.propTypes = {
 	 * You won't need it on your project.
 	 */
 	window: PropTypes.func,
-};
+}
 
 const Header = () => {
-	// const {loggedUser: {first_name, last_name, role_admin}} = useSelector(auth)
+	const { loggedUser } = useSelector(auth)
+	const { firstName = '', lastName = '', roleAdmin = '' } = loggedUser || {}
 	// const isAdmin = role_admin === 1
 	const dispatch = useDispatch()
 	const navigate = useNavigate()
-	const {isDrawerOpen} = useSelector(generalSettings)
 
 	const logOut = () => {
 		navigate('/')
@@ -54,35 +51,36 @@ const Header = () => {
 	}
 
 	return (
-		<React.Fragment>
-			<HideOnScroll>
-				<AppBar
-					color="primary"
-					position="sticky"
-					sx={{
-						width: {md: `calc(100% - ${drawerWidth}px)`},
-						ml: {md: `${drawerWidth}px`},
-					}}
-					elevation={0}
+		<HideOnScroll>
+			<AppBar
+				color="primary"
+				position="sticky"
+				sx={{
+					width: { md: `calc(100% - ${drawerWidth}px)` },
+					ml: { md: `${drawerWidth}px` },
+				}}
+				className={'header-container'}
+				elevation={0}
+			>
+				<Toolbar
+					className={'toolbar'}
 				>
-					<Toolbar>
-						<IconButton
-							color="inherit"
-							aria-label="open drawer"
-							edge="start"
-							onClick={() => dispatch(toggleDrawer())}
-							sx={{ mr: 2, display: { md: 'none' } }}
-						>
-							<MenuIcon />
-						</IconButton>
-						<Typography variant="h6" noWrap component="div">
-							Responsive drawer
-						</Typography>
-					</Toolbar>
-				</AppBar>
-			</HideOnScroll>
-		</React.Fragment>
-	);
+					<Typography variant="h6" noWrap component="div">
+						{`${firstName} ${lastName}`}
+					</Typography>
+					<IconButton
+						color="inherit"
+						aria-label="open drawer"
+						edge="start"
+						onClick={() => dispatch(toggleDrawer())}
+						sx={{ mr: 2, display: { md: 'none' } }}
+					>
+						<MenuIcon/>
+					</IconButton>
+				</Toolbar>
+			</AppBar>
+		</HideOnScroll>
+	)
 }
 
 export default Header
