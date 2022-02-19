@@ -1,18 +1,28 @@
-import React, { Suspense } from 'react'
+import React, { Suspense, useEffect } from 'react'
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import Login from './components/Login'
 import './scss/index.scss'
 import { useDispatch } from 'react-redux'
 import Header from './components/Header'
 import SideBar from './components/SideBar'
-import { AUTH_TOKEN_KEY } from './slices/authSlice'
+import { AUTH_TOKEN_KEY, updateLoggedUser } from './slices/authSlice'
 import Dashboard from './components/Dashboard'
 import Products from './components/Products'
 import Workers from './components/Workers'
 import NewHistory from './components/NewHistory'
 import History from './components/History'
+import jwtDecode from 'jwt-decode'
 
 const App = () => {
+
+	const dispatch = useDispatch()
+
+	useEffect(() => {
+		const isToken = localStorage.getItem(AUTH_TOKEN_KEY) !== null
+		if (isToken) {
+			dispatch(updateLoggedUser(jwtDecode(localStorage.getItem(AUTH_TOKEN_KEY))))
+		}
+	})
 
 	const PrivateRedirect = ({ children, redirectTo }) => {
 		return localStorage.getItem(AUTH_TOKEN_KEY) !== null
