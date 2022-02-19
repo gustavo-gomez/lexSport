@@ -16,6 +16,8 @@ import SummarizeOutlinedIcon from '@mui/icons-material/SummarizeOutlined'
 import Toolbar from "@mui/material/Toolbar"
 import {generalSettings, toggleDrawer} from "../slices/generalSettingsSlice"
 import logo from '../images/lex_sport.png'
+import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
+import { logout } from '../slices/authSlice'
 
 const drawerWidth = 240
 
@@ -50,7 +52,9 @@ const SideBar = () => {
 	const currentPath = location.pathname
 
 	const drawer = (
-		<div>
+		<div
+		style={{height: '100%'}}
+		>
 			<Toolbar>
 				<Box display="flex" alignItems="center" p={1}>
 					<Box flexGrow={1}>
@@ -87,6 +91,28 @@ const SideBar = () => {
 						</ListItem>
 					))
 				}
+			</List>
+			<List
+			style={{
+				bottom: 0,
+				position: 'fixed',
+			}}
+			>
+				<ListItem
+					button
+					key={'logout'}
+					onClick={() => {
+						dispatch(logout())
+					}}
+				>
+					<ListItemIcon
+					>
+						<LogoutOutlinedIcon/>
+					</ListItemIcon>
+					<ListItemText
+						primary={'Cerrar sesión'}
+					/>
+				</ListItem>
 			</List>
 		</div>
 	)

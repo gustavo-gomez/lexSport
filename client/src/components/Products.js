@@ -22,11 +22,11 @@ const tableHeader = [
 		key: 'name'
 	},
 	{
-		label: 'Precio',
+		label: 'P. Bajo',
 		key: 'makingPriceLow'
 	},
 	{
-		label: 'Precio2',
+		label: 'P. Alto',
 		key: 'makingPriceHigh'
 	},
 	{
