@@ -6,12 +6,14 @@ import { useDispatch } from 'react-redux'
 import Header from './components/Header'
 import SideBar from './components/SideBar'
 import { AUTH_TOKEN_KEY, updateLoggedUser } from './slices/authSlice'
-import Dashboard from './components/Dashboard'
+import DashboardProducts from './components/DashboardProducts'
 import Products from './components/Products'
 import Workers from './components/Workers'
 import NewHistory from './components/NewHistory'
 import History from './components/History'
+import Payments from './components/Payments'
 import jwtDecode from 'jwt-decode'
+import DashboardWorkers from './components/DashboardWorkers'
 
 const App = () => {
 
@@ -42,10 +44,18 @@ const App = () => {
 				<Routes>
 					<Route path="/" index element={<Login/>}/>
 					<Route
-						path="/dashboard"
+						path="/dashboard/productos"
 						element={
 							<PrivateRedirect redirectTo="/">
-								<Dashboard/>
+								<DashboardProducts/>
+							</PrivateRedirect>
+						}
+					/>
+					<Route
+						path="/dashboard/trabajadores"
+						element={
+							<PrivateRedirect redirectTo="/">
+								<DashboardWorkers/>
 							</PrivateRedirect>
 						}
 					/>
@@ -78,6 +88,14 @@ const App = () => {
 						element={
 							<PrivateRedirect redirectTo="/">
 								<History/>
+							</PrivateRedirect>
+						}
+					/>
+					<Route
+						path="/pagos"
+						element={
+							<PrivateRedirect redirectTo="/">
+								<Payments/>
 							</PrivateRedirect>
 						}
 					/>
