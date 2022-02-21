@@ -13,8 +13,12 @@ const router = Router()
 // get activities
 router.get('/', [verifyAuthJWTokenMiddleware], async (req, res) => {
 	try {
-		const { startDate, endDate } = req.query
-		const activitiesDB = await getActivitiesService(startDate, endDate)
+		const { startDate, endDate, workerId} = req.query
+
+		console.log('date: ', new Date(+startDate))
+		console.log('datee: ', new Date(+endDate))
+
+		const activitiesDB = await getActivitiesService(workerId, new Date(+startDate), new Date(+endDate))
 		const workers = await loadAllCosturerasService()
 		const products = await loadAllProductsService()
 
@@ -54,7 +58,7 @@ router.post('/', [newActivityValidator, verifyAuthJWTokenMiddleware], async (req
 		}
 		const { activities, dateMillis } = req.body
 
-		await newActivityService(activities, dateMillis)
+		await newActivityService(activities, new Date(dateMillis))
 
 		return res.status(HTTP_STATUS_CODES.CREATED).json(getGenericMessage('Actividades creadas con éxito'))
 

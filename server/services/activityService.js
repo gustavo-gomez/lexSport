@@ -1,13 +1,18 @@
 import { camelize } from '../utils/utils'
-import { loadActivities, newActivities } from '../repositories/activityRepository'
+import { loadActivities, loadActivitiesQuantities, newActivities } from '../repositories/activityRepository'
 
 
-export const newActivityService = async (activities, dateMillis) => {
-	const activitiesDB = await newActivities(activities, dateMillis)
+export const newActivityService = async (activities, date) => {
+	const activitiesDB = await newActivities(activities, date)
 	return camelize(activitiesDB)
 }
 
-export const getActivitiesService = async (startDate, endDate) => {
-	const activitiesDB = await loadActivities(startDate, endDate)
+export const getActivitiesService = async (workerId, startDate, endDate) => {
+	const activitiesDB = await loadActivities(workerId, startDate, endDate)
+	return camelize(activitiesDB)
+}
+
+export const loadActivitiesQuantitiesService = async (startDate, endDate) => {
+	const activitiesDB = await loadActivitiesQuantities(startDate, endDate)
 	return camelize(activitiesDB)
 }
