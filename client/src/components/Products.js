@@ -22,12 +22,12 @@ const tableHeader = [
 		key: 'name'
 	},
 	{
-		label: 'P. Bajo',
-		key: 'makingPriceLow'
-	},
-	{
 		label: 'P. Alto',
 		key: 'makingPriceHigh'
+	},
+	{
+		label: 'P. Bajo',
+		key: 'makingPriceLow'
 	},
 	{
 		label: 'Precio Llenado',
@@ -102,7 +102,7 @@ const Products = () => {
 			className={'content-wrapper'}
 		>
 			<div className='users-table'>
-				<h2>Lista de Productos</h2>
+				<span className={'section-title'}>Lista de Productos</span>
 				{
 					productList?.length > 0 &&
 					<CommonTable

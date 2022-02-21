@@ -46,8 +46,7 @@ const History = () => {
 
 	const [history, setHistory] = useState([])
 	const [isLoading, setIsLoading] = useState(false)
-	const [startDate, setStartDate] = useState(new Date())
-	const [endDate, setEndDate] = useState(new Date())
+
 	const navigate = useNavigate()
 
 	const getTableBody = () => {
@@ -58,14 +57,17 @@ const History = () => {
 				worker,
 				productCode,
 				product,
-				action: action === ACTIONS.FILL ? 'Relleno' : 'Confección',
+				action: action === ACTIONS.FILL ?
+					<span style={{ color: 'green' }}>Relleno</span> :
+					<span style={{ color: '#ffa111' }}>Confección</span>,
 				quantity,
 				price,
 			}
 		})
 	}
 
-	const searchHistory = async () => {
+	const searchHistory = async ({ startDate, endDate }) => {
+		console.log('searchHistory: ', startDate, endDate)
 		setIsLoading(true)
 		const startDateMillis = getStartDateMillis(startDate)
 		const endDateMillis = getEndDateMillis(endDate)
@@ -85,11 +87,8 @@ const History = () => {
 			className={'content-wrapper'}
 			style={{ justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}
 		>
+			<span className={'section-title'}>Historial de Trabajo</span>
 			<IAFilters
-				startDate={startDate}
-				endDate={endDate}
-				setStartDate={setStartDate}
-				setEndDate={setEndDate}
 				onSearch={searchHistory}
 				isLoading={isLoading}
 			/>
