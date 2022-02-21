@@ -40,7 +40,7 @@ CREATE TABLE IF NOT EXISTS `activities`
     quantity    TINYINT(40)   NOT NULL,
     action      VARCHAR(50)   NOT NULL,
     price       DECIMAL(5, 2) NOT NULL,
-    date        BIGINT(8)     NOT NULL,
+    date        TIMESTAMP     NOT NULL DEFAULT CURRENT_TIMESTAMP,
     create_date TIMESTAMP     NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (id),
     FOREIGN KEY (worker_id) REFERENCES `workers` (id),
