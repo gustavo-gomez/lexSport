@@ -10,7 +10,6 @@ import NewWorker from './NewWorkers'
 import IAModal from '../common/IAModal'
 import { useDimension } from '../utils/useDimension'
 import EditIcon from '@mui/icons-material/Edit'
-import IAAlertMessage, { ALERT_MESSAGE_SEVERITY } from '../common/IAAlertMessage'
 import IALoader from '../common/IALoader'
 
 const tableHeader = [
@@ -42,7 +41,6 @@ const Workers = () => {
 	const [workerEdit, setWorkerEdit] = useState(null)
 
 	const { width } = useDimension()
-
 	const dispatch = useDispatch()
 
 	useEffect(() => {
@@ -100,7 +98,7 @@ const Workers = () => {
 		>
 
 			<div className="users-table">
-				<h2>Lista de Costureras</h2>
+				<span className={'section-title'}>Lista de Costureras</span>
 				{
 					workerList?.length > 0 &&
 					<CommonTable

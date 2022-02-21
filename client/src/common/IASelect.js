@@ -4,7 +4,7 @@ import Autocomplete from '@mui/material/Autocomplete'
 import '../scss/components/ialoader.scss'
 import PropTypes from 'prop-types'
 
-const IASelect = ({ data, textToShow, value, onChange, label, isRequired, error, helperText }) => {
+const IASelect = ({ data, textToShow, value, onChange, label, isRequired, error, helperText, variant}) => {
 
 	if (data?.length === 0)
 		return null
@@ -25,7 +25,7 @@ const IASelect = ({ data, textToShow, value, onChange, label, isRequired, error,
 					<TextField
 						{...params}
 						label={label}
-						variant="standard"
+						variant={variant}
 						required={isRequired}
 						error={error}
 						helperText={helperText}
@@ -50,6 +50,7 @@ IASelect.defaultProps = {
 	isRequired: false,
 	error: false,
 	helperText: '',
+	variant: 'standard'
 }
 
 IASelect.propTypes = {

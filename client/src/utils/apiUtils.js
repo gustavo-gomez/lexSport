@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { AUTH_TOKEN_KEY } from '../slices/authSlice'
+import isEmpty from 'lodash/isEmpty'
 
 const BASE_URL = process.env.REACT_APP_LEX_SPORT_IP_BACKEND || 'http://192.168.18.6:9000'
 
@@ -9,6 +10,7 @@ export const ENDPOINTS = {
 	WORKERS: '/workers',
 	PRODUCTS: '/products',
 	ACTIVITY: '/activity',
+	PRODUCTS_DASHBOARD: '/dashboard/products',
 }
 
 export const loginAPI = async (user, password) => {
@@ -52,8 +54,13 @@ export const newActivitiesAPI = async (dateMillis, activities) => {
 }
 
 // get activities
-export const loadActivitiesAPI = async (starDate, endDate) => {
-	return await callAPI('GET', `${BASE_URL}${ENDPOINTS.ACTIVITY}?startDate=${starDate}&endDate=${endDate}`)
+export const loadActivitiesAPI = async (starDate, endDate, workerId) => {
+	return await callAPI('GET', `${BASE_URL}${ENDPOINTS.ACTIVITY}?startDate=${starDate}&endDate=${endDate}${!isEmpty(workerId) ? `&workerId=${workerId}` : ''}`)
+}
+
+// get products dashboard
+export const loadProductsDashboardAPI = async (starDate, endDate) => {
+	return await callAPI('GET', `${BASE_URL}${ENDPOINTS.PRODUCTS_DASHBOARD}?startDate=${starDate}&endDate=${endDate}`)
 }
 
 const callAPI = async (method, url, body) => {

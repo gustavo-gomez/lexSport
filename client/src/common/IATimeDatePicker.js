@@ -9,7 +9,7 @@ import DateAdapter from '@mui/lab/AdapterMoment'
 import LocalizationProvider from '@mui/lab/LocalizationProvider'
 import { MOBILE_WIDTH } from '../utils/utils'
 
-const IATimeDatePicker = ({ value, label, handleChange }) => {
+const IATimeDatePicker = ({ value, label, handleChange, defaultStartDate }) => {
 
 	const { width } = useDimension()
 

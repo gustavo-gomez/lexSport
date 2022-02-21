@@ -34,7 +34,7 @@ const Login = () => {
 		if (token !== null) {
 			const user = jwtDecode(token)
 			console.log('decode user: ', user)
-			navigate('/dashboard')
+			navigate('/historial')
 		}
 	})
 

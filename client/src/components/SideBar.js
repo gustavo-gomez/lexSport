@@ -1,7 +1,7 @@
 import React from 'react'
 import '../scss/components/sidebar.scss'
-import {useDispatch, useSelector} from 'react-redux'
-import {useLocation, useNavigate} from "react-router-dom"
+import { useDispatch, useSelector } from 'react-redux'
+import { useLocation, useNavigate } from 'react-router-dom'
 import Divider from '@mui/material/Divider'
 import Drawer from '@mui/material/Drawer'
 import List from '@mui/material/List'
@@ -13,19 +13,42 @@ import Inventory2OutlinedIcon from '@mui/icons-material/Inventory2Outlined'
 import DashboardOutlinedIcon from '@mui/icons-material/DashboardOutlined'
 import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined'
 import SummarizeOutlinedIcon from '@mui/icons-material/SummarizeOutlined'
-import Toolbar from "@mui/material/Toolbar"
-import {generalSettings, toggleDrawer} from "../slices/generalSettingsSlice"
+import PaymentsOutlinedIcon from '@mui/icons-material/PaymentsOutlined'
+import Toolbar from '@mui/material/Toolbar'
+import { generalSettings, toggleDrawer } from '../slices/generalSettingsSlice'
 import logo from '../images/lex_sport.png'
-import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
+import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined'
 import { logout } from '../slices/authSlice'
 
 const drawerWidth = 240
 
 const menuOptions = [
 	{
+		name: 'Historial',
+		icon: <SummarizeOutlinedIcon/>,
+		path: '/historial'
+	},
+	{
 		name: 'Graficos',
 		icon: <DashboardOutlinedIcon/>,
-		path: '/dashboard'
+		// path: '/dashboard'
+	},
+	{
+		type: 'child',
+		name: 'Productos',
+		path: '/dashboard/productos'
+		// icon: <PersonOutlineOutlinedIcon/>,
+	},
+	{
+		type: 'child',
+		name: 'Costureras',
+		// icon: <PersonOutlineOutlinedIcon/>,
+		path: '/dashboard/trabajadores'
+	},
+	{
+		name: 'Pagos',
+		icon: <PaymentsOutlinedIcon/>,
+		path: '/pagos'
 	},
 	{
 		name: 'Costureras',
@@ -37,23 +60,18 @@ const menuOptions = [
 		icon: <Inventory2OutlinedIcon/>,
 		path: '/productos'
 	},
-	{
-		name: 'Historial',
-		icon: <SummarizeOutlinedIcon/>,
-		path: '/historial'
-	}
 ]
 
 const SideBar = () => {
 	const navigate = useNavigate()
 	const location = useLocation()
-	const {isDrawerOpen} = useSelector(generalSettings)
+	const { isDrawerOpen } = useSelector(generalSettings)
 	const dispatch = useDispatch()
 	const currentPath = location.pathname
 
 	const drawer = (
 		<div
-		style={{height: '100%'}}
+			style={{ height: '100%' }}
 		>
 			<Toolbar>
 				<Box display="flex" alignItems="center" p={1}>
@@ -61,7 +79,7 @@ const SideBar = () => {
 						<img
 							src={logo}
 							alt="logo"
-							style={{width: '98%'}}
+							style={{ width: '98%' }}
 							loading={'lazy'}
 						/>
 					</Box>
@@ -70,7 +88,7 @@ const SideBar = () => {
 			<Divider/>
 			<List>
 				{
-					menuOptions.map(({name, icon, path}) => (
+					menuOptions.map(({ name, icon, path, type }) => (
 						<ListItem
 							button
 							key={name}
@@ -78,6 +96,9 @@ const SideBar = () => {
 								dispatch(toggleDrawer())
 								navigate(path)
 							}}
+							style={type === 'child' ? {
+								marginLeft: '1.5rem',
+							} : {}}
 						>
 							<ListItemIcon
 								className={currentPath === path ? 'selected-menu' : ''}
@@ -93,10 +114,10 @@ const SideBar = () => {
 				}
 			</List>
 			<List
-			style={{
-				bottom: 0,
-				position: 'fixed',
-			}}
+				style={{
+					bottom: 0,
+					position: 'fixed',
+				}}
 			>
 				<ListItem
 					button
@@ -120,7 +141,7 @@ const SideBar = () => {
 	return (
 		<Box
 			component="nav"
-			sx={{width: {sm: drawerWidth}, flexShrink: {sm: 0}}}
+			sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
 			aria-label="mailbox folders"
 		>
 			<Drawer
@@ -133,9 +154,10 @@ const SideBar = () => {
 				}}
 				sx={{
 					// display: {xs: 'block', sm: 'none'},
-					display: {xs: 'block', md: 'none'},
-					'& .MuiDrawer-paper': {boxSizing: 'border-box', width: drawerWidth},
+					display: { xs: 'block', md: 'none' },
+					'& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
 				}}
+				anchor="right"
 			>
 				{drawer}
 			</Drawer>
@@ -143,8 +165,8 @@ const SideBar = () => {
 				variant="permanent"
 				sx={{
 					// display: {xs: 'none', sm: 'block'},
-					display: {xs: 'none', md: 'block'},
-					'& .MuiDrawer-paper': {boxSizing: 'border-box', width: drawerWidth},
+					display: { xs: 'none', md: 'block' },
+					'& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
 				}}
 				open
 			>
