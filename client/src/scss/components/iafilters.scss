@@ -2,23 +2,30 @@
 .filters-container {
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  margin-bottom: 1rem;
-  margin-top: 2rem;
+  margin-top: 0.3rem;
+  margin-bottom: 1.5rem;
   padding: 15px;
   width: 70%;
-  align-self: center;
 
   .filters-wrapper {
     display: flex;
     flex-direction: row;
     margin-bottom: 10px;
+    width: 100%;
+    justify-content: space-between;
+    align-items: flex-end;
 
     .filter-item {
       display: flex;
       flex-direction: column;
       margin-right: 1rem;
+      flex: 1;
+
+      .MuiAutocomplete-root, .MuiTextField-root {
+        flex: 1;
+        min-width: 150px;
+        margin-right: 20px;
+      }
     }
   }
 
@@ -29,7 +36,7 @@
 
 
 @media (max-width: 850px) {
-  .filters-container{
-    width:87%;
+  .filters-container {
+    width: 87%;
   }
 }
