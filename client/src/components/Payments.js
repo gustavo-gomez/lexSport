@@ -153,9 +153,6 @@ const Payments = () => {
 						)
 				}
 			</div>
-			<FloatingButton
-				onClick={() => navigate('/historial/nuevo')}
-			/>
 		</div>
 	)
 }

@@ -112,7 +112,7 @@ const NewWorker = ({hideSection, workerEdit, saveWorker}) => {
 			<IASwitch
 				checked={worker?.oldWorker}
 				onChange={handleChange}
-				label={'Costurera antigua'}
+				label={'Costurera con experiencia'}
 			/>
 
 			<div className={'buttons'}>

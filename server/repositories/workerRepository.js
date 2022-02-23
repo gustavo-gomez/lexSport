@@ -31,7 +31,7 @@ export const loadAllCostureras = async () => {
 	const sql = `
       SELECT *
       FROM workers
-      WHERE role_admin = '0'
+      WHERE role_admin = '0' and can_login = '0'
 	`
 	const [rows] = await connection.execute(sql)
 	await connection.end()
