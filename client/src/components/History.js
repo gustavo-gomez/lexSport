@@ -9,6 +9,8 @@ import IAFilters from '../common/IAFilters'
 import { getEndDateMillis, getStartDateMillis } from '../utils/utils'
 import { loadActivitiesAPI } from '../utils/apiUtils'
 import { ACTIONS } from './NewHistory'
+import { useSelector } from 'react-redux'
+import { auth } from '../slices/authSlice'
 
 const tableHeader = [
 	{
@@ -37,7 +39,8 @@ const tableHeader = [
 	},
 	{
 		label: 'Precio',
-		key: 'price'
+		key: 'price',
+		onlyAdmin: true
 	},
 ]
 

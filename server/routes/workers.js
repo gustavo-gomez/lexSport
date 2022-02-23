@@ -6,14 +6,14 @@ import {
 	updateCostureraService
 } from "../services/workerService.js"
 import {getGenericMessage, getSuccessResponse, HTTP_STATUS_CODES, validationErrorsToArray} from "../utils/utils.js"
-import {verifyAuthJWTokenMiddleware} from "../utils/passUtils.js"
+import { verifyAuthJWToken, verifyAuthJWTokenIsAdmin } from '../utils/passUtils.js'
 import {check, validationResult} from 'express-validator'
 import isEmpty from "lodash/isEmpty"
 
 const router = Router()
 
 //get all costureras
-router.get('/', [verifyAuthJWTokenMiddleware], async (req, res) => {
+router.get('/', [verifyAuthJWToken], async (req, res) => {
 	try {
 		const costureras = await loadAllCosturerasService()
 
@@ -30,7 +30,7 @@ const newUserFormValidator = [
 	check('worker.phone', 'Celular es requerido').exists()
 ]
 //new costurera
-router.post('/', [newUserFormValidator, verifyAuthJWTokenMiddleware], async (req, res) => {
+router.post('/', [newUserFormValidator, verifyAuthJWTokenIsAdmin], async (req, res) => {
 	try {
 
 		const {errors} = validationResult(req)
@@ -55,7 +55,7 @@ const updateUserFormValidator = [
 	check('worker.oldWorker', 'Costurera antigua es requerido').exists()
 ]
 //update costurera
-router.put('/:id', [updateUserFormValidator, verifyAuthJWTokenMiddleware], async (req, res) => {
+router.put('/:id', [updateUserFormValidator, verifyAuthJWTokenIsAdmin], async (req, res) => {
 	try {
 
 		const {errors} = validationResult(req)

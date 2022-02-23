@@ -18,7 +18,7 @@ import Toolbar from '@mui/material/Toolbar'
 import { generalSettings, toggleDrawer } from '../slices/generalSettingsSlice'
 import logo from '../images/lex_sport.png'
 import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined'
-import { logout } from '../slices/authSlice'
+import { auth, logout } from '../slices/authSlice'
 
 const drawerWidth = 240
 
@@ -26,39 +26,43 @@ const menuOptions = [
 	{
 		name: 'Historial',
 		icon: <SummarizeOutlinedIcon/>,
-		path: '/historial'
+		path: '/historial',
+		onlyAdmin: false
 	},
 	{
 		name: 'Graficos',
 		icon: <DashboardOutlinedIcon/>,
-		// path: '/dashboard'
+		onlyAdmin: true
 	},
 	{
 		type: 'child',
 		name: 'Productos',
-		path: '/dashboard/productos'
-		// icon: <PersonOutlineOutlinedIcon/>,
+		path: '/dashboard/productos',
+		onlyAdmin: true
 	},
 	{
 		type: 'child',
 		name: 'Costureras',
-		// icon: <PersonOutlineOutlinedIcon/>,
-		path: '/dashboard/trabajadores'
+		path: '/dashboard/trabajadores',
+		onlyAdmin: true
 	},
 	{
 		name: 'Pagos',
 		icon: <PaymentsOutlinedIcon/>,
-		path: '/pagos'
+		path: '/pagos',
+		onlyAdmin: true
 	},
 	{
 		name: 'Costureras',
 		icon: <PersonOutlineOutlinedIcon/>,
-		path: '/trabajadores'
+		path: '/trabajadores',
+		onlyAdmin: true
 	},
 	{
 		name: 'Productos',
 		icon: <Inventory2OutlinedIcon/>,
-		path: '/productos'
+		path: '/productos',
+		onlyAdmin: true
 	},
 ]
 
@@ -66,6 +70,8 @@ const SideBar = () => {
 	const navigate = useNavigate()
 	const location = useLocation()
 	const { isDrawerOpen } = useSelector(generalSettings)
+	const { loggedUser } = useSelector(auth)
+	const isAdmin = loggedUser?.roleAdmin === 1
 	const dispatch = useDispatch()
 	const currentPath = location.pathname
 
@@ -88,29 +94,33 @@ const SideBar = () => {
 			<Divider/>
 			<List>
 				{
-					menuOptions.map(({ name, icon, path, type }, index) => (
-						<ListItem
-							button
-							key={`${name}-${index}`}
-							onClick={() => {
-								dispatch(toggleDrawer())
-								navigate(path)
-							}}
-							style={type === 'child' ? {
-								marginLeft: '1.5rem',
-							} : {}}
-						>
-							<ListItemIcon
-								className={currentPath === path ? 'selected-menu' : ''}
-							>
-								{icon}
-							</ListItemIcon>
-							<ListItemText
-								primary={name}
-								className={currentPath === path ? 'selected-menu' : ''}
-							/>
-						</ListItem>
-					))
+					menuOptions.map(({ name, icon, path, type, onlyAdmin }, index) => {
+						if (onlyAdmin && !isAdmin) return null
+							return (
+
+								<ListItem
+									button
+									key={`${name}-${index}`}
+									onClick={() => {
+										dispatch(toggleDrawer())
+										navigate(path)
+									}}
+									style={type === 'child' ? {
+										marginLeft: '1.5rem',
+									} : {}}
+								>
+									<ListItemIcon
+										className={currentPath === path ? 'selected-menu' : ''}
+									>
+										{icon}
+									</ListItemIcon>
+									<ListItemText
+										primary={name}
+										className={currentPath === path ? 'selected-menu' : ''}
+									/>
+								</ListItem>
+							)
+					})
 				}
 			</List>
 			<List

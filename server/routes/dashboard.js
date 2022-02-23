@@ -1,6 +1,6 @@
 import { Router } from 'express'
 import { getGenericMessage, getSuccessResponse, HTTP_STATUS_CODES, validationErrorsToArray } from '../utils/utils.js'
-import { verifyAuthJWTokenMiddleware } from '../utils/passUtils.js'
+import { verifyAuthJWTokenIsAdmin } from '../utils/passUtils.js'
 import { loadActivitiesQuantitiesService } from '../services/activityService'
 import { loadAllProductsService } from '../services/productsService'
 import { orderBy } from 'lodash'
@@ -10,7 +10,7 @@ import isEmpty from 'lodash/isEmpty'
 const router = Router()
 
 // get activities
-router.get('/products', [verifyAuthJWTokenMiddleware], async (req, res) => {
+router.get('/products', [verifyAuthJWTokenIsAdmin], async (req, res) => {
 	try {
 		const { startDate, endDate } = req.query
 		console.log(startDate, endDate)
@@ -53,7 +53,7 @@ const newActivityValidator = [
 ]
 
 // get activities
-router.get('/workers/:id', [newActivityValidator, verifyAuthJWTokenMiddleware], async (req, res) => {
+router.get('/workers/:id', [newActivityValidator, verifyAuthJWTokenIsAdmin], async (req, res) => {
 	try {
 		// param('id').isInt().toInt()
 

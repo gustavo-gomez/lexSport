@@ -31,8 +31,8 @@ const NewWorker = ({hideSection, workerEdit, saveWorker}) => {
 		if (isEmpty(worker?.lastName))
 			newErrors.lastName = 'Apellidos son requeridos'
 
-		if (isEmpty(worker?.phone))
-			newErrors.phone = 'Telefono es requerido'
+		// if (isEmpty(worker?.phone))
+		// 	newErrors.phone = 'Telefono es requerido'
 
 		if (isNaN(worker?.phone))
 			newErrors.phone = 'Telefono debe ser numerico'
@@ -103,7 +103,6 @@ const NewWorker = ({hideSection, workerEdit, saveWorker}) => {
 				label='Celular'
 				name={'phone'}
 				value={worker?.phone}
-				isRequired
 				type={'number'}
 				onChangeText={onChange}
 				error={!isEmpty(errors?.phone)}

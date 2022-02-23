@@ -26,7 +26,7 @@ const tableHeader = [
 		key: 'phone'
 	},
 	{
-		label: 'Antigua',
+		label: 'Experiencia',
 		key: 'oldWorker'
 	},
 	{

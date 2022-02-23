@@ -1,6 +1,6 @@
 import { Router } from 'express'
 import { getGenericMessage, getSuccessResponse, HTTP_STATUS_CODES, validationErrorsToArray } from '../utils/utils.js'
-import { verifyAuthJWTokenMiddleware } from '../utils/passUtils.js'
+import { verifyAuthJWToken, verifyAuthJWTokenIsAdmin } from '../utils/passUtils.js'
 import { check, validationResult } from 'express-validator'
 import isEmpty from 'lodash/isEmpty'
 import { getActivitiesService, newActivityService } from '../services/activityService'
@@ -11,10 +11,10 @@ import { orderBy } from 'lodash'
 const router = Router()
 
 // get activities
-router.get('/', [verifyAuthJWTokenMiddleware], async (req, res) => {
+router.get('/', [verifyAuthJWToken], async (req, res) => {
 	try {
 		const { startDate, endDate, workerId} = req.query
-
+		const {roleAdmin} = req.tokenDecoded
 		console.log('date: ', new Date(+startDate))
 		console.log('datee: ', new Date(+endDate))
 
@@ -27,7 +27,7 @@ router.get('/', [verifyAuthJWTokenMiddleware], async (req, res) => {
 			const product = products.find(product => product.id === activity.productId)
 			return {
 				id: activity?.id,
-				price: activity?.price,
+				price: roleAdmin ? activity?.price : undefined,
 				action: activity?.action,
 				quantity: activity?.quantity,
 				date: activity?.date,
@@ -49,7 +49,7 @@ const newActivityValidator = [
 	check('activities', 'Actividad es requerida').not().isEmpty(),
 ]
 // insert activities
-router.post('/', [newActivityValidator, verifyAuthJWTokenMiddleware], async (req, res) => {
+router.post('/', [newActivityValidator, verifyAuthJWToken], async (req, res) => {
 	try {
 		const { errors } = validationResult(req)
 

@@ -1,6 +1,6 @@
 import {Router} from 'express'
 import {getGenericMessage, getSuccessResponse, HTTP_STATUS_CODES, validationErrorsToArray} from "../utils/utils.js"
-import {verifyAuthJWTokenMiddleware} from "../utils/passUtils.js"
+import { verifyAuthJWToken, verifyAuthJWTokenIsAdmin } from '../utils/passUtils.js'
 import {
 	loadAllProductsService,
 	loadProductByIdService,
@@ -13,7 +13,7 @@ import isEmpty from "lodash/isEmpty";
 const router = Router()
 
 //get all products
-router.get('/', [verifyAuthJWTokenMiddleware], async (req, res) => {
+router.get('/', [verifyAuthJWToken], async (req, res) => {
 	try {
 
 		const products = await loadAllProductsService()
@@ -32,7 +32,7 @@ const newProductFormValidator = [
 	check('product.makingPriceHigh', 'Precio bajo es requerido').exists(),
 ]
 // insert product
-router.post('/', [newProductFormValidator, verifyAuthJWTokenMiddleware], async (req, res) => {
+router.post('/', [newProductFormValidator, verifyAuthJWTokenIsAdmin], async (req, res) => {
 	try {
 		const {errors} = validationResult(req)
 
@@ -57,7 +57,7 @@ const updateProductFormValidator = [
 	check('product.makingPriceHigh', 'Precio bajo es requerido').exists(),
 ]
 // update product
-router.put('/:id', [updateProductFormValidator, verifyAuthJWTokenMiddleware], async (req, res) => {
+router.put('/:id', [updateProductFormValidator, verifyAuthJWTokenIsAdmin], async (req, res) => {
 	try {
 		const {errors} = validationResult(req)
 
