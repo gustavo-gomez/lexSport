@@ -12,6 +12,7 @@ export const ENDPOINTS = {
 	PRODUCTS: '/products',
 	ACTIVITY: '/activity',
 	PRODUCTS_DASHBOARD: '/dashboard/products',
+	PRODUCTS_WORKERS: '/dashboard/workers',
 }
 
 export const loginAPI = async (user, password) => {
@@ -62,6 +63,10 @@ export const loadActivitiesAPI = async (starDate, endDate, workerId) => {
 // get products dashboard
 export const loadProductsDashboardAPI = async (starDate, endDate) => {
 	return await callAPI('GET', `${BASE_URL}${ENDPOINTS.PRODUCTS_DASHBOARD}?startDate=${starDate}&endDate=${endDate}`)
+}
+// get workers dashboard
+export const loadWorkersDashboardAPI = async (starDate, endDate, workerId) => {
+	return await callAPI('GET', `${BASE_URL}${ENDPOINTS.PRODUCTS_WORKERS}/${workerId}?startDate=${starDate}&endDate=${endDate}`)
 }
 
 const callAPI = async (method, url, body) => {
