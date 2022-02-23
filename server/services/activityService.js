@@ -12,7 +12,7 @@ export const getActivitiesService = async (workerId, startDate, endDate) => {
 	return camelize(activitiesDB)
 }
 
-export const loadActivitiesQuantitiesService = async (startDate, endDate) => {
-	const activitiesDB = await loadActivitiesQuantities(startDate, endDate)
+export const loadActivitiesQuantitiesService = async (startDate, endDate, workerId) => {
+	const activitiesDB = await loadActivitiesQuantities(startDate, endDate, workerId)
 	return camelize(activitiesDB)
 }

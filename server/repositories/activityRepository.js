@@ -1,6 +1,7 @@
 import { getConnection } from '../database/conectDB.js'
 import { uuid } from 'uuidv4'
 import map from 'lodash/map'
+import isEmpty from 'lodash/isEmpty'
 
 export const newActivities = async (activities = [], date = new Date()) => {
 	const connection = await getConnection()
@@ -45,17 +46,22 @@ export const loadActivities = async (workerId, startDate, endDate) => {
 	return rows || []
 }
 
-export const loadActivitiesQuantities = async (startDate, endDate) => {
+export const loadActivitiesQuantities = async (startDate, endDate, workerId) => {
 	const connection = await getConnection()
+	let params = [startDate, endDate]
 	let sql = `
       SELECT product_id, SUM(quantity) as quantity
       FROM activities
       WHERE date >= ?
         and date <= ?
-      GROUP BY product_id
 	`
+	if(!isEmpty(workerId)) {
+		sql += ` and worker_id = ? `
+		params.push(workerId)
+	}
+	sql += ' GROUP BY product_id'
 
-	const [rows] = await connection.execute(sql, [startDate, endDate])
+	const [rows] = await connection.execute(sql, params)
 	await connection.end()
 	return rows || []
 }
