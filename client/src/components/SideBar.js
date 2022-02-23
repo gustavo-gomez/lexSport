@@ -88,10 +88,10 @@ const SideBar = () => {
 			<Divider/>
 			<List>
 				{
-					menuOptions.map(({ name, icon, path, type }) => (
+					menuOptions.map(({ name, icon, path, type }, index) => (
 						<ListItem
 							button
-							key={name}
+							key={`${name}-${index}`}
 							onClick={() => {
 								dispatch(toggleDrawer())
 								navigate(path)

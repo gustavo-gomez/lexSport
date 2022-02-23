@@ -26,21 +26,10 @@ const DashboardProducts = () => {
 		setIsLoading(false)
 	}
 
-	console.log('history', history)
-
 	const options = {
 		chart: {
 			title: 'Cantidad elaborada por producto',
-			// subtitle: "Based on most recent and previous census data",
 		},
-		hAxis: {
-			title: 'Total Population',
-			minValue: 0,
-		},
-		vAxis: {
-			title: 'City',
-		},
-		// bars: width >= 900 ? 'vertical' : 'horizontal',
 		bars: 'horizontal',
 	}
 
@@ -68,8 +57,6 @@ const DashboardProducts = () => {
 								style={{ padding: '10px' }}
 								height={width >= 900 ? '800px' : '370px'}
 								legendToggle
-								// title={'Population of Largest U.S. Cities'}
-								// chartArea={{ width: '50%' }}
 								options={options}
 							/> :
 							<IALoader type={LOTTIE_TYPE.EMPTY}/>

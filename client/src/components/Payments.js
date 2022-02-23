@@ -6,9 +6,12 @@ import IALoader, { LOTTIE_TYPE } from '../common/IALoader'
 import { useNavigate } from 'react-router-dom'
 import FloatingButton from '../common/FloatingButton'
 import IAFilters from '../common/IAFilters'
-import { getEndDateMillis, getStartDateMillis } from '../utils/utils'
+import { DATE_FORMAT, generateXlsAndDownload, getEndDateMillis, getStartDateMillis } from '../utils/utils'
 import { loadActivitiesAPI } from '../utils/apiUtils'
 import { ACTIONS } from './NewHistory'
+import { useSelector } from 'react-redux'
+import { workers } from '../slices/workersSlice'
+import moment from 'moment'
 
 const tableHeader = [
 	{
@@ -42,10 +45,12 @@ const tableHeader = [
 ]
 
 
-const History = () => {
+const Payments = () => {
 
+	const { workerList } = useSelector(workers)
 	const [history, setHistory] = useState([])
 	const [isLoading, setIsLoading] = useState(false)
+	const [dataSearch, setDataSearch] = useState({})
 	const navigate = useNavigate()
 
 	const getTableBody = () => {
@@ -74,6 +79,7 @@ const History = () => {
 	const searchHistory = async ({ startDate, endDate, workerId }) => {
 
 		setIsLoading(true)
+		setDataSearch({ startDate, endDate, workerId })
 		const startDateMillis = getStartDateMillis(startDate)
 		const endDateMillis = getEndDateMillis(endDate)
 
@@ -82,7 +88,38 @@ const History = () => {
 			setHistory(response?.data?.activities)
 		} else {
 			setHistory([])
+			setDataSearch({})
 		}
+		setIsLoading(false)
+	}
+
+	const onExport = async () => {
+		const currentWorker = workerList.find(({ id }) => id === dataSearch?.workerId)
+		const startDate = moment(dataSearch?.startDate).format(DATE_FORMAT.DATE_HYPHEN_PERU)
+		const endDate = moment(dataSearch?.endDate).format(DATE_FORMAT.DATE_HYPHEN_PERU)
+		let sum = 0
+		setIsLoading(true)
+		let jsonExcel = map(history, ({ price, quantity, date, worker, product, action, productCode }) => {
+			sum += +price
+			return {
+				'Fecha': new Date(date).toLocaleDateString(),
+				'Costurera': worker,
+				'Código Producto': productCode,
+				'Producto': product,
+				'Acción': action === ACTIONS.FILL ? 'Relleno' : 'Confección',
+				'Cantidad': quantity,
+				'Precio': price,
+			}
+		})
+
+		jsonExcel.push({
+			'Cantidad': 'Total',
+			'Precio': sum
+		})
+		await generateXlsAndDownload(
+			jsonExcel,
+			'Pagos',
+			`${currentWorker?.firstName}_${currentWorker?.lastName}_${startDate}_${endDate}`)
 		setIsLoading(false)
 	}
 
@@ -97,6 +134,7 @@ const History = () => {
 				onSearch={searchHistory}
 				isLoading={isLoading}
 				showWorkerFilter
+				onExport={history?.length > 0 ? onExport : null}
 			/>
 			<div
 				className="history-table"
@@ -122,4 +160,4 @@ const History = () => {
 	)
 }
 
-export default History
+export default Payments

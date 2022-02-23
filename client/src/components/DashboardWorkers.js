@@ -1,31 +1,30 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Chart } from 'react-google-charts'
 import IAFilters from '../common/IAFilters'
 import { getEndDateMillis, getStartDateMillis } from '../utils/utils'
-import { loadProductsDashboardAPI } from '../utils/apiUtils'
+import { loadWorkersDashboardAPI } from '../utils/apiUtils'
 import IALoader, { LOTTIE_TYPE } from '../common/IALoader'
 import moment from 'moment'
 import { useDimension } from '../utils/useDimension'
+import { getAllCostureras } from '../slices/workersSlice'
+import { useDispatch } from 'react-redux'
 
 const DashboardProducts = () => {
 	const [isLoading, setIsLoading] = useState(false)
-	const [startDate, setStartDate] = useState(new Date(moment().subtract(1, 'months')))
-	const [endDate, setEndDate] = useState(new Date())
 	const [history, setHistory] = useState([])
-	const {width} = useDimension()
+	const { width } = useDimension()
+	const dispatch = useDispatch()
 
-	// const {loggedUser} = useSelector(auth)
-	// const {role_admin} = loggedUser
-	// const isAdmin = role_admin === 1
-	// const navigate = useNavigate()
-	// const location = useLocation()
+	useEffect(() => {
+		dispatch(getAllCostureras())
+	}, [])
 
-	const searchProductsDashboard = async () => {
+	const searchProductsDashboard = async ({ startDate, endDate, workerId }) => {
 		setIsLoading(true)
 		const startDateMillis = getStartDateMillis(startDate)
 		const endDateMillis = getEndDateMillis(endDate)
 
-		const response = await loadProductsDashboardAPI(startDateMillis, endDateMillis)
+		const response = await loadWorkersDashboardAPI(startDateMillis, endDateMillis, workerId)
 		if (response?.data?.history?.length > 0) {
 			setHistory(response?.data?.history)
 		} else {
@@ -34,58 +33,39 @@ const DashboardProducts = () => {
 		setIsLoading(false)
 	}
 
-	console.log('history', history)
-
-	// const options = {
-	// 	chart: {
-	// 		title: 'Company Performance',
-	// 		subtitle: 'Sales, Expenses, and Profit: 2014-2017',
-	// 	}
-	// }
-
 	const options = {
 		chart: {
-			title: 'Cantidad elaborada por producto',
-			// subtitle: "Based on most recent and previous census data",
+			title: 'Cantidad elaborada',
 		},
-		hAxis: {
-			title: "Total Population",
-			minValue: 0,
-		},
-		vAxis: {
-			title: "City",
-		},
-		bars: width >= 900 ? 'vertical' : 'horizontal',
-	};
-
+		bars: 'horizontal',
+	}
 	return (
 		<div
 			className={'content-wrapper'}
 			style={{ justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}
 		>
+			<span className={'section-title'}>Grafico de Costureras</span>
 			<IAFilters
-				startDate={startDate}
-				endDate={endDate}
-				setStartDate={setStartDate}
-				setEndDate={setEndDate}
 				onSearch={searchProductsDashboard}
 				isLoading={isLoading}
+				defaultStartDate={new Date(moment().subtract(1, 'months'))}
+				showWorkerFilter
 			/>
 			{
 				isLoading ?
 					<IALoader/> :
 					(
 						history?.length > 1 ?
-						<Chart
-							chartType="Bar"
-							data={history}
-							width="100%"
-							height="400px"
-							// legendToggle
-							// title={'Population of Largest U.S. Cities'}
-							// chartArea={{ width: '50%' }}
-							options={options}
-						/> :
+							<Chart
+								chartType="Bar"
+								data={history}
+								width="96%"
+								className={'card'}
+								style={{ padding: '10px' }}
+								height={width >= 900 ? '800px' : '370px'}
+								legendToggle
+								options={options}
+							/> :
 							<IALoader type={LOTTIE_TYPE.EMPTY}/>
 					)
 			}

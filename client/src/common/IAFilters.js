@@ -2,13 +2,13 @@ import React, { useEffect, useState } from 'react'
 import IATimeDatePicker from './IATimeDatePicker'
 import '../scss/components/iafilters.scss'
 import Button from '@mui/material/Button'
-import IATextInput from './IATextInput'
 import IASelect from './IASelect'
 import isEmpty from 'lodash/isEmpty'
 import { useDispatch, useSelector } from 'react-redux'
 import { getAllCostureras, workers } from '../slices/workersSlice'
 
-const IAFilters = ({ onSearch, isLoading, showWorkerFilter, defaultStartDate }) => {
+const IAFilters = ({ onSearch, isLoading, showWorkerFilter, defaultStartDate, onExport}) => {
+
 	const { workerList } = useSelector(workers)
 	const [isError, setIsError] = useState(false)
 	const [startDate, setStartDate] = useState(defaultStartDate || new Date())
@@ -21,8 +21,6 @@ const IAFilters = ({ onSearch, isLoading, showWorkerFilter, defaultStartDate }) 
 		dispatch(getAllCostureras())
 	}, [])
 
-
-	console.log('showWorkerFilter: ', showWorkerFilter)
 	const search = () => {
 		if (showWorkerFilter && isEmpty(selectedWorker)) {
 			setIsError(true)
@@ -87,7 +85,17 @@ const IAFilters = ({ onSearch, isLoading, showWorkerFilter, defaultStartDate }) 
 					/>
 				</div>
 			</div>
-			<>
+			<div className={'filter-buttons'}>
+				{
+					onExport &&
+				<Button
+					onClick={onExport}
+					variant="contained"
+					disabled={isLoading}
+				>
+					Exportar
+				</Button>
+				}
 				<Button
 					onClick={search}
 					variant="outlined"
@@ -95,7 +103,7 @@ const IAFilters = ({ onSearch, isLoading, showWorkerFilter, defaultStartDate }) 
 				>
 					Buscar
 				</Button>
-			</>
+			</div>
 		</div>
 	)
 }
@@ -103,5 +111,9 @@ const IAFilters = ({ onSearch, isLoading, showWorkerFilter, defaultStartDate }) 
 export default IAFilters
 
 IAFilters.defaultProps = {
-	showWorkerFilter: false
+	showWorkerFilter: false,
+	defaultStartDate: null,
+	onExport: null,
+	onSearch: () => {},
+	isLoading: false
 }
