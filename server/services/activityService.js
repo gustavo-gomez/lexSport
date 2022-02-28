@@ -7,8 +7,8 @@ import {
 } from '../repositories/activityRepository'
 
 
-export const newActivityService = async (activities, date) => {
-	const activitiesDB = await newActivities(activities, date)
+export const newActivityService = async (activities, date, submitterId) => {
+	const activitiesDB = await newActivities(activities, date, submitterId)
 	return camelize(activitiesDB)
 }
 
