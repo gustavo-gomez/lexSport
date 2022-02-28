@@ -60,6 +60,16 @@ export const loadActivitiesAPI = async (starDate, endDate, workerId) => {
 	return await callAPI('GET', `${BASE_URL}${ENDPOINTS.ACTIVITY}?startDate=${starDate}&endDate=${endDate}${!isEmpty(workerId) ? `&workerId=${workerId}` : ''}`)
 }
 
+// delete activities
+export const deleteActivityAPI = async (id) => {
+	return await callAPI('DELETE', `${BASE_URL}${ENDPOINTS.ACTIVITY}/${id}`)
+}
+
+// delete activities
+export const editActivityAPI = async (activity) => {
+	return await callAPI('PUT', `${BASE_URL}${ENDPOINTS.ACTIVITY}`, { activity })
+}
+
 // get products dashboard
 export const loadProductsDashboardAPI = async (starDate, endDate) => {
 	return await callAPI('GET', `${BASE_URL}${ENDPOINTS.PRODUCTS_DASHBOARD}?startDate=${starDate}&endDate=${endDate}`)
@@ -84,7 +94,6 @@ const callAPI = async (method, url, body) => {
 		const { data } = await axios(url, config)
 		return data
 	} catch ( error ) {
-		console.log('error: ', error?.response)
 		return {
 			isError: true,
 			responseCode: error?.response?.status,

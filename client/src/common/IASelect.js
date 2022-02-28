@@ -20,7 +20,6 @@ const IASelect = ({ data, textToShow, value, onChange, label, isRequired, error,
 				onChange(newValue)
 			}}
 			renderInput={(params) => {
-				console.log('params', params)
 				return (
 					<TextField
 						{...params}

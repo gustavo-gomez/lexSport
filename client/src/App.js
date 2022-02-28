@@ -14,6 +14,7 @@ import History from './components/History'
 import Payments from './components/Payments'
 import jwtDecode from 'jwt-decode'
 import DashboardWorkers from './components/DashboardWorkers'
+import { ROLES } from './utils/utils'
 
 const App = () => {
 
@@ -25,8 +26,8 @@ const App = () => {
 		const isToken = localStorage.getItem(AUTH_TOKEN_KEY) !== null
 		if (isToken) {
 			const user = jwtDecode(localStorage.getItem(AUTH_TOKEN_KEY))
-			console.log(user?.roleAdmin)
-			setIsAdmin(user?.roleAdmin === 1)
+
+			setIsAdmin(user?.role === ROLES.ADMIN)
 			dispatch(updateLoggedUser(jwtDecode(localStorage.getItem(AUTH_TOKEN_KEY))))
 		}
 	}, [])

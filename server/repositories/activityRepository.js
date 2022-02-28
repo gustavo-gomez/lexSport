@@ -27,7 +27,7 @@ export const newActivities = async (activities = [], date = new Date()) => {
 	return rows || []
 }
 
-export const loadActivities = async (workerId, startDate, endDate) => {
+export const loadActivities = async (workerId, startDate, endDate, idToFilter) => {
 	const connection = await getConnection()
 	let params = [startDate, endDate]
 	let sql = `
@@ -39,6 +39,10 @@ export const loadActivities = async (workerId, startDate, endDate) => {
 	if (workerId) {
 		sql += ` and worker_id = ?`
 		params.push(workerId)
+	}
+	if (idToFilter) {
+		sql += ` and submitter_id = ?`
+		params.push(idToFilter)
 	}
 
 	const [rows] = await connection.execute(sql, params)
@@ -55,13 +59,43 @@ export const loadActivitiesQuantities = async (startDate, endDate, workerId) => 
       WHERE date >= ?
         and date <= ?
 	`
-	if(!isEmpty(workerId)) {
+	if (!isEmpty(workerId)) {
 		sql += ` and worker_id = ? `
 		params.push(workerId)
 	}
 	sql += ' GROUP BY product_id'
 
 	const [rows] = await connection.execute(sql, params)
+	await connection.end()
+	return rows || []
+}
+
+export const deleteActivity = async (id) => {
+	const connection = await getConnection()
+	let sql = `
+      DELETE
+      FROM activities
+      WHERE id = ?
+	`
+
+	const [rows] = await connection.execute(sql, [id])
+	await connection.end()
+	return rows || []
+}
+
+export const editActivity = async ({ id, workerId, productId, quantity, action, price }) => {
+	const connection = await getConnection()
+	let sql = `
+			UPDATE activities
+      SET worker_id  = ?,
+          product_id = ?,
+          quantity   = ?,
+          action     = ?,
+          price      = ?
+      WHERE id = ?
+	`
+
+	const [rows] = await connection.execute(sql, [workerId, productId, quantity, action, price, id])
 	await connection.end()
 	return rows || []
 }

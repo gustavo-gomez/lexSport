@@ -10,7 +10,7 @@ import NewProduct from "./NewProduct";
 import IAModal from "../common/IAModal";
 import FloatingButton from "../common/FloatingButton";
 import EditIcon from "@mui/icons-material/Edit";
-import { MOBILE_WIDTH } from '../utils/utils'
+import { MOBILE_WIDTH, scrollToTop } from '../utils/utils'
 
 const tableHeader = [
 	{
@@ -76,7 +76,7 @@ const Products = () => {
 	const handleEdit = (index) => {
 		setProductEdit(productList?.[index])
 		setShowNewProductForm(true)
-		window.scrollTo(0, 0)
+		scrollToTop()
 	}
 
 	const cancelEdit = () => {
@@ -131,7 +131,10 @@ const Products = () => {
 			{
 				!showNewProductForm &&
 				<FloatingButton
-					onClick={() => setShowNewProductForm(true)}
+					onClick={() => {
+						setShowNewProductForm(true)
+						scrollToTop()
+					}}
 				/>
 			}
 		</div>

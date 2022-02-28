@@ -117,9 +117,7 @@ const NewHistory = () => {
 			}
 			newErrors.push(errorRow)
 		})
-		console.log('newErrors: ', newErrors)
 		setErrors(newErrors)
-		console.log('return: ', hasError)
 		return !hasError
 	}
 

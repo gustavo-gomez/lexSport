@@ -47,3 +47,20 @@ CREATE TABLE IF NOT EXISTS `activities`
     FOREIGN KEY (product_id) REFERENCES `products` (id)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8;
+
+-- updates
+
+ALTER TABLE `activities`
+    ADD submitter_id VARCHAR(40) NOT NULL AFTER `price`;
+
+update activities
+set submitter_id='16'
+where action = 'make';
+
+update activities
+set submitter_id='17'
+where action = 'fill';
+
+
+ALTER TABLE `workers`
+    ADD role VARCHAR(40) AFTER `password`;

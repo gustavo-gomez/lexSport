@@ -35,14 +35,12 @@ router.post('/login', [loginValidator], async (req, res) => {
 		const {password: dbUserPassword} = userDB[0]
 		if (dbUserPassword === password) {
 			const cleanedWorker = omit(userDB[0], ['password'])
-			console.log('user to token: ', cleanedWorker)
 			const worker = {...cleanedWorker, token: await createAuthJWToken(cleanedWorker)}
 			return res.json(getSuccessResponse({worker}))
 		} else {
 			return res.status(HTTP_STATUS_CODES.FORBIDDEN).json(loginError)
 		}
 	} catch (e) {
-		console.log('Error: ', e)
 		return res.json(getGenericMessage())
 	}
 })

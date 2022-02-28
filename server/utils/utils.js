@@ -38,3 +38,9 @@ export const camelize = obj => obj === null ? null : transform(obj, (acc, value,
 	const camelKey = isArray(target) ? key : camelCase(key);
 	acc[camelKey] = (isObject(value) && !(value instanceof Date)) ? camelize(value) : value;
 });
+
+export const ROLES = {
+	ADMIN: 'admin',
+	COSTURERA: 'costurera',
+	OPERATOR: 'operator'
+}

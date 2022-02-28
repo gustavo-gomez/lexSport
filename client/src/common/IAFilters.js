@@ -29,8 +29,6 @@ const IAFilters = ({ onSearch, isLoading, showWorkerFilter, defaultStartDate, on
 		}
 	}
 
-	console.log('selectedWorker', selectedWorker)
-
 	return (
 		<div
 			className={'filters-container card'}

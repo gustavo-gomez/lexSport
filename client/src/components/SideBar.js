@@ -19,6 +19,7 @@ import { generalSettings, toggleDrawer } from '../slices/generalSettingsSlice'
 import logo from '../images/lex_sport.png'
 import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined'
 import { auth, logout } from '../slices/authSlice'
+import { ROLES } from '../utils/utils'
 
 const drawerWidth = 240
 
@@ -71,7 +72,7 @@ const SideBar = () => {
 	const location = useLocation()
 	const { isDrawerOpen } = useSelector(generalSettings)
 	const { loggedUser } = useSelector(auth)
-	const isAdmin = loggedUser?.roleAdmin === 1
+	const isAdmin = loggedUser?.role === ROLES.ADMIN
 	const dispatch = useDispatch()
 	const currentPath = location.pathname
 

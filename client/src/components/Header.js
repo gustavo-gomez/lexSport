@@ -40,8 +40,7 @@ HideOnScroll.propTypes = {
 
 const Header = () => {
 	const { loggedUser } = useSelector(auth)
-	const { firstName = '', lastName = '', roleAdmin = '' } = loggedUser || {}
-	// const isAdmin = role_admin === 1
+	const { firstName = '', lastName = '' } = loggedUser || {}
 	const dispatch = useDispatch()
 	const navigate = useNavigate()
 

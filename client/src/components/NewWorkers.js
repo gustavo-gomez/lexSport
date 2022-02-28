@@ -1,16 +1,16 @@
-import React, {useEffect, useState} from 'react'
+import React, { useEffect, useState } from 'react'
 import '../scss/components/workers.scss'
-import {useDispatch} from 'react-redux'
-import IATextInput from "../common/IATextInput"
+import { useDispatch } from 'react-redux'
+import IATextInput from '../common/IATextInput'
 import Button from '@mui/material/Button'
 import LoadingButton from '@mui/lab/LoadingButton'
-import {createCostureraAPI, updateCostureraAPI} from "../utils/apiUtils"
-import isEmpty from "lodash/isEmpty"
-import isNaN from "lodash/isNaN"
-import {getAllCostureras} from "../slices/workersSlice";
-import IASwitch from "../common/IASwitch";
+import { createCostureraAPI, updateCostureraAPI } from '../utils/apiUtils'
+import isEmpty from 'lodash/isEmpty'
+import isNaN from 'lodash/isNaN'
+import { getAllCostureras } from '../slices/workersSlice'
+import IASwitch from '../common/IASwitch'
 
-const NewWorker = ({hideSection, workerEdit, saveWorker}) => {
+const NewWorker = ({ hideSection, workerEdit }) => {
 
 	const [worker, setWorker] = useState({})
 	const [isLoading, setIsLoading] = useState(false)
@@ -18,7 +18,7 @@ const NewWorker = ({hideSection, workerEdit, saveWorker}) => {
 	const dispatch = useDispatch()
 
 	useEffect(() => {
-		setWorker({...workerEdit})
+		setWorker({ ...workerEdit })
 		setErrors({})
 	}, [workerEdit])
 
@@ -31,14 +31,10 @@ const NewWorker = ({hideSection, workerEdit, saveWorker}) => {
 		if (isEmpty(worker?.lastName))
 			newErrors.lastName = 'Apellidos son requeridos'
 
-		// if (isEmpty(worker?.phone))
-		// 	newErrors.phone = 'Telefono es requerido'
-
 		if (isNaN(worker?.phone))
 			newErrors.phone = 'Telefono debe ser numerico'
 
-		setErrors({...newErrors})
-		console.log('validar: ', isEmpty(newErrors))
+		setErrors({ ...newErrors })
 		return isEmpty(newErrors)
 	}
 
@@ -50,7 +46,7 @@ const NewWorker = ({hideSection, workerEdit, saveWorker}) => {
 		if (worker?.id)
 			await updateCostureraAPI(worker.id, worker)
 		else
-			await createCostureraAPI(worker)
+			await createCostureraAPI({ ...worker, role: 'costurera' })
 
 		dispatch(getAllCostureras())
 		setIsLoading(false)
@@ -58,7 +54,6 @@ const NewWorker = ({hideSection, workerEdit, saveWorker}) => {
 	}
 
 	const onChange = (e) => {
-		console.log(e.target.value)
 		setWorker(prevState => ({
 			...prevState, [e.target.name]: e.target.value
 		}))
@@ -74,13 +69,12 @@ const NewWorker = ({hideSection, workerEdit, saveWorker}) => {
 		}))
 	}
 
-	console.log('errors: ', errors)
 	return (
-		<div className='new-worker-container form'>
+		<div className="new-worker-container form">
 			<h3>{worker?.id ? 'Editar' : 'Nueva'} Costurera</h3>
 
 			<IATextInput
-				label='Nombres'
+				label="Nombres"
 				name={'firstName'}
 				value={worker?.firstName}
 				isRequired
@@ -90,7 +84,7 @@ const NewWorker = ({hideSection, workerEdit, saveWorker}) => {
 			/>
 
 			<IATextInput
-				label='Apellidos'
+				label="Apellidos"
 				name={'lastName'}
 				value={worker?.lastName}
 				isRequired
@@ -100,7 +94,7 @@ const NewWorker = ({hideSection, workerEdit, saveWorker}) => {
 			/>
 
 			<IATextInput
-				label='Celular'
+				label="Celular"
 				name={'phone'}
 				value={worker?.phone}
 				type={'number'}

@@ -1,5 +1,6 @@
 import {getConnection} from "../database/conectDB.js";
 import {uuid} from "uuidv4";
+import { ROLES } from '../utils/utils'
 
 export const loadWorkerByUser = async user => {
 	const connection = await getConnection()
@@ -31,21 +32,21 @@ export const loadAllCostureras = async () => {
 	const sql = `
       SELECT *
       FROM workers
-      WHERE role_admin = '0' and can_login = '0'
+      WHERE role = '${ROLES.COSTURERA}' and can_login = '0'
 	`
 	const [rows] = await connection.execute(sql)
 	await connection.end()
 	return rows || []
 }
 
-export const newCosturera = async ({firstName, lastName, phone, oldWorker = false}) => {
+export const newCosturera = async ({firstName, lastName, phone, oldWorker = false, role}) => {
 	const connection = await getConnection()
 	const sql = `
-      INSERT INTO workers (id, first_name, last_name, phone, old_worker)
-      VALUES (?, ?, ?, ?, ?)
+      INSERT INTO workers (id, first_name, last_name, phone, old_worker, role)
+      VALUES (?, ?, ?, ?, ?, ?)
 
 	`
-	const [rows] = await connection.execute(sql, [uuid(), firstName, lastName, phone, oldWorker])
+	const [rows] = await connection.execute(sql, [uuid(), firstName, lastName, phone, oldWorker, role])
 	await connection.end()
 	return rows || []
 }
