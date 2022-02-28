@@ -62,7 +62,6 @@ const NewProduct = ({hideSection, productEdit}) => {
 	}
 
 	const onChange = (e) => {
-		console.log(e.target.value)
 		setProduct(prevState => ({
 			...prevState, [e.target.name]: e.target.value
 		}))

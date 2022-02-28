@@ -31,6 +31,8 @@ const DashboardProducts = () => {
 			title: 'Cantidad elaborada por producto',
 		},
 		bars: 'horizontal',
+		vAxis: {title: "Year"},
+		hAxis: {title: "Cups"}
 	}
 
 	return (

@@ -33,3 +33,14 @@ export const generateXlsAndDownload = async (object = [], xlsSheetName, xlsName)
 	utils.book_append_sheet(workBook, workSheet, xlsSheetName)
 	await writeFile(workBook, `${xlsName}.xlsx`)
 }
+
+export const ROLES = {
+	ADMIN: 'admin',
+	COSTURERA: 'costurera',
+	OPERATOR: 'operator'
+}
+
+export const scrollToTop = () => {
+	window.scrollTo(0, 0)
+	document.body.scrollTop = 0
+}

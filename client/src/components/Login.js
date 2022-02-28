@@ -30,10 +30,8 @@ const Login = () => {
 
 	useEffect(() => {
 		const token = localStorage.getItem(AUTH_TOKEN_KEY)
-		console.log('token: ', token)
 		if (token !== null) {
 			const user = jwtDecode(token)
-			console.log('decode user: ', user)
 			navigate('/historial')
 		}
 	})

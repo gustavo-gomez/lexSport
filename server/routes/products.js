@@ -71,7 +71,6 @@ router.put('/:id', [updateProductFormValidator, verifyAuthJWTokenIsAdmin], async
 
 		if (isEmpty(products?.[0]))
 			return res.status(HTTP_STATUS_CODES.BAD_REQUEST).json(getGenericMessage('Producto no encontrada'))
-		console.log('products: ', products)
 		await updateProductService(id, product)
 
 		return res.status(HTTP_STATUS_CODES.OK).json(getGenericMessage('Producto actualizado con éxito'))

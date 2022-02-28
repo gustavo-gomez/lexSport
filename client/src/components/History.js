@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import '../scss/components/history.scss'
 import map from 'lodash/map'
 import CommonTable from '../common/CommonTable'
@@ -7,10 +7,19 @@ import { useNavigate } from 'react-router-dom'
 import FloatingButton from '../common/FloatingButton'
 import IAFilters from '../common/IAFilters'
 import { getEndDateMillis, getStartDateMillis } from '../utils/utils'
-import { loadActivitiesAPI } from '../utils/apiUtils'
+import { deleteActivityAPI, loadActivitiesAPI } from '../utils/apiUtils'
 import { ACTIONS } from './NewHistory'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { auth } from '../slices/authSlice'
+import EditIcon from '@mui/icons-material/Edit'
+import DeleteIcon from '@mui/icons-material/Delete'
+import IAModal from '../common/IAModal'
+import Button from '@mui/material/Button'
+import LoadingButton from '@mui/lab/LoadingButton'
+import EditHistory from './EditHistory'
+import { getAllCostureras } from '../slices/workersSlice'
+import { getAllProducts } from '../slices/productsSlice'
+
 
 const tableHeader = [
 	{
@@ -42,6 +51,10 @@ const tableHeader = [
 		key: 'price',
 		onlyAdmin: true
 	},
+	{
+		label: '',
+		key: 'actions',
+	},
 ]
 
 
@@ -49,12 +62,36 @@ const History = () => {
 
 	const [history, setHistory] = useState([])
 	const [isLoading, setIsLoading] = useState(false)
-
+	const [idToDelete, setIdToDelete] = useState(null)
+	const [openDeleteModal, setOpenDeleteModal] = useState(false)
+	const [itemToEdit, setItemToEdit] = useState(null)
+	const [openEditModal, setOpenEditModal] = useState(false)
+	const [startDate, setStartDate] = useState(false)
+	const [endDate, setEndDate] = useState(false)
 	const navigate = useNavigate()
+	const dispatch = useDispatch()
+
+	useEffect(() => {
+		dispatch(getAllCostureras())
+		dispatch(getAllProducts())
+	}, [])
+
+	const handleEdit = () => {
+
+	}
+
+	const deleteItem = async () => {
+		setIsLoading(true)
+		await deleteActivityAPI(idToDelete)
+		setOpenDeleteModal(false)
+		setIdToDelete(null)
+		await searchHistory({ startDate, endDate })
+		setIsLoading(false)
+	}
 
 	const getTableBody = () => {
-		return map(history, ({ price, quantity, date, worker, product, action, productCode }, index) => {
-
+		return map(history, (historyItem, index) => {
+			const { id, price, quantity, date, worker, product, action, productCode } = historyItem
 			return {
 				date: new Date(date).toLocaleDateString(),
 				worker,
@@ -65,13 +102,37 @@ const History = () => {
 					<span style={{ color: '#ffa111' }}>Confección</span>,
 				quantity,
 				price,
+				actions: (
+					<div
+						style={{ display: 'flex' }}
+					>
+						<EditIcon
+							className={'icon'}
+							color="primary"
+							onClick={() => {
+								setItemToEdit(historyItem)
+								setOpenEditModal(true)
+							}}
+							style={{ marginRight: '10px' }}
+						/>
+						<DeleteIcon
+							className={'icon'}
+							color="error"
+							onClick={() => {
+								setIdToDelete(id)
+								setOpenDeleteModal(true)
+							}}
+						/>
+					</div>
+				)
 			}
 		})
 	}
 
 	const searchHistory = async ({ startDate, endDate }) => {
-		console.log('searchHistory: ', startDate, endDate)
 		setIsLoading(true)
+		setStartDate(startDate)
+		setEndDate(endDate)
 		const startDateMillis = getStartDateMillis(startDate)
 		const endDateMillis = getEndDateMillis(endDate)
 
@@ -83,7 +144,6 @@ const History = () => {
 		}
 		setIsLoading(false)
 	}
-
 
 	return (
 		<div
@@ -112,6 +172,54 @@ const History = () => {
 						)
 				}
 			</div>
+			<IAModal
+				isOpen={openDeleteModal}
+				child={(
+					<div
+						className={'modal-delete card'}
+					>
+						<p>Esta seguro que desea eliminar el registro ?</p>
+						<div className={'buttons'}>
+							<Button
+								onClick={() => {
+									setOpenDeleteModal(false)
+									setIdToDelete(null)
+								}}
+								variant="outlined"
+								disabled={isLoading}
+							>
+								Cancelar
+							</Button>
+							<LoadingButton
+								onClick={deleteItem}
+								variant="outlined"
+								color={'error'}
+								loading={isLoading}
+							>
+								Eliminar
+							</LoadingButton>
+						</div>
+					</div>
+				)}
+			/>
+			<IAModal
+				isOpen={openEditModal}
+				child={(
+					<div
+						className={'modal-delete card'}
+					>
+						<h3>Editar Registro</h3>
+						<EditHistory
+							historyItem={itemToEdit}
+							handleClose={async () => {
+								setOpenEditModal(false)
+								setItemToEdit(null)
+								await searchHistory({ startDate, endDate })
+							}}
+						/>
+					</div>
+				)}
+			/>
 			<FloatingButton
 				onClick={() => navigate('/historial/nuevo')}
 			/>

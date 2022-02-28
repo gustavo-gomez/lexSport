@@ -1,9 +1,9 @@
 import jwt from 'jsonwebtoken'
-import {getGenericMessage, HTTP_STATUS_CODES} from "./utils.js";
-import sha256 from 'crypto-js/sha256.js';
-import hmacSHA512 from 'crypto-js/hmac-sha512.js';
-import Base64 from 'crypto-js/enc-base64.js';
-import {loadWorkerByIdService} from "../services/workerService";
+import { getGenericMessage, HTTP_STATUS_CODES, ROLES } from './utils.js'
+import sha256 from 'crypto-js/sha256.js'
+import hmacSHA512 from 'crypto-js/hmac-sha512.js'
+import Base64 from 'crypto-js/enc-base64.js'
+import { loadWorkerByIdService } from '../services/workerService'
 
 const PRIVATE_KEY = 'keylexsportsystem'
 
@@ -25,7 +25,7 @@ export const verifyAuthJWToken = async (req, res, next) => {
 	try {
 		req.tokenDecoded = jwt.verify(bearerToken, PRIVATE_KEY)
 		next()
-	} catch (e) {
+	} catch ( e ) {
 		return res.status(HTTP_STATUS_CODES.FORBIDDEN).json(getGenericMessage('Not authorized'))
 	}
 }
@@ -38,13 +38,12 @@ export const verifyAuthJWTokenIsAdmin = async (req, res, next) => {
 		//validate is admin
 		const workers = await loadWorkerByIdService(req.tokenDecoded?.id)
 		const currentWorker = workers?.[0]
-		console.log('worker: ', currentWorker)
-		console.log('conition: ', currentWorker?.roleAdmin === 0)
-		if (currentWorker?.roleAdmin === 0) {
+
+		if (currentWorker?.role !== ROLES.ADMIN) {
 			return res.status(HTTP_STATUS_CODES.UNAUTHORIZED).json(getGenericMessage('You are not authorized to access this resource'))
 		}
 		next()
-	} catch (e) {
+	} catch ( e ) {
 		return res.status(HTTP_STATUS_CODES.FORBIDDEN).json(getGenericMessage('Not authorized'))
 	}
 }

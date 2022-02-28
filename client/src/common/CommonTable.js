@@ -10,14 +10,15 @@ import Paper from '@mui/material/Paper'
 import map from 'lodash/map'
 import { useSelector } from 'react-redux'
 import { auth } from '../slices/authSlice'
+import { ROLES } from '../utils/utils'
 
 const CommonTable = ({ tableHeader, body, onClickRow }) => {
 
 	const { loggedUser } = useSelector(auth)
-	const isAdmin = loggedUser?.roleAdmin === 1
+	const isAdmin = loggedUser?.role === ROLES.ADMIN
 
 	return (
-		<TableContainer component={Paper}>
+		<TableContainer component={Paper} >
 			<Table aria-label="simple table">
 				<TableHead className={'table-header'}>
 					<TableRow>
@@ -25,7 +26,12 @@ const CommonTable = ({ tableHeader, body, onClickRow }) => {
 							map(tableHeader, item => {
 								if (item.onlyAdmin && !isAdmin) return null
 								return (
-									<TableCell key={`header-${item.key}`}>{item.label}</TableCell>
+									<TableCell
+										key={`header-${item.key}`}
+										// align={item?.align}
+									>
+										{item.label}
+									</TableCell>
 								)
 							})
 						}
@@ -46,7 +52,8 @@ const CommonTable = ({ tableHeader, body, onClickRow }) => {
 
 										<TableCell
 											key={`row-${row.id}-${header.key}`}
-											style={header.label === '' ? { width: 105 } : null}
+											style={header.label === '' ? { width: 105 } : { maxWidth: 80 }}
+											// align={header?.align}
 										>
 											{row[header.key]}
 										</TableCell>

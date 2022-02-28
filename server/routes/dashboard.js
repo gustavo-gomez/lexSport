@@ -13,10 +13,6 @@ const router = Router()
 router.get('/products', [verifyAuthJWTokenIsAdmin], async (req, res) => {
 	try {
 		const { startDate, endDate } = req.query
-		console.log(startDate, endDate)
-		console.log('DATES: ' + new Date(+startDate))
-		console.log('DATES: ' + new Date(+endDate))
-
 
 		const activitiesDB = await loadActivitiesQuantitiesService(new Date(+startDate), new Date(+endDate))
 		const products = await loadAllProductsService()

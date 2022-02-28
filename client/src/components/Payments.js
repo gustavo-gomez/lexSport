@@ -3,8 +3,6 @@ import '../scss/components/history.scss'
 import map from 'lodash/map'
 import CommonTable from '../common/CommonTable'
 import IALoader, { LOTTIE_TYPE } from '../common/IALoader'
-import { useNavigate } from 'react-router-dom'
-import FloatingButton from '../common/FloatingButton'
 import IAFilters from '../common/IAFilters'
 import { DATE_FORMAT, generateXlsAndDownload, getEndDateMillis, getStartDateMillis } from '../utils/utils'
 import { loadActivitiesAPI } from '../utils/apiUtils'
@@ -40,7 +38,8 @@ const tableHeader = [
 	},
 	{
 		label: 'Precio',
-		key: 'price'
+		key: 'price',
+		align: 'right'
 	},
 ]
 
@@ -51,7 +50,6 @@ const Payments = () => {
 	const [history, setHistory] = useState([])
 	const [isLoading, setIsLoading] = useState(false)
 	const [dataSearch, setDataSearch] = useState({})
-	const navigate = useNavigate()
 
 	const getTableBody = () => {
 		let sum = 0
@@ -71,7 +69,7 @@ const Payments = () => {
 		})
 		tableBody.push({
 			quantity: <strong>Total</strong>,
-			price: <strong>{sum}</strong>
+			price: <strong>{sum.toFixed(2)}</strong>
 		})
 		return tableBody
 	}

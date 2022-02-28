@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { getAllCostureras, workers } from '../slices/workersSlice'
 import CommonTable from '../common/CommonTable'
 import map from 'lodash/map'
-import { MOBILE_WIDTH, textToCamelCase } from '../utils/utils'
+import { MOBILE_WIDTH, scrollToTop, textToCamelCase } from '../utils/utils'
 import FloatingButton from '../common/FloatingButton'
 import NewWorker from './NewWorkers'
 import IAModal from '../common/IAModal'
@@ -71,7 +71,7 @@ const Workers = () => {
 	const handleEdit = (index) => {
 		setWorkerEdit(workerList?.[index])
 		setShowNewUserForm(true)
-		window.scrollTo(0, 0)
+		scrollToTop()
 	}
 
 	const cancelEdit = () => {
@@ -130,7 +130,10 @@ const Workers = () => {
 			{
 				!showNewUserForm &&
 				<FloatingButton
-					onClick={() => setShowNewUserForm(true)}
+					onClick={() => {
+						setShowNewUserForm(true)
+						scrollToTop()
+					}}
 				/>
 			}
 		</div>
