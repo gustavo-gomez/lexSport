@@ -3,13 +3,13 @@ import { uuid } from 'uuidv4'
 import map from 'lodash/map'
 import isEmpty from 'lodash/isEmpty'
 
-export const newActivities = async (activities = [], date = new Date()) => {
+export const newActivities = async (activities = [], date = new Date(), submitterId) => {
 	const connection = await getConnection()
 	let sql = `
-      INSERT INTO activities (id, worker_id, product_id, quantity, action, price, date)
+      INSERT INTO activities (id, worker_id, product_id, quantity, action, price, date, submitter_id)
       VALUES `
 
-	const questionMarks = map(activities, () => '(?, ?, ?, ?, ?, ?, ?)').join(' ,')
+	const questionMarks = map(activities, () => '(?, ?, ?, ?, ?, ?, ?, ?)').join(' ,')
 	sql += questionMarks
 	const values = []
 	activities.some(activity => {
@@ -20,6 +20,7 @@ export const newActivities = async (activities = [], date = new Date()) => {
 		values.push(activity.action)
 		values.push(activity.price)
 		values.push(date)
+		values.push(submitterId)
 	})
 
 	const [rows] = await connection.execute(sql, values)
