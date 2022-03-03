@@ -51,8 +51,6 @@ const newActivityValidator = [
 // get activities
 router.get('/workers/:id', [newActivityValidator, verifyAuthJWTokenIsAdmin], async (req, res) => {
 	try {
-		// param('id').isInt().toInt()
-
 		const { errors } = validationResult(req)
 
 		if (!isEmpty(errors)) {

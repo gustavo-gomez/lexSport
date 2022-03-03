@@ -1,5 +1,11 @@
-import {camelize} from "../utils/utils";
-import {loadAllProducts, loadProductById, newProduct, updateProduct} from "../repositories/productsRepository";
+import { camelize } from '../utils/utils'
+import {
+	deleteProduct,
+	loadAllProducts,
+	loadProductById,
+	newProduct,
+	updateProduct
+} from '../repositories/productsRepository'
 
 
 export const loadProductByIdService = async id => {
@@ -20,4 +26,8 @@ export const newProductService = async product => {
 export const updateProductService = async (id, product) => {
 	const usersDB = await updateProduct(id, product)
 	return camelize(usersDB)
+}
+
+export const deleteProductService = async (id) => {
+	await deleteProduct(id)
 }

@@ -1,5 +1,5 @@
-import {getConnection} from "../database/conectDB.js";
-import {uuid} from "uuidv4";
+import { getConnection } from '../database/conectDB.js'
+import { uuid } from 'uuidv4'
 
 export const loadProductById = async id => {
 	const connection = await getConnection()
@@ -25,7 +25,7 @@ export const loadAllProducts = async () => {
 }
 
 
-export const newProduct = async ({code, name, makingPriceLow, makingPriceHigh, fillPrice = 0.00}) => {
+export const newProduct = async ({ code, name, makingPriceLow, makingPriceHigh, fillPrice = 0.00 }) => {
 	const connection = await getConnection()
 	const sql = `
       INSERT INTO products(id, code, name, making_price_low, making_price_high, fill_price)
@@ -36,7 +36,7 @@ export const newProduct = async ({code, name, makingPriceLow, makingPriceHigh, f
 	return rows || []
 }
 
-export const updateProduct = async (id, {name, makingPriceLow, makingPriceHigh, fillPrice}) => {
+export const updateProduct = async (id, { name, makingPriceLow, makingPriceHigh, fillPrice }) => {
 	const connection = await getConnection()
 	const sql = `
       UPDATE products
@@ -52,4 +52,14 @@ export const updateProduct = async (id, {name, makingPriceLow, makingPriceHigh, 
 	return rows || []
 }
 
-
+export const deleteProduct = async (id) => {
+	const connection = await getConnection()
+	let sql = `
+      UPDATE products
+      SET hidden = '1'
+      WHERE id = ?
+	`
+	const [rows] = await connection.execute(sql, [id])
+	await connection.end()
+	return rows || []
+}
