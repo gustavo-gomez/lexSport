@@ -5,6 +5,7 @@ export const AUTH_TOKEN_KEY = 'authTokenLexSport'
 
 const initialState = {
 	workerList: [],
+	activeWorkerList: [],
 	isLoading: false,
 }
 
@@ -38,18 +39,14 @@ export const workersSlice = createSlice({
 		.addCase(getAllCostureras.fulfilled, (state, {payload}) => {
 			const {costureras} = payload
 			state.workerList = costureras
+			state.activeWorkerList = costureras.filter(costurera => costurera.hidden === 0)
 			state.isLoading = false
 		})
 		.addCase(getAllCostureras.rejected, (state, {payload}) => {
-			const {responseMessage = ''} = payload
 			state.isLoading = false
-			// state.error = isEmpty(responseMessage) ? null : responseMessage
 		})
 	}
 })
-
-
-// export const {logout, updateUser} = workersSlice.actions
 
 export const workers = (state) => state.workers
 

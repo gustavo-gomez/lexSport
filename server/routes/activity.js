@@ -41,6 +41,7 @@ router.get('/', [verifyAuthJWToken], async (req, res) => {
 				action: activity?.action,
 				quantity: activity?.quantity,
 				date: activity?.date,
+				milliseconds: new Date(activity?.date).getTime(),
 				worker: `${worker?.lastName}, ${worker?.firstName}`,
 				product: product?.name,
 				productCode: product?.code,

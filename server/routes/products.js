@@ -1,14 +1,15 @@
-import {Router} from 'express'
-import {getGenericMessage, getSuccessResponse, HTTP_STATUS_CODES, validationErrorsToArray} from "../utils/utils.js"
+import { Router } from 'express'
+import { getGenericMessage, getSuccessResponse, HTTP_STATUS_CODES, validationErrorsToArray } from '../utils/utils.js'
 import { verifyAuthJWToken, verifyAuthJWTokenIsAdmin } from '../utils/passUtils.js'
 import {
+	deleteProductService,
 	loadAllProductsService,
 	loadProductByIdService,
 	newProductService,
 	updateProductService
-} from "../services/productsService";
-import {check, validationResult} from "express-validator";
-import isEmpty from "lodash/isEmpty";
+} from '../services/productsService'
+import { check, validationResult } from 'express-validator'
+import isEmpty from 'lodash/isEmpty'
 
 const router = Router()
 
@@ -76,6 +77,21 @@ router.put('/:id', [updateProductFormValidator, verifyAuthJWTokenIsAdmin], async
 		return res.status(HTTP_STATUS_CODES.OK).json(getGenericMessage('Producto actualizado con éxito'))
 
 	} catch (e) {
+		console.log('Error: ', e)
+		return res.json(getGenericMessage())
+	}
+})
+
+
+router.delete('/:id', [verifyAuthJWToken], async (req, res) => {
+	try {
+		const { id } = req.params
+
+		await deleteProductService(id)
+
+		return res.status(HTTP_STATUS_CODES.CREATED).json(getGenericMessage('Producto eliminado con éxito'))
+
+	} catch ( e ) {
 		console.log('Error: ', e)
 		return res.json(getGenericMessage())
 	}

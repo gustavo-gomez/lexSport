@@ -15,7 +15,6 @@ const IATimeDatePicker = ({ value, label, handleChange, defaultStartDate }) => {
 
 	const props = {
 		label,
-		// inputFormat: 'MM/DD/yyyy',
 		inputFormat: 'DD/MM/yyyy',
 		format: 'DD/MM/yyyy',
 		value,

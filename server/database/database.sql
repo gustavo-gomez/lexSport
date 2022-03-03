@@ -64,3 +64,9 @@ where action = 'fill';
 
 ALTER TABLE `workers`
     ADD role VARCHAR(40) AFTER `password`;
+
+ALTER TABLE `workers`
+    ADD hidden TINYINT(4) NOT NULL DEFAULT '0' AFTER `can_login`;
+
+ALTER TABLE `products`
+    ADD hidden TINYINT(4) NOT NULL DEFAULT '0' AFTER `fill_price`;

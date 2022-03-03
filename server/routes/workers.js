@@ -1,14 +1,16 @@
 import {Router} from 'express'
 import {
+	deleteCostureraService,
 	loadAllCosturerasService,
 	loadWorkerByIdService,
 	newCostureraService,
 	updateCostureraService
-} from "../services/workerService.js"
+} from '../services/workerService.js'
 import {getGenericMessage, getSuccessResponse, HTTP_STATUS_CODES, validationErrorsToArray} from "../utils/utils.js"
 import { verifyAuthJWToken, verifyAuthJWTokenIsAdmin } from '../utils/passUtils.js'
 import {check, validationResult} from 'express-validator'
 import isEmpty from "lodash/isEmpty"
+import { deleteActivityService } from '../services/activityService'
 
 const router = Router()
 
@@ -78,6 +80,20 @@ router.put('/:id', [updateUserFormValidator, verifyAuthJWTokenIsAdmin], async (r
 	} catch (e) {
 		console.log('Error: ', e)
 		return res.send(HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR).json(getGenericMessage())
+	}
+})
+
+router.delete('/:id', [verifyAuthJWToken], async (req, res) => {
+	try {
+		const { id } = req.params
+
+		await deleteCostureraService(id)
+
+		return res.status(HTTP_STATUS_CODES.CREATED).json(getGenericMessage('Costurera eliminada con éxito'))
+
+	} catch ( e ) {
+		console.log('Error: ', e)
+		return res.json(getGenericMessage())
 	}
 })
 

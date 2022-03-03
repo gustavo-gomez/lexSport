@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import '../scss/components/newhistory.scss'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { products } from '../slices/productsSlice'
 import { workers } from '../slices/workersSlice'
 import IASelect from '../common/IASelect'
@@ -26,29 +26,12 @@ export const ACTIONS = {
 	FILL: 'fill',
 }
 
-const emptyRow = {
-	workerId: '',
-	productId: '',
-	quantity: '',
-	action: 'make',
-	price: 0,
-}
-
-const emptyError = {
-	workerId: '',
-	productId: '',
-	quantity: '',
-	action: '',
-	price: '',
-}
-
 const EditHistory = ({ historyItem, handleClose }) => {
 	const { productList } = useSelector(products)
 	const { workerList } = useSelector(workers)
 	const [errors, setErrors] = useState({})
 	const [isLoading, setIsLoading] = useState(false)
 	const [history, setHistory] = useState({})
-	const dispatch = useDispatch()
 
 	useEffect(() => {
 		setHistory({
@@ -63,7 +46,6 @@ const EditHistory = ({ historyItem, handleClose }) => {
 
 	const onChange = (name, value) => {
 		const newHistory = { ...history }
-		const newErrors = { ...errors }
 		newHistory[name] = value
 		setHistory(newHistory)
 		setErrors(prevState => ({

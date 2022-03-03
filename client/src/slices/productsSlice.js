@@ -3,6 +3,7 @@ import {getAllProductsAPI} from "../utils/apiUtils"
 
 const initialState = {
 	productList: [],
+	activeProductList: [],
 	isLoading: null,
 }
 
@@ -31,6 +32,7 @@ export const productsSlice = createSlice({
 			.addCase(getAllProducts.fulfilled, (state, {payload}) => {
 				const {products} = payload
 				state.productList = products
+				state.activeProductList = products.filter(product => product.hidden === 0)
 				state.isLoading = false
 			})
 			.addCase(getAllProducts.rejected, (state, {payload}) => {
@@ -38,8 +40,6 @@ export const productsSlice = createSlice({
 			})
 	}
 })
-
-// export const {logout, updateUser} = workersSlice.actions
 
 export const products = (state) => state.products
 

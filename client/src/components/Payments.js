@@ -53,10 +53,10 @@ const Payments = () => {
 
 	const getTableBody = () => {
 		let sum = 0
-		let tableBody = map(history, ({ price, quantity, date, worker, product, action, productCode }, index) => {
+		let tableBody = map(history, ({ price, quantity, milliseconds, worker, product, action, productCode }, index) => {
 			sum += +price
 			return {
-				date: new Date(date).toLocaleDateString(),
+				date: moment(milliseconds).format(DATE_FORMAT.DATE_HYPHEN_PERU),
 				worker,
 				productCode,
 				product,

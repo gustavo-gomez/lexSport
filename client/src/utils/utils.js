@@ -8,7 +8,9 @@ export const PERU_TIME_OFFSET = -5
 export const MILLISECONDS_IN_ONE_HOUR = 3600 * 1000
 export const MILLISECONDS_IN_ONE_DAY = MILLISECONDS_IN_ONE_HOUR * 24
 export const DATE_FORMAT = {
-	DATE_HYPHEN_PERU: 'DD-MM-YYYY',
+	DATE_HYPHEN_PERU: 'DD/MM/YYYY',
+	TIME_PERIOD: 'hh:mm A',
+	TIME_PERIOD_24: 'HH:mm',
 }
 
 export const textToCamelCase = (text) => {
@@ -44,3 +46,4 @@ export const scrollToTop = () => {
 	window.scrollTo(0, 0)
 	document.body.scrollTop = 0
 }
+

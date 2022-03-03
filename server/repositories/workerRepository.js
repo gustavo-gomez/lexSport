@@ -67,3 +67,15 @@ export const updateCosturera = async (id, {firstName, lastName, phone, oldWorker
 	return rows || []
 }
 
+export const deleteCosturera = async (id) => {
+	const connection = await getConnection()
+	let sql = `
+      UPDATE workers
+      SET hidden = '1'
+      WHERE id = ?
+	`
+
+	const [rows] = await connection.execute(sql, [id])
+	await connection.end()
+	return rows || []
+}

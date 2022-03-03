@@ -2,10 +2,10 @@ import React, { Suspense, useEffect, useState } from 'react'
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import Login from './components/Login'
 import './scss/index.scss'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import Header from './components/Header'
 import SideBar from './components/SideBar'
-import { auth, AUTH_TOKEN_KEY, updateLoggedUser } from './slices/authSlice'
+import { AUTH_TOKEN_KEY, updateLoggedUser } from './slices/authSlice'
 import DashboardProducts from './components/DashboardProducts'
 import Products from './components/Products'
 import Workers from './components/Workers'
@@ -20,7 +20,6 @@ const App = () => {
 
 	const dispatch = useDispatch()
 	const [isAdmin, setIsAdmin] = useState(false)
-	// const { loggedUser } = useSelector(auth)
 
 	useEffect(() => {
 		const isToken = localStorage.getItem(AUTH_TOKEN_KEY) !== null

@@ -3,7 +3,6 @@ import '../scss/components/newhistory.scss'
 import { useDispatch, useSelector } from 'react-redux'
 import { getAllProducts, products } from '../slices/productsSlice'
 import IALoader from '../common/IALoader'
-import { useDimension } from '../utils/useDimension'
 import { getAllCostureras, workers } from '../slices/workersSlice'
 import IASelect from '../common/IASelect'
 import IATextInput from '../common/IATextInput'
@@ -49,8 +48,8 @@ const emptyError = {
 
 const NewHistory = () => {
 
-	const { productList } = useSelector(products)
-	const { workerList } = useSelector(workers)
+	const { activeProductList } = useSelector(products)
+	const { activeWorkerList } = useSelector(workers)
 	const [errors, setErrors] = useState([{ ...emptyError }])
 	const [isLoading, setIsLoading] = useState(false)
 	const [activityDate, setActivityDate] = useState(new Date())
@@ -58,7 +57,6 @@ const NewHistory = () => {
 		{ ...emptyRow }
 	])
 
-	const { width } = useDimension()
 	const dispatch = useDispatch()
 	const navigate = useNavigate()
 
@@ -75,11 +73,8 @@ const NewHistory = () => {
 
 	const onChange = (index, name, value) => {
 		const newData = [...newHistoryData]
-		const newErrors = [...errors]
 		newData[index][name] = value
-		// newErrors[index][name] = ''
 		setNewHistoryData(newData)
-		// setErrors(newErrors)
 	}
 
 	const deleteRow = (index) => {
@@ -128,8 +123,8 @@ const NewHistory = () => {
 
 		// calculate payments
 		const newData = newHistoryData.map((historyItem, index) => {
-			const currentProduct = productList.find(p => p.id === historyItem.productId)
-			const currentWorker = workerList.find(w => w.id === historyItem.workerId)
+			const currentProduct = activeProductList.find(p => p.id === historyItem.productId)
+			const currentWorker = activeWorkerList.find(w => w.id === historyItem.workerId)
 
 			let pricexProduct
 			if (historyItem.action === ACTIONS.FILL) {
@@ -171,7 +166,7 @@ const NewHistory = () => {
 				/>
 				{
 					newHistoryData.map((item, index) => {
-						const selectedProduct = productList.find(p => p.id === item.productId)
+						const selectedProduct = activeProductList.find(p => p.id === item.productId)
 						return (
 							<div
 								key={index}
@@ -180,8 +175,8 @@ const NewHistory = () => {
 								<IASelect
 									label={'Costurera'}
 									key={`workerId-${index}`}
-									value={workerList.find(worker => worker.id === item.workerId)}
-									data={workerList}
+									value={activeWorkerList.find(worker => worker.id === item.workerId)}
+									data={activeWorkerList}
 									textToShow={(object) => {
 										return `${object?.firstName}, ${object?.lastName}`
 									}}
@@ -194,7 +189,7 @@ const NewHistory = () => {
 									label={'Producto'}
 									key={`productId-${index}`}
 									value={selectedProduct}
-									data={productList}
+									data={activeProductList}
 									textToShow={(object) => {
 										return object?.name
 									}}

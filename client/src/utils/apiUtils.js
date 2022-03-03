@@ -79,6 +79,17 @@ export const loadWorkersDashboardAPI = async (starDate, endDate, workerId) => {
 	return await callAPI('GET', `${BASE_URL}${ENDPOINTS.PRODUCTS_WORKERS}/${workerId}?startDate=${starDate}&endDate=${endDate}`)
 }
 
+// delete product
+export const deleteProductAPI = async (id) => {
+	return await callAPI('DELETE', `${BASE_URL}${ENDPOINTS.PRODUCTS}/${id}`)
+}
+
+// delete costurera
+export const deleteCostureraAPI = async (id) => {
+	return await callAPI('DELETE', `${BASE_URL}${ENDPOINTS.WORKERS}/${id}`)
+}
+
+
 const callAPI = async (method, url, body) => {
 	const authToken = localStorage.getItem(AUTH_TOKEN_KEY)
 	const config = {

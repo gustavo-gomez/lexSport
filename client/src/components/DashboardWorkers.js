@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { Chart } from 'react-google-charts'
 import IAFilters from '../common/IAFilters'
 import { getEndDateMillis, getStartDateMillis } from '../utils/utils'
@@ -6,18 +6,11 @@ import { loadWorkersDashboardAPI } from '../utils/apiUtils'
 import IALoader, { LOTTIE_TYPE } from '../common/IALoader'
 import moment from 'moment'
 import { useDimension } from '../utils/useDimension'
-import { getAllCostureras } from '../slices/workersSlice'
-import { useDispatch } from 'react-redux'
 
 const DashboardProducts = () => {
 	const [isLoading, setIsLoading] = useState(false)
 	const [history, setHistory] = useState([])
 	const { width } = useDimension()
-	const dispatch = useDispatch()
-
-	useEffect(() => {
-		dispatch(getAllCostureras())
-	}, [])
 
 	const searchProductsDashboard = async ({ startDate, endDate, workerId }) => {
 		setIsLoading(true)
@@ -35,7 +28,7 @@ const DashboardProducts = () => {
 
 	const options = {
 		chart: {
-			title: 'Cantidad elaborada',
+			title: 'Cantidad elaborada por costurera',
 		},
 		bars: 'horizontal',
 	}
@@ -63,7 +56,6 @@ const DashboardProducts = () => {
 								className={'card'}
 								style={{ padding: '10px' }}
 								height={width >= 900 ? '800px' : '370px'}
-								legendToggle
 								options={options}
 							/> :
 							<IALoader type={LOTTIE_TYPE.EMPTY}/>

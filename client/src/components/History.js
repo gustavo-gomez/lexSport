@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import '../scss/components/history.scss'
 import map from 'lodash/map'
 import CommonTable from '../common/CommonTable'
@@ -6,25 +6,25 @@ import IALoader, { LOTTIE_TYPE } from '../common/IALoader'
 import { useNavigate } from 'react-router-dom'
 import FloatingButton from '../common/FloatingButton'
 import IAFilters from '../common/IAFilters'
-import { getEndDateMillis, getStartDateMillis } from '../utils/utils'
+import { DATE_FORMAT, getEndDateMillis, getStartDateMillis } from '../utils/utils'
 import { deleteActivityAPI, loadActivitiesAPI } from '../utils/apiUtils'
 import { ACTIONS } from './NewHistory'
-import { useDispatch, useSelector } from 'react-redux'
-import { auth } from '../slices/authSlice'
 import EditIcon from '@mui/icons-material/Edit'
 import DeleteIcon from '@mui/icons-material/Delete'
 import IAModal from '../common/IAModal'
 import Button from '@mui/material/Button'
 import LoadingButton from '@mui/lab/LoadingButton'
 import EditHistory from './EditHistory'
-import { getAllCostureras } from '../slices/workersSlice'
-import { getAllProducts } from '../slices/productsSlice'
-
+import moment from 'moment'
 
 const tableHeader = [
 	{
 		label: 'Fecha',
 		key: 'date'
+	},
+	{
+		label: 'Hora',
+		key: 'hour'
 	},
 	{
 		label: 'Costurera',
@@ -69,16 +69,6 @@ const History = () => {
 	const [startDate, setStartDate] = useState(false)
 	const [endDate, setEndDate] = useState(false)
 	const navigate = useNavigate()
-	const dispatch = useDispatch()
-
-	useEffect(() => {
-		dispatch(getAllCostureras())
-		dispatch(getAllProducts())
-	}, [])
-
-	const handleEdit = () => {
-
-	}
 
 	const deleteItem = async () => {
 		setIsLoading(true)
@@ -91,9 +81,10 @@ const History = () => {
 
 	const getTableBody = () => {
 		return map(history, (historyItem, index) => {
-			const { id, price, quantity, date, worker, product, action, productCode } = historyItem
+			const { id, price, quantity, milliseconds, worker, product, action, productCode } = historyItem
 			return {
-				date: new Date(date).toLocaleDateString(),
+				date: moment(milliseconds).format(DATE_FORMAT.DATE_HYPHEN_PERU),
+				hour: moment(milliseconds).format(DATE_FORMAT.TIME_PERIOD_24),
 				worker,
 				productCode,
 				product,
