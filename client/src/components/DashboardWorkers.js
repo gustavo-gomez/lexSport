@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { Chart } from 'react-google-charts'
 import IAFilters from '../common/IAFilters'
 import { getEndDateMillis, getStartDateMillis } from '../utils/utils'
@@ -6,18 +6,11 @@ import { loadWorkersDashboardAPI } from '../utils/apiUtils'
 import IALoader, { LOTTIE_TYPE } from '../common/IALoader'
 import moment from 'moment'
 import { useDimension } from '../utils/useDimension'
-import { getAllCostureras } from '../slices/workersSlice'
-import { useDispatch } from 'react-redux'
 
 const DashboardProducts = () => {
 	const [isLoading, setIsLoading] = useState(false)
 	const [history, setHistory] = useState([])
 	const { width } = useDimension()
-	const dispatch = useDispatch()
-
-	useEffect(() => {
-		dispatch(getAllCostureras())
-	}, [])
 
 	const searchProductsDashboard = async ({ startDate, endDate, workerId }) => {
 		setIsLoading(true)

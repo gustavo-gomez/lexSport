@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import '../scss/components/history.scss'
 import map from 'lodash/map'
 import CommonTable from '../common/CommonTable'
@@ -9,17 +9,13 @@ import IAFilters from '../common/IAFilters'
 import { DATE_FORMAT, getEndDateMillis, getStartDateMillis } from '../utils/utils'
 import { deleteActivityAPI, loadActivitiesAPI } from '../utils/apiUtils'
 import { ACTIONS } from './NewHistory'
-import { useDispatch } from 'react-redux'
 import EditIcon from '@mui/icons-material/Edit'
 import DeleteIcon from '@mui/icons-material/Delete'
 import IAModal from '../common/IAModal'
 import Button from '@mui/material/Button'
 import LoadingButton from '@mui/lab/LoadingButton'
 import EditHistory from './EditHistory'
-import { getAllCostureras } from '../slices/workersSlice'
-import { getAllProducts } from '../slices/productsSlice'
 import moment from 'moment'
-
 
 const tableHeader = [
 	{
@@ -73,12 +69,6 @@ const History = () => {
 	const [startDate, setStartDate] = useState(false)
 	const [endDate, setEndDate] = useState(false)
 	const navigate = useNavigate()
-	const dispatch = useDispatch()
-
-	useEffect(() => {
-		dispatch(getAllCostureras())
-		dispatch(getAllProducts())
-	}, [])
 
 	const deleteItem = async () => {
 		setIsLoading(true)

@@ -11,6 +11,11 @@ import IAModal from '../common/IAModal'
 import { useDimension } from '../utils/useDimension'
 import EditIcon from '@mui/icons-material/Edit'
 import IALoader from '../common/IALoader'
+import DeleteIcon from '@mui/icons-material/Delete'
+import { deleteCostureraAPI, deleteProductAPI } from '../utils/apiUtils'
+import { getAllProducts } from '../slices/productsSlice'
+import Button from '@mui/material/Button'
+import LoadingButton from '@mui/lab/LoadingButton'
 
 const tableHeader = [
 	{
@@ -36,10 +41,11 @@ const tableHeader = [
 ]
 
 const Workers = () => {
-	const { workerList, isLoading } = useSelector(workers)
+	const { activeWorkerList, isLoading } = useSelector(workers)
 	const [showNewUserForm, setShowNewUserForm] = useState(false)
 	const [workerEdit, setWorkerEdit] = useState(null)
-
+	const [openDeleteModal, setOpenDeleteModal] = useState(false)
+	const [idToDelete, setIdToDelete] = useState(null)
 	const { width } = useDimension()
 	const dispatch = useDispatch()
 
@@ -48,7 +54,7 @@ const Workers = () => {
 	}, [])
 
 	const getTableBody = () => {
-		return map(workerList, ({ firstName, lastName, phone, oldWorker }, index) => {
+		return map(activeWorkerList, ({ id, firstName, lastName, phone, oldWorker }, index) => {
 
 			return {
 				index: index + 1,
@@ -56,20 +62,31 @@ const Workers = () => {
 				phone,
 				oldWorker: oldWorker === 1 ? 'Si' : 'No',
 				actions: (
-					<>
+					<div
+						style={{ display: 'flex' }}
+					>
 						<EditIcon
 							className={'icon'}
 							color="primary"
 							onClick={() => handleEdit(index)}
+							style={{ marginRight: '10px' }}
 						/>
-					</>
+						<DeleteIcon
+							className={'icon'}
+							color="error"
+							onClick={() => {
+								setIdToDelete(id)
+								setOpenDeleteModal(true)
+							}}
+						/>
+					</div>
 				)
 			}
 		})
 	}
 
 	const handleEdit = (index) => {
-		setWorkerEdit(workerList?.[index])
+		setWorkerEdit(activeWorkerList?.[index])
 		setShowNewUserForm(true)
 		scrollToTop()
 	}
@@ -86,6 +103,13 @@ const Workers = () => {
 		/>
 	)
 
+	const deleteWorker = async () => {
+		await deleteCostureraAPI(idToDelete)
+		setOpenDeleteModal(false)
+		setIdToDelete(null)
+		dispatch(getAllCostureras())
+	}
+
 	if (isLoading) {
 		return (
 			<IALoader/>
@@ -100,7 +124,7 @@ const Workers = () => {
 			<div className="users-table">
 				<span className={'section-title'}>Lista de Costureras</span>
 				{
-					workerList?.length > 0 &&
+					activeWorkerList?.length > 0 &&
 					<CommonTable
 						tableHeader={tableHeader}
 						body={getTableBody()}
@@ -136,6 +160,36 @@ const Workers = () => {
 					}}
 				/>
 			}
+			<IAModal
+				isOpen={openDeleteModal}
+				child={(
+					<div
+						className={'modal-delete card'}
+					>
+						<p>Esta seguro que desea eliminar la costurera ?</p>
+						<div className={'buttons'}>
+							<Button
+								onClick={() => {
+									setOpenDeleteModal(false)
+									setIdToDelete(null)
+								}}
+								variant="outlined"
+								disabled={isLoading}
+							>
+								Cancelar
+							</Button>
+							<LoadingButton
+								onClick={deleteWorker}
+								variant="outlined"
+								color={'error'}
+								loading={isLoading}
+							>
+								Eliminar
+							</LoadingButton>
+						</div>
+					</div>
+				)}
+			/>
 		</div>
 	)
 }

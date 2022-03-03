@@ -13,7 +13,6 @@ const IASelect = ({ data, textToShow, value, onChange, label, isRequired, error,
 			options={data}
 			getOptionLabel={textToShow}
 			id="disable-close-on-select"
-			// clearOnEscape
 			value={value}
 			onChange={(event, newValue) => {
 				event.preventDefault()
