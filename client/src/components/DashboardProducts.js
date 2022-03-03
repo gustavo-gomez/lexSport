@@ -31,8 +31,6 @@ const DashboardProducts = () => {
 			title: 'Cantidad elaborada por producto',
 		},
 		bars: 'horizontal',
-		vAxis: {title: "Year"},
-		hAxis: {title: "Cups"}
 	}
 
 	return (
@@ -58,7 +56,6 @@ const DashboardProducts = () => {
 								className={'card'}
 								style={{ padding: '10px' }}
 								height={width >= 900 ? '800px' : '370px'}
-								legendToggle
 								options={options}
 							/> :
 							<IALoader type={LOTTIE_TYPE.EMPTY}/>
