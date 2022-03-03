@@ -6,11 +6,10 @@ import IALoader, { LOTTIE_TYPE } from '../common/IALoader'
 import { useNavigate } from 'react-router-dom'
 import FloatingButton from '../common/FloatingButton'
 import IAFilters from '../common/IAFilters'
-import { getEndDateMillis, getStartDateMillis } from '../utils/utils'
+import { DATE_FORMAT, getEndDateMillis, getStartDateMillis } from '../utils/utils'
 import { deleteActivityAPI, loadActivitiesAPI } from '../utils/apiUtils'
 import { ACTIONS } from './NewHistory'
-import { useDispatch, useSelector } from 'react-redux'
-import { auth } from '../slices/authSlice'
+import { useDispatch } from 'react-redux'
 import EditIcon from '@mui/icons-material/Edit'
 import DeleteIcon from '@mui/icons-material/Delete'
 import IAModal from '../common/IAModal'
@@ -19,12 +18,17 @@ import LoadingButton from '@mui/lab/LoadingButton'
 import EditHistory from './EditHistory'
 import { getAllCostureras } from '../slices/workersSlice'
 import { getAllProducts } from '../slices/productsSlice'
+import moment from 'moment'
 
 
 const tableHeader = [
 	{
 		label: 'Fecha',
 		key: 'date'
+	},
+	{
+		label: 'Hora',
+		key: 'hour'
 	},
 	{
 		label: 'Costurera',
@@ -76,10 +80,6 @@ const History = () => {
 		dispatch(getAllProducts())
 	}, [])
 
-	const handleEdit = () => {
-
-	}
-
 	const deleteItem = async () => {
 		setIsLoading(true)
 		await deleteActivityAPI(idToDelete)
@@ -91,9 +91,10 @@ const History = () => {
 
 	const getTableBody = () => {
 		return map(history, (historyItem, index) => {
-			const { id, price, quantity, date, worker, product, action, productCode } = historyItem
+			const { id, price, quantity, milliseconds, worker, product, action, productCode } = historyItem
 			return {
-				date: new Date(date).toLocaleDateString(),
+				date: moment(milliseconds).format(DATE_FORMAT.DATE_HYPHEN_PERU),
+				hour: moment(milliseconds).format(DATE_FORMAT.TIME_PERIOD_24),
 				worker,
 				productCode,
 				product,
