@@ -19,14 +19,15 @@ import { ROLES } from './utils/utils'
 const App = () => {
 
 	const dispatch = useDispatch()
-	const [isAdmin, setIsAdmin] = useState(false)
+	const [userRole, setUseRole] = useState()
 
 	useEffect(() => {
 		const isToken = localStorage.getItem(AUTH_TOKEN_KEY) !== null
 		if (isToken) {
 			const user = jwtDecode(localStorage.getItem(AUTH_TOKEN_KEY))
 
-			setIsAdmin(user?.role === ROLES.ADMIN)
+			console.log(user?.role)
+			setUseRole(user?.role)
 			dispatch(updateLoggedUser(jwtDecode(localStorage.getItem(AUTH_TOKEN_KEY))))
 		}
 	}, [])
@@ -42,68 +43,121 @@ const App = () => {
 			<Navigate to={redirectTo}/>
 	}
 
+	const getRoutesByRole = () => {
+		switch (userRole) {
+			case ROLES.ADMIN:
+				return (
+					<>
+						<Route path="/" index element={<Login/>}/>
+						<Route
+							path="/dashboard/productos"
+							element={
+								<PrivateRedirect redirectTo="/">
+									<DashboardProducts/>
+								</PrivateRedirect>
+							}
+						/>
+						<Route
+							path="/dashboard/trabajadores"
+							element={
+								<PrivateRedirect redirectTo="/">
+									<DashboardWorkers/>
+								</PrivateRedirect>
+							}
+						/>
+						<Route
+							path="/trabajadores"
+							element={
+								<PrivateRedirect redirectTo="/">
+									<Workers/>
+								</PrivateRedirect>
+							}
+						/>
+						<Route
+							path="/productos"
+							element={
+								<PrivateRedirect redirectTo="/">
+									<Products/>
+								</PrivateRedirect>
+							}
+						/>
+						<Route
+							path="/historial/nuevo"
+							element={
+								<PrivateRedirect redirectTo="/">
+									<NewHistory/>
+								</PrivateRedirect>
+							}
+						/>
+						<Route
+							path="/historial"
+							element={
+								<PrivateRedirect redirectTo="/">
+									<History/>
+								</PrivateRedirect>
+							}
+						/>
+						<Route
+							path="/pagos"
+							element={
+								<PrivateRedirect redirectTo="/">
+									<Payments/>
+								</PrivateRedirect>
+							}
+						/>
+					</>
+				)
+			case ROLES.OPERATOR:
+				return (
+					<>
+						<Route
+							path="/historial"
+							element={
+								<PrivateRedirect redirectTo="/">
+									<History/>
+								</PrivateRedirect>
+							}
+						/>
+						<Route
+							path="/historial/nuevo"
+							element={
+								<PrivateRedirect redirectTo="/">
+									<NewHistory/>
+								</PrivateRedirect>
+							}
+						/>
+					</>
+				)
+			case ROLES.SCHEDULER:
+				return (
+					<>
+						<Route
+							path="/historial"
+							element={
+								<PrivateRedirect redirectTo="/">
+									<History/>
+								</PrivateRedirect>
+							}
+						/>
+						<Route
+							path="/historial/nuevo"
+							element={
+								<PrivateRedirect redirectTo="/">
+									<NewHistory/>
+								</PrivateRedirect>
+							}
+						/>
+					</>
+				)
+		}
+	}
 
 	return (
 		<BrowserRouter>
 			<Suspense fallback={<div>Loading...</div>}>
 				<Routes>
-					<Route path="/" index element={<Login/>}/>
-					<Route
-						path="/dashboard/productos"
-						element={
-							<PrivateRedirect redirectTo="/">
-								<DashboardProducts/>
-							</PrivateRedirect>
-						}
-					/>
-					<Route
-						path="/dashboard/trabajadores"
-						element={
-							<PrivateRedirect redirectTo="/">
-								<DashboardWorkers/>
-							</PrivateRedirect>
-						}
-					/>
-					<Route
-						path="/trabajadores"
-						element={
-							<PrivateRedirect redirectTo="/">
-								<Workers/>
-							</PrivateRedirect>
-						}
-					/>
-					<Route
-						path="/productos"
-						element={
-							<PrivateRedirect redirectTo="/">
-								<Products/>
-							</PrivateRedirect>
-						}
-					/>
-					<Route
-						path="/historial/nuevo"
-						element={
-							<PrivateRedirect redirectTo="/">
-								<NewHistory/>
-							</PrivateRedirect>
-						}
-					/>
-					<Route
-						path="/historial"
-						element={
-							<PrivateRedirect redirectTo="/">
-								<History/>
-							</PrivateRedirect>
-						}
-					/>
-					<Route
-						path="/pagos"
-						element={
-							<PrivateRedirect redirectTo="/">
-								<Payments/>
-							</PrivateRedirect>
-						}
-					/>
+					<Route path="/" element={<Login/>}/>
+					{getRoutesByRole()}
 					<Route
 						path="*"
 						element={<Navigate to="/"/>}

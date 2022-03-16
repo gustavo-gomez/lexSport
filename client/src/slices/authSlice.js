@@ -50,6 +50,7 @@ export const authSlice = createSlice({
 				state.loggedUser = worker
 				state.isLoading = false
 				localStorage.setItem(AUTH_TOKEN_KEY, worker?.token)
+				window.location.reload()
 			})
 			.addCase(login.rejected, (state, {payload}) => {
 				const {responseMessage = ''} = payload

@@ -12,15 +12,7 @@ import Container from '@mui/material/Container'
 import { createTheme, ThemeProvider } from '@mui/material/styles'
 import { useNavigate } from 'react-router-dom'
 import logo from '../images/lex_sport.png'
-
-const initialData = {
-	email: '',
-	password: '',
-	confirmPassword: '',
-	isAdmin: false,
-	firstName: '',
-	lastName: ''
-}
+import { ROLES } from '../utils/utils'
 
 const Login = () => {
 	const { isLoading } = useSelector(auth)
@@ -32,9 +24,13 @@ const Login = () => {
 		const token = localStorage.getItem(AUTH_TOKEN_KEY)
 		if (token !== null) {
 			const user = jwtDecode(token)
-			navigate('/historial')
+			console.log('gustavo: ', user?.role)
+			if (user?.role === ROLES.ADMIN || user?.role === ROLES.OPERATOR) {
+				console.log('redirect to historial')
+				navigate('/historial')
+			}
 		}
-	})
+	}, [])
 
 	const handleSubmit = (e) => {
 		e.preventDefault()
@@ -97,7 +93,7 @@ const Login = () => {
 							type="submit"
 							fullWidth
 							variant="contained"
-							sx={{mt: 3, mb: 2}}
+							sx={{ mt: 3, mb: 2 }}
 							loading={isLoading}
 							loadingIndicator="Loading..."
 						>
