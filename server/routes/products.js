@@ -1,5 +1,11 @@
 import { Router } from 'express'
-import { getGenericMessage, getSuccessResponse, HTTP_STATUS_CODES, validationErrorsToArray } from '../utils/utils.js'
+import {
+	getGenericMessage,
+	getSuccessResponse,
+	HTTP_STATUS_CODES,
+	OPERATOR_ROLES,
+	validationErrorsToArray
+} from '../utils/utils.js'
 import { verifyAuthJWToken, verifyAuthJWTokenIsAdmin } from '../utils/passUtils.js'
 import {
 	deleteProductService,
@@ -16,8 +22,8 @@ const router = Router()
 //get all products
 router.get('/', [verifyAuthJWToken], async (req, res) => {
 	try {
-
-		const products = await loadAllProductsService()
+		const { permission } = req.tokenDecoded
+		const products = await loadAllProductsService({onlyFillPrice: permission === OPERATOR_ROLES.FILL})
 
 		return res.json(getSuccessResponse({products}))
 	} catch (e) {

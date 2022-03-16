@@ -30,7 +30,7 @@ router.get('/', [verifyAuthJWToken], async (req, res) => {
 		const idToFilter = isAdmin ? null : id
 		const activitiesDB = await getActivitiesService(workerId, new Date(+startDate), new Date(+endDate), idToFilter)
 		const workers = await loadAllCosturerasService()
-		const products = await loadAllProductsService()
+		const products = await loadAllProductsService({onlyFillPrice: false})
 
 		const activities = orderBy(activitiesDB, 'date', 'desc').map(activity => {
 			const worker = workers.find(worker => worker.id === activity.workerId)
