@@ -12,7 +12,7 @@ import Container from '@mui/material/Container'
 import { createTheme, ThemeProvider } from '@mui/material/styles'
 import { useNavigate } from 'react-router-dom'
 import logo from '../images/lex_sport.png'
-import { ROLES } from '../utils/utils'
+import { OPERATOR_ROLES, ROLES } from '../utils/utils'
 
 const Login = () => {
 	const { isLoading } = useSelector(auth)
@@ -27,7 +27,10 @@ const Login = () => {
 			console.log('gustavo: ', user?.role)
 			if (user?.role === ROLES.ADMIN || user?.role === ROLES.OPERATOR) {
 				console.log('redirect to historial')
-				navigate('/historial')
+				if (user?.permission === OPERATOR_ROLES.SCHEDULE)
+					navigate('/horarios')
+				else
+					navigate('/historial')
 			}
 		}
 	}, [])
