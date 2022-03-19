@@ -1,9 +1,9 @@
 import {
 	deleteCosturera,
-	loadAllCostureras,
+	loadWorkersByRole,
 	loadWorkerById,
 	loadWorkerByUser,
-	newCosturera,
+	newWorker,
 	updateCosturera
 } from '../repositories/workerRepository.js'
 import { camelize } from '../utils/utils'
@@ -18,13 +18,13 @@ export const loadWorkerByIdService = async id => {
 	return camelize(usersDB) || []
 }
 
-export const loadAllCosturerasService = async () => {
-	const usersDB = await loadAllCostureras()
+export const loadWorkersByRoleService = async (roles = []) => {
+	const usersDB = await loadWorkersByRole(roles)
 	return camelize(usersDB)
 }
 
-export const newCostureraService = async worker => {
-	await newCosturera(worker)
+export const newWorkerService = async worker => {
+	await newWorker(worker)
 }
 
 export const updateCostureraService = async (id, worker) => {

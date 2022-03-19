@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import '../scss/components/newworkers.scss'
 import { useDispatch, useSelector } from 'react-redux'
-import { getAllCostureras, workers } from '../slices/workersSlice'
+import { getWorkers, workers } from '../slices/workersSlice'
 import CommonTable from '../common/CommonTable'
 import map from 'lodash/map'
-import { MOBILE_WIDTH, scrollToTop, textToCamelCase } from '../utils/utils'
+import { MOBILE_WIDTH, ROLES, scrollToTop, textToCamelCase } from '../utils/utils'
 import FloatingButton from '../common/FloatingButton'
 import NewWorker from './NewWorkers'
 import IAModal from '../common/IAModal'
@@ -16,6 +16,7 @@ import { deleteCostureraAPI, deleteProductAPI } from '../utils/apiUtils'
 import { getAllProducts } from '../slices/productsSlice'
 import Button from '@mui/material/Button'
 import LoadingButton from '@mui/lab/LoadingButton'
+import { ACTIONS } from './NewHistory'
 
 const tableHeader = [
 	{
@@ -25,6 +26,10 @@ const tableHeader = [
 	{
 		label: 'Nombre',
 		key: 'name'
+	},
+	{
+		label: 'Tipo',
+		key: 'role'
 	},
 	{
 		label: 'Teléfono',
@@ -50,17 +55,20 @@ const Workers = () => {
 	const dispatch = useDispatch()
 
 	useEffect(() => {
-		dispatch(getAllCostureras())
+		dispatch(getWorkers())
 	}, [])
 
 	const getTableBody = () => {
-		return map(activeWorkerList, ({ id, firstName, lastName, phone, oldWorker }, index) => {
-
+		return map(activeWorkerList, ({ id, firstName, lastName, phone, oldWorker, role }, index) => {
+			const isCostuera = role === ROLES.COSTURERA
 			return {
 				index: index + 1,
 				name: textToCamelCase(`${lastName}, ${firstName}`),
+				role: isCostuera ?
+					<span style={{ color: '#e32d89' }}>Costurera</span> :
+					<span style={{ color: '#0f4ee0' }}>Jornalero</span>,
 				phone,
-				oldWorker: oldWorker === 1 ? 'Si' : 'No',
+				oldWorker: isCostuera ? (oldWorker === 1 ? 'Si' : 'No') : '-',
 				actions: (
 					<div
 						style={{ display: 'flex' }}
@@ -107,7 +115,7 @@ const Workers = () => {
 		await deleteCostureraAPI(idToDelete)
 		setOpenDeleteModal(false)
 		setIdToDelete(null)
-		dispatch(getAllCostureras())
+		dispatch(getWorkers())
 	}
 
 	if (isLoading) {
@@ -122,7 +130,7 @@ const Workers = () => {
 		>
 
 			<div className="users-table">
-				<span className={'section-title'}>Lista de Costureras</span>
+				<span className={'section-title'}>Lista de Trabajadores</span>
 				{
 					activeWorkerList?.length > 0 &&
 					<CommonTable

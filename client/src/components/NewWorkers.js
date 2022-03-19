@@ -7,8 +7,21 @@ import LoadingButton from '@mui/lab/LoadingButton'
 import { createCostureraAPI, updateCostureraAPI } from '../utils/apiUtils'
 import isEmpty from 'lodash/isEmpty'
 import isNaN from 'lodash/isNaN'
-import { getAllCostureras } from '../slices/workersSlice'
+import { getWorkers } from '../slices/workersSlice'
 import IASwitch from '../common/IASwitch'
+import IASelect from '../common/IASelect'
+import { ROLES } from '../utils/utils'
+
+const rolesOptions = [
+	{
+		id: ROLES.COSTURERA,
+		label: ROLES.COSTURERA
+	},
+	{
+		id: ROLES.JORNAL,
+		label: ROLES.JORNAL
+	}
+]
 
 const NewWorker = ({ hideSection, workerEdit }) => {
 
@@ -34,6 +47,9 @@ const NewWorker = ({ hideSection, workerEdit }) => {
 		if (isNaN(worker?.phone))
 			newErrors.phone = 'Telefono debe ser numerico'
 
+		if (isEmpty(worker?.role))
+			newErrors.role = 'Tipo de trabajadores requerido'
+
 		setErrors({ ...newErrors })
 		return isEmpty(newErrors)
 	}
@@ -46,9 +62,9 @@ const NewWorker = ({ hideSection, workerEdit }) => {
 		if (worker?.id)
 			await updateCostureraAPI(worker.id, worker)
 		else
-			await createCostureraAPI({ ...worker, role: 'costurera' })
+			await createCostureraAPI({ ...worker })
 
-		dispatch(getAllCostureras())
+		dispatch(getWorkers())
 		setIsLoading(false)
 		hideSection()
 	}
@@ -69,6 +85,16 @@ const NewWorker = ({ hideSection, workerEdit }) => {
 		}))
 	}
 
+	const onChangeSelect = (name, value) => {
+		setWorker(prevState => ({
+			...prevState, [name]: value
+		}))
+		setErrors(prevState => ({
+			...prevState, [name]: ''
+		}))
+	}
+
+	console.log(worker)
 	return (
 		<div className="new-worker-container form">
 			<h3>{worker?.id ? 'Editar' : 'Nueva'} Costurera</h3>
@@ -103,11 +129,26 @@ const NewWorker = ({ hideSection, workerEdit }) => {
 				helperText={errors?.phone}
 			/>
 
-			<IASwitch
-				checked={worker?.oldWorker}
-				onChange={handleChange}
-				label={'Costurera con experiencia'}
+			<IASelect
+				label={'Tipo de trabajador'}
+				value={rolesOptions.find(option => option.id === worker?.role)}
+				data={rolesOptions}
+				textToShow={(object) => {
+					return object?.label?.toUpperCase()
+				}}
+				onChange={(object) => onChangeSelect('role', object?.id)}
+				error={!isEmpty(errors?.role)}
+				helperText={errors?.role}
+				isRequired
 			/>
+			{
+				worker?.role === ROLES.COSTURERA &&
+				<IASwitch
+					checked={worker?.oldWorker}
+					onChange={handleChange}
+					label={'Costurera con experiencia'}
+				/>
+			}
 
 			<div className={'buttons'}>
 				<Button

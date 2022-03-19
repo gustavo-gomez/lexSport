@@ -1,6 +1,6 @@
-import {getConnection} from "../database/conectDB.js";
-import {uuid} from "uuidv4";
-import { ROLES } from '../utils/utils'
+import { getConnection } from '../database/conectDB.js'
+import { uuid } from 'uuidv4'
+import { joinQuestionsMark, ROLES } from '../utils/utils'
 
 export const loadWorkerByUser = async user => {
 	const connection = await getConnection()
@@ -27,19 +27,26 @@ export const loadWorkerById = async id => {
 	return rows || []
 }
 
-export const loadAllCostureras = async () => {
+export const loadWorkersByRole = async (roles) => {
 	const connection = await getConnection()
-	const sql = `
+	let sqlParams = []
+	let sql = `
       SELECT *
       FROM workers
-      WHERE role = '${ROLES.COSTURERA}' and can_login = '0'
+      WHERE can_login = '0'
 	`
-	const [rows] = await connection.execute(sql)
+	// role = '${ROLES.COSTURERA}' and
+	if (roles?.length > 0) {
+		sql += ` AND role IN (${joinQuestionsMark(roles)})`
+		sqlParams.push(...roles)
+	}
+
+	const [rows] = await connection.execute(sql, sqlParams)
 	await connection.end()
 	return rows || []
 }
 
-export const newCosturera = async ({firstName, lastName, phone, oldWorker = false, role}) => {
+export const newWorker = async ({ firstName, lastName, phone, oldWorker = false, role }) => {
 	const connection = await getConnection()
 	const sql = `
       INSERT INTO workers (id, first_name, last_name, phone, old_worker, role)
@@ -51,7 +58,7 @@ export const newCosturera = async ({firstName, lastName, phone, oldWorker = fals
 	return rows || []
 }
 
-export const updateCosturera = async (id, {firstName, lastName, phone, oldWorker}) => {
+export const updateCosturera = async (id, { firstName, lastName, phone, oldWorker }) => {
 	const connection = await getConnection()
 	const sql = `
       UPDATE workers
