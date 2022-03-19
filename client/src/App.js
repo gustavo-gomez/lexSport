@@ -14,20 +14,20 @@ import History from './components/History'
 import Payments from './components/Payments'
 import jwtDecode from 'jwt-decode'
 import DashboardWorkers from './components/DashboardWorkers'
-import { ROLES } from './utils/utils'
+import { OPERATOR_ROLES, ROLES } from './utils/utils'
+import Schedule from './components/Schedule'
+import NewSchedule from './components/NewSchedule'
 
 const App = () => {
 
 	const dispatch = useDispatch()
-	const [userRole, setUseRole] = useState()
+	const [user, setUser] = useState()
 
 	useEffect(() => {
 		const isToken = localStorage.getItem(AUTH_TOKEN_KEY) !== null
 		if (isToken) {
 			const user = jwtDecode(localStorage.getItem(AUTH_TOKEN_KEY))
-
-			console.log(user?.role)
-			setUseRole(user?.role)
+			setUser(user)
 			dispatch(updateLoggedUser(jwtDecode(localStorage.getItem(AUTH_TOKEN_KEY))))
 		}
 	}, [])
@@ -43,8 +43,56 @@ const App = () => {
 			<Navigate to={redirectTo}/>
 	}
 
+	const getRoutesByPermission = () => {
+		switch (user.permission) {
+			case OPERATOR_ROLES.FILL:
+			case OPERATOR_ROLES.MAKES:
+				return (
+					<>
+						<Route
+							path="/historial"
+							element={
+								<PrivateRedirect redirectTo="/">
+									<History/>
+								</PrivateRedirect>
+							}
+						/>
+						<Route
+							path="/historial/nuevo"
+							element={
+								<PrivateRedirect redirectTo="/">
+									<NewHistory/>
+								</PrivateRedirect>
+							}
+						/>
+					</>
+				)
+			case OPERATOR_ROLES.SCHEDULE:
+				return (
+					<>
+						<Route
+							path="/horarios"
+							element={
+								<PrivateRedirect redirectTo="/">
+									<Schedule/>
+								</PrivateRedirect>
+							}
+						/>
+						<Route
+							path="/horarios/nuevo"
+							element={
+								<PrivateRedirect redirectTo="/">
+									<NewSchedule/>
+								</PrivateRedirect>
+							}
+						/>
+					</>
+				)
+		}
+	}
+
 	const getRoutesByRole = () => {
-		switch (userRole) {
+		switch (user?.role) {
 			case ROLES.ADMIN:
 				return (
 					<>
@@ -105,50 +153,26 @@ const App = () => {
 								</PrivateRedirect>
 							}
 						/>
+						<Route
+							path="/horarios"
+							element={
+								<PrivateRedirect redirectTo="/">
+									<Schedule/>
+								</PrivateRedirect>
+							}
+						/>
+						<Route
+							path="/horarios/nuevo"
+							element={
+								<PrivateRedirect redirectTo="/">
+									<NewSchedule/>
+								</PrivateRedirect>
+							}
+						/>
 					</>
 				)
 			case ROLES.OPERATOR:
-				return (
-					<>
-						<Route
-							path="/historial"
-							element={
-								<PrivateRedirect redirectTo="/">
-									<History/>
-								</PrivateRedirect>
-							}
-						/>
-						<Route
-							path="/historial/nuevo"
-							element={
-								<PrivateRedirect redirectTo="/">
-									<NewHistory/>
-								</PrivateRedirect>
-							}
-						/>
-					</>
-				)
-			case ROLES.SCHEDULER:
-				return (
-					<>
-						<Route
-							path="/historial"
-							element={
-								<PrivateRedirect redirectTo="/">
-									<History/>
-								</PrivateRedirect>
-							}
-						/>
-						<Route
-							path="/historial/nuevo"
-							element={
-								<PrivateRedirect redirectTo="/">
-									<NewHistory/>
-								</PrivateRedirect>
-							}
-						/>
-					</>
-				)
+				return getRoutesByPermission()
 		}
 	}
 
