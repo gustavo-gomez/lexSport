@@ -5,7 +5,7 @@ import Button from '@mui/material/Button'
 import IASelect from './IASelect'
 import isEmpty from 'lodash/isEmpty'
 import { useDispatch, useSelector } from 'react-redux'
-import { getAllCostureras, workers } from '../slices/workersSlice'
+import { getWorkers, workers } from '../slices/workersSlice'
 
 const IAFilters = ({ onSearch, isLoading, showWorkerFilter, defaultStartDate, onExport}) => {
 
@@ -18,7 +18,7 @@ const IAFilters = ({ onSearch, isLoading, showWorkerFilter, defaultStartDate, on
 	const dispatch = useDispatch()
 
 	useEffect(() => {
-		dispatch(getAllCostureras())
+		dispatch(getWorkers())
 	}, [])
 
 	const search = () => {
