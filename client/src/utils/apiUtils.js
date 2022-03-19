@@ -2,8 +2,9 @@ import axios from 'axios'
 import { AUTH_TOKEN_KEY } from '../slices/authSlice'
 import isEmpty from 'lodash/isEmpty'
 
-// const BASE_URL = process.env.REACT_APP_LEX_SPORT_IP_BACKEND || 'http://192.168.18.6:9000'
-const BASE_URL = 'https://lexsportperu.com'
+const BASE_URL = process.env.REACT_APP_LEX_SPORT_IP_BACKEND || 'http://192.168.18.6:9000'
+// const BASE_URL = process.env.REACT_APP_LEX_SPORT_IP_BACKEND || 'http://192.168.101.2:9000'
+// const BASE_URL = 'https://lexsportperu.com'
 
 
 export const ENDPOINTS = {
@@ -13,15 +14,17 @@ export const ENDPOINTS = {
 	ACTIVITY: '/activity',
 	PRODUCTS_DASHBOARD: '/dashboard/products',
 	PRODUCTS_WORKERS: '/dashboard/workers',
+	SCHEDULES: '/schedules',
 }
 
 export const loginAPI = async (user, password) => {
 	return await callAPI('post', BASE_URL + ENDPOINTS.LOGIN, { user, password })
 }
 
-// Get all costureras
-export const getAllCosturerasAPI = async () => {
-	return await callAPI('GET', BASE_URL + ENDPOINTS.WORKERS)
+// Get all workers
+export const getAllWorkersAPI = async (roles) => {
+	console.log('roles', roles)
+	return await callAPI('GET', `${BASE_URL}${ENDPOINTS.WORKERS}?roles=${roles?.join(',')}`)
 }
 
 // create costurera
@@ -89,6 +92,16 @@ export const deleteCostureraAPI = async (id) => {
 	return await callAPI('DELETE', `${BASE_URL}${ENDPOINTS.WORKERS}/${id}`)
 }
 
+
+//new schedules
+export const newSchedulesAPI = async (schedules) => {
+	return await callAPI('POST', `${BASE_URL}${ENDPOINTS.SCHEDULES}`, { schedules })
+}
+
+// get schedules
+export const loadSchedulesAPI = async (starDate, endDate, workerId) => {
+	return await callAPI('GET', `${BASE_URL}${ENDPOINTS.SCHEDULES}?startDate=${starDate}&endDate=${endDate}${!isEmpty(workerId) ? `&workerId=${workerId}` : ''}`)
+}
 
 const callAPI = async (method, url, body) => {
 	const authToken = localStorage.getItem(AUTH_TOKEN_KEY)
