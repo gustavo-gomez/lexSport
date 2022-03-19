@@ -3,7 +3,7 @@ import '../scss/components/newhistory.scss'
 import { useDispatch, useSelector } from 'react-redux'
 import { getAllProducts, products } from '../slices/productsSlice'
 import IALoader from '../common/IALoader'
-import { getAllCostureras, workers } from '../slices/workersSlice'
+import { getWorkers, workers } from '../slices/workersSlice'
 import IASelect from '../common/IASelect'
 import IATextInput from '../common/IATextInput'
 import isEmpty from 'lodash/isEmpty'
@@ -62,7 +62,7 @@ const NewHistory = () => {
 
 	useEffect(() => {
 		dispatch(getAllProducts())
-		dispatch(getAllCostureras())
+		dispatch(getWorkers())
 	}, [])
 
 	if (isLoading) {
