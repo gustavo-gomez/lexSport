@@ -6,6 +6,7 @@ import workers from "./routes/workers"
 import products from "./routes/products"
 import activity from "./routes/activity"
 import dashboard from "./routes/dashboard"
+import schedules from "./routes/schedules"
 
 const PORT = process.env.PORT || 9000
 const PROD = process.env.NODE_ENV === 'production'
@@ -27,6 +28,7 @@ app.use('/workers', workers)
 app.use('/products', products)
 app.use('/activity', activity)
 app.use('/dashboard', dashboard)
+app.use('/schedules', schedules)
 
 
 if (PROD) {

@@ -29,6 +29,7 @@ html, body {
 }
 
 .buttons {
+  margin-top: 10px;
   width: 100%;
   display: flex;
   justify-content: space-evenly;
@@ -40,9 +41,15 @@ html, body {
 }
 
 .form {
-  .MuiTextField-root {
+  .MuiTextField-root, .MuiAutocomplete-hasPopupIcon {
     margin-bottom: 20px;
     width: 70%;
+  }
+
+  .MuiAutocomplete-hasPopupIcon {
+    .MuiTextField-root {
+      width: 100%;
+    }
   }
 }
 
@@ -65,7 +72,7 @@ html, body {
     justify-content: center;
   }
 
-  .section-title{
+  .section-title {
     font-size: 2rem;
   }
 }

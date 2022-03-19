@@ -14,12 +14,13 @@ import DashboardOutlinedIcon from '@mui/icons-material/DashboardOutlined'
 import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined'
 import SummarizeOutlinedIcon from '@mui/icons-material/SummarizeOutlined'
 import PaymentsOutlinedIcon from '@mui/icons-material/PaymentsOutlined'
+import ScheduleIcon from '@mui/icons-material/Schedule'
 import Toolbar from '@mui/material/Toolbar'
 import { generalSettings, toggleDrawer } from '../slices/generalSettingsSlice'
 import logo from '../images/lex_sport.png'
 import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined'
 import { auth, logout } from '../slices/authSlice'
-import { ROLES } from '../utils/utils'
+import { OPERATOR_ROLES, ROLES } from '../utils/utils'
 
 const drawerWidth = 240
 
@@ -28,42 +29,50 @@ const menuOptions = [
 		name: 'Historial',
 		icon: <SummarizeOutlinedIcon/>,
 		path: '/historial',
-		onlyAdmin: false
+		roles: [ROLES.ADMIN, ROLES.OPERATOR],
+		permissions: [OPERATOR_ROLES.MAKES, OPERATOR_ROLES.FILL]
 	},
 	{
 		name: 'Graficos',
 		icon: <DashboardOutlinedIcon/>,
-		onlyAdmin: true
+		roles: [ROLES.ADMIN]
 	},
 	{
 		type: 'child',
 		name: 'Productos',
 		path: '/dashboard/productos',
-		onlyAdmin: true
+		roles: [ROLES.ADMIN]
 	},
 	{
 		type: 'child',
 		name: 'Costureras',
 		path: '/dashboard/trabajadores',
-		onlyAdmin: true
+		roles: [ROLES.ADMIN]
 	},
 	{
 		name: 'Pagos',
 		icon: <PaymentsOutlinedIcon/>,
 		path: '/pagos',
-		onlyAdmin: true
+		roles: [ROLES.ADMIN]
 	},
 	{
-		name: 'Costureras',
+		name: 'Trabajadores',
 		icon: <PersonOutlineOutlinedIcon/>,
 		path: '/trabajadores',
-		onlyAdmin: true
+		roles: [ROLES.ADMIN]
 	},
 	{
 		name: 'Productos',
 		icon: <Inventory2OutlinedIcon/>,
 		path: '/productos',
-		onlyAdmin: true
+		roles: [ROLES.ADMIN]
+	},
+	{
+		name: 'Horarios',
+		icon: <ScheduleIcon/>,
+		path: '/horarios',
+		roles: [ROLES.ADMIN, ROLES.OPERATOR],
+		permissions: [OPERATOR_ROLES.SCHEDULE]
 	},
 ]
 
@@ -95,32 +104,33 @@ const SideBar = () => {
 			<Divider/>
 			<List>
 				{
-					menuOptions.map(({ name, icon, path, type, onlyAdmin }, index) => {
-						if (onlyAdmin && !isAdmin) return null
-							return (
+					menuOptions.map(({ name, icon, path, type, roles, permissions }, index) => {
+						if (!roles?.includes(loggedUser?.role)) return null
+						if (!isAdmin && !permissions?.includes(loggedUser?.permission)) return null
 
-								<ListItem
-									button
-									key={`${name}-${index}`}
-									onClick={() => {
-										dispatch(toggleDrawer())
-										navigate(path)
-									}}
-									style={type === 'child' ? {
-										marginLeft: '1.5rem',
-									} : {}}
+						return (
+							<ListItem
+								button
+								key={`${name}-${index}`}
+								onClick={() => {
+									dispatch(toggleDrawer())
+									navigate(path)
+								}}
+								style={type === 'child' ? {
+									marginLeft: '1.1rem',
+								} : {}}
+							>
+								<ListItemIcon
+									className={currentPath === path ? 'selected-menu' : ''}
 								>
-									<ListItemIcon
-										className={currentPath === path ? 'selected-menu' : ''}
-									>
-										{icon}
-									</ListItemIcon>
-									<ListItemText
-										primary={name}
-										className={currentPath === path ? 'selected-menu' : ''}
-									/>
-								</ListItem>
-							)
+									{icon}
+								</ListItemIcon>
+								<ListItemText
+									primary={name}
+									className={currentPath === path ? 'selected-menu' : ''}
+								/>
+							</ListItem>
+						)
 					})
 				}
 			</List>
