@@ -70,3 +70,24 @@ ALTER TABLE `workers`
 
 ALTER TABLE `products`
     ADD hidden TINYINT(4) NOT NULL DEFAULT '0' AFTER `fill_price`;
+
+
+-- 19 mar
+ALTER TABLE `workers`
+    ADD permission VARCHAR(40) AFTER `role`;
+
+-- missing permissions for users
+
+CREATE TABLE IF NOT EXISTS `schedules`
+(
+    id           VARCHAR(40) NOT NULL,
+    worker_id    VARCHAR(40) NOT NULL,
+    action       VARCHAR(50) NOT NULL,
+    submitter_id VARCHAR(40) NOT NULL,
+    date         TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    create_date  TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (id),
+    FOREIGN KEY (worker_id) REFERENCES `workers` (id),
+    FOREIGN KEY (submitter_id) REFERENCES `workers` (id)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8;
