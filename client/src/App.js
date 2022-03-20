@@ -17,6 +17,7 @@ import DashboardWorkers from './components/DashboardWorkers'
 import { OPERATOR_ROLES, ROLES } from './utils/utils'
 import Schedule from './components/Schedule'
 import NewSchedule from './components/NewSchedule'
+import Operators from './components/Operators'
 
 const App = () => {
 
@@ -166,6 +167,14 @@ const App = () => {
 							element={
 								<PrivateRedirect redirectTo="/">
 									<NewSchedule/>
+								</PrivateRedirect>
+							}
+						/>
+						<Route
+							path="/operadores"
+							element={
+								<PrivateRedirect redirectTo="/">
+									<Operators/>
 								</PrivateRedirect>
 							}
 						/>

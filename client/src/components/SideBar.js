@@ -14,6 +14,7 @@ import DashboardOutlinedIcon from '@mui/icons-material/DashboardOutlined'
 import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined'
 import SummarizeOutlinedIcon from '@mui/icons-material/SummarizeOutlined'
 import PaymentsOutlinedIcon from '@mui/icons-material/PaymentsOutlined'
+import EngineeringIcon from '@mui/icons-material/Engineering'
 import ScheduleIcon from '@mui/icons-material/Schedule'
 import Toolbar from '@mui/material/Toolbar'
 import { generalSettings, toggleDrawer } from '../slices/generalSettingsSlice'
@@ -74,6 +75,12 @@ const menuOptions = [
 		roles: [ROLES.ADMIN, ROLES.OPERATOR],
 		permissions: [OPERATOR_ROLES.SCHEDULE]
 	},
+	{
+		name: 'Operarios',
+		icon: <EngineeringIcon/>,
+		path: '/operadores',
+		roles: [ROLES.ADMIN],
+	},
 ]
 
 const SideBar = () => {
@@ -104,7 +111,7 @@ const SideBar = () => {
 			<Divider/>
 			<List>
 				{
-					menuOptions.map(({ name, icon, path, type, roles, permissions }, index) => {
+					menuOptions.map(({ name, icon, path, type, roles, permissions, props }, index) => {
 						if (!roles?.includes(loggedUser?.role)) return null
 						if (!isAdmin && !permissions?.includes(loggedUser?.permission)) return null
 

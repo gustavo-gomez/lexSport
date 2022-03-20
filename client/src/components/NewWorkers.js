@@ -10,7 +10,7 @@ import isNaN from 'lodash/isNaN'
 import { getWorkers } from '../slices/workersSlice'
 import IASwitch from '../common/IASwitch'
 import IASelect from '../common/IASelect'
-import { ROLES } from '../utils/utils'
+import { OPERATOR_ROLES, OPERATOR_ROLES_TEXT, ROLES } from '../utils/utils'
 
 const rolesOptions = [
 	{
@@ -23,16 +23,34 @@ const rolesOptions = [
 	}
 ]
 
-const NewWorker = ({ hideSection, workerEdit }) => {
+const permissions = [
+	{
+		id: OPERATOR_ROLES.MAKES,
+		label: OPERATOR_ROLES_TEXT[OPERATOR_ROLES.MAKES]
+	},
+	{
+		id: OPERATOR_ROLES.FILL,
+		label: OPERATOR_ROLES_TEXT[OPERATOR_ROLES.FILL]
+	},
+	{
+		id: OPERATOR_ROLES.SCHEDULE,
+		label: OPERATOR_ROLES_TEXT[OPERATOR_ROLES.SCHEDULE]
+	},
+]
+
+const NewWorker = ({ hideSection, workerEdit, isOperator = false }) => {
 
 	const [worker, setWorker] = useState({})
 	const [isLoading, setIsLoading] = useState(false)
 	const [errors, setErrors] = useState({})
+	const [isEdit, setIsEdit] = useState(false)
+	const [changePassword, setChangePassword] = useState(false)
 	const dispatch = useDispatch()
 
 	useEffect(() => {
 		setWorker({ ...workerEdit })
 		setErrors({})
+		if (!isEmpty(workerEdit)) setIsEdit(true)
 	}, [workerEdit])
 
 	const isValidForm = () => {
@@ -47,8 +65,22 @@ const NewWorker = ({ hideSection, workerEdit }) => {
 		if (isNaN(worker?.phone))
 			newErrors.phone = 'Telefono debe ser numerico'
 
-		if (isEmpty(worker?.role))
+		if (!isOperator && isEmpty(worker?.role))
 			newErrors.role = 'Tipo de trabajadores requerido'
+
+		if (isOperator) {
+			if (isEmpty(worker?.permission))
+				newErrors.permission = 'Rol del trabajador requerido'
+
+			if (isEmpty(worker?.user))
+				newErrors.user = 'Usuario requerido'
+
+			if(!isEdit && isEmpty(worker?.password))
+				newErrors.password = 'Contraseña requerida'
+
+			if(isEdit && changePassword && isEmpty(worker?.password))
+				newErrors.password = 'Contraseña requerida'
+		}
 
 		setErrors({ ...newErrors })
 		return isEmpty(newErrors)
@@ -62,9 +94,9 @@ const NewWorker = ({ hideSection, workerEdit }) => {
 		if (worker?.id)
 			await updateCostureraAPI(worker.id, worker)
 		else
-			await createCostureraAPI({ ...worker })
+			await createCostureraAPI({ ...worker, role: isOperator ? ROLES.OPERATOR : worker.role })
 
-		dispatch(getWorkers())
+		dispatch(getWorkers({}))
 		setIsLoading(false)
 		hideSection()
 	}
@@ -81,7 +113,7 @@ const NewWorker = ({ hideSection, workerEdit }) => {
 	const handleChange = (event) => {
 		setWorker(prevState => ({
 			...prevState,
-			oldWorker: event.target.checked
+			[event.target.name]: event.target.checked
 		}))
 	}
 
@@ -94,10 +126,9 @@ const NewWorker = ({ hideSection, workerEdit }) => {
 		}))
 	}
 
-	console.log(worker)
 	return (
 		<div className="new-worker-container form">
-			<h3>{worker?.id ? 'Editar' : 'Nueva'} Costurera</h3>
+			<h3>{worker?.id ? 'Editar' : 'Nuevo'} {isOperator ? 'Operario' : 'Trabajador'}</h3>
 
 			<IATextInput
 				label="Nombres"
@@ -128,22 +159,86 @@ const NewWorker = ({ hideSection, workerEdit }) => {
 				error={!isEmpty(errors?.phone)}
 				helperText={errors?.phone}
 			/>
-
-			<IASelect
-				label={'Tipo de trabajador'}
-				value={rolesOptions.find(option => option.id === worker?.role)}
-				data={rolesOptions}
-				textToShow={(object) => {
-					return object?.label?.toUpperCase()
-				}}
-				onChange={(object) => onChangeSelect('role', object?.id)}
-				error={!isEmpty(errors?.role)}
-				helperText={errors?.role}
-				isRequired
-			/>
+			{
+				!isEdit && !isOperator &&
+				<IASelect
+					label={'Tipo de trabajador'}
+					value={rolesOptions.find(option => option.id === worker?.role)}
+					data={rolesOptions}
+					textToShow={(object) => {
+						return object?.label?.toUpperCase()
+					}}
+					onChange={(object) => onChangeSelect('role', object?.id)}
+					error={!isEmpty(errors?.role)}
+					helperText={errors?.role}
+					isRequired
+				/>
+			}
+			{
+				isOperator &&
+				<>
+					<IATextInput
+						label="Nombre Usuario para login"
+						name={'user'}
+						value={worker?.user}
+						type={'text'}
+						onChangeText={onChange}
+						error={!isEmpty(errors?.user)}
+						helperText={errors?.user}
+						isRequired
+					/>
+					<IASelect
+						label={'Rol del operador'}
+						value={permissions.find(option => option.id === worker?.permission)}
+						data={permissions}
+						textToShow={(object) => {
+							return object?.label
+						}}
+						onChange={(object) => onChangeSelect('permission', object?.id)}
+						error={!isEmpty(errors?.permission)}
+						helperText={errors?.permission}
+						isRequired
+					/>
+					{
+						isEdit ?
+						<>
+							<IASwitch
+								name={'changePassword'}
+								checked={changePassword}
+								onChange={(e) => setChangePassword(e.target.checked)}
+								label={'Cambiar clave'}
+							/>
+							{
+								changePassword &&
+								<IATextInput
+									label="Clave"
+									name={'password'}
+									value={worker?.password}
+									type={'password'}
+									onChangeText={onChange}
+									error={!isEmpty(errors?.password)}
+									helperText={errors?.password}
+									isRequired
+								/>
+							}
+						</> :
+							<IATextInput
+								label="Clave"
+								name={'password'}
+								value={worker?.password}
+								type={'password'}
+								onChangeText={onChange}
+								error={!isEmpty(errors?.password)}
+								helperText={errors?.password}
+								isRequired
+							/>
+					}
+				</>
+			}
 			{
 				worker?.role === ROLES.COSTURERA &&
 				<IASwitch
+					name={'oldWorker'}
 					checked={worker?.oldWorker}
 					onChange={handleChange}
 					label={'Costurera con experiencia'}

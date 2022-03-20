@@ -13,6 +13,7 @@ import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined'
 import LoadingButton from '@mui/lab/LoadingButton'
 import { newActivitiesAPI } from '../utils/apiUtils'
 import { useNavigate } from 'react-router-dom'
+import { ROLES } from '../utils/utils'
 
 const actionsData = [
 	{
@@ -62,7 +63,7 @@ const NewHistory = () => {
 
 	useEffect(() => {
 		dispatch(getAllProducts())
-		dispatch(getWorkers())
+		dispatch(getWorkers({roles: [ROLES.COSTURERA]}))
 	}, [])
 
 	if (isLoading) {
