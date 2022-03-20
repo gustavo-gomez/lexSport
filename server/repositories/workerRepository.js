@@ -33,11 +33,11 @@ export const loadWorkersByRole = async (roles) => {
 	let sql = `
       SELECT *
       FROM workers
-      WHERE can_login = '0'
 	`
+      // WHERE can_login = '0'
 	// role = '${ROLES.COSTURERA}' and
 	if (roles?.length > 0) {
-		sql += ` AND role IN (${joinQuestionsMark(roles)})`
+		sql += ` WHERE role IN (${joinQuestionsMark(roles)})`
 		sqlParams.push(...roles)
 	}
 
@@ -46,30 +46,34 @@ export const loadWorkersByRole = async (roles) => {
 	return rows || []
 }
 
-export const newWorker = async ({ firstName, lastName, phone, oldWorker = false, role }) => {
+export const newWorker = async ({ firstName, lastName, phone = null, oldWorker = false, role, password = null, permission = null, user = null }) => {
+	console.log(firstName, lastName, phone, oldWorker, role, password, permission)
 	const connection = await getConnection()
 	const sql = `
-      INSERT INTO workers (id, first_name, last_name, phone, old_worker, role)
-      VALUES (?, ?, ?, ?, ?, ?)
+      INSERT INTO workers (id, first_name, last_name, phone, old_worker, role, password, permission, user)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
 
 	`
-	const [rows] = await connection.execute(sql, [uuid(), firstName, lastName, phone, oldWorker, role])
+	const [rows] = await connection.execute(sql, [uuid(), firstName, lastName, phone, oldWorker, role, password, permission, user])
 	await connection.end()
 	return rows || []
 }
 
-export const updateCosturera = async (id, { firstName, lastName, phone, oldWorker }) => {
+export const updateCosturera = async (id, { firstName, lastName, phone = null, oldWorker, role = null, permission = null, user = null}) => {
 	const connection = await getConnection()
 	const sql = `
       UPDATE workers
       SET first_name = ?,
           last_name  = ?,
           phone      = ?,
-          old_worker = ?
+          old_worker = ?,
+          role = ?,
+          permission = ?,
+					user = ?
       WHERE id = ?
 
 	`
-	const [rows] = await connection.execute(sql, [firstName, lastName, phone, oldWorker, id])
+	const [rows] = await connection.execute(sql, [firstName, lastName, phone, oldWorker, role, permission, user, id])
 	await connection.end()
 	return rows || []
 }

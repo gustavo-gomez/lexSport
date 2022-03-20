@@ -37,7 +37,6 @@ router.get('/', [verifyAuthJWToken], async (req, res) => {
 const newUserFormValidator = [
 	check('worker.firstName', 'Nombres es requerido').exists(),
 	check('worker.lastName', 'Apellidos es requerido').exists(),
-	check('worker.phone', 'Celular es requerido').exists(),
 	check('worker.role', 'Tipo de trabajador es requerido').exists()
 ]
 
@@ -51,6 +50,10 @@ router.post('/', [newUserFormValidator, verifyAuthJWTokenIsAdmin], async (req, r
 			return res.status(HTTP_STATUS_CODES.BAD_REQUEST).json(getGenericMessage(validationErrorsToArray(errors)))
 
 		const { worker } = req.body
+
+		if(worker?.role === ROLES.OPERATOR && isEmpty(worker?.password))
+			return res.status(HTTP_STATUS_CODES.BAD_REQUEST).json(getGenericMessage(['Contraseña es requerida']))
+
 		console.log('worker: ', worker)
 		await newWorkerService(worker)
 
@@ -64,8 +67,7 @@ router.post('/', [newUserFormValidator, verifyAuthJWTokenIsAdmin], async (req, r
 const updateUserFormValidator = [
 	check('worker.firstName', 'Nombres es requerido').exists(),
 	check('worker.lastName', 'Apellidos es requerido').exists(),
-	check('worker.phone', 'Celular es requerido').exists(),
-	check('worker.oldWorker', 'Costurera antigua es requerido').exists()
+	check('worker.role', 'Tipo de trabajador es requerido').exists(),
 ]
 //update costurera
 router.put('/:id', [updateUserFormValidator, verifyAuthJWTokenIsAdmin], async (req, res) => {

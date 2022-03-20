@@ -23,8 +23,7 @@ export const loginAPI = async (user, password) => {
 
 // Get all workers
 export const getAllWorkersAPI = async (roles) => {
-	console.log('roles', roles)
-	return await callAPI('GET', `${BASE_URL}${ENDPOINTS.WORKERS}?roles=${roles?.join(',')}`)
+	return await callAPI('GET', `${BASE_URL}${ENDPOINTS.WORKERS}${roles?.length > 0 ? `?roles=${roles?.join(',')}` : ''}`)
 }
 
 // create costurera

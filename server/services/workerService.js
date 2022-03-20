@@ -7,6 +7,8 @@ import {
 	updateCosturera
 } from '../repositories/workerRepository.js'
 import { camelize } from '../utils/utils'
+import { map, omit } from 'lodash'
+import { hashPassword } from '../utils/passUtils'
 
 export const loadWorkerByUSerService = async user => {
 	const usersDB = await loadWorkerByUser(user)
@@ -20,11 +22,13 @@ export const loadWorkerByIdService = async id => {
 
 export const loadWorkersByRoleService = async (roles = []) => {
 	const usersDB = await loadWorkersByRole(roles)
-	return camelize(usersDB)
+	return camelize(map(usersDB, user => omit(user, 'password')))
 }
 
 export const newWorkerService = async worker => {
-	await newWorker(worker)
+	const hashPass = hashPassword(worker.password)
+	const workerToSave = { ...omit(worker, 'password'), password: hashPass }
+	await newWorker(workerToSave)
 }
 
 export const updateCostureraService = async (id, worker) => {
