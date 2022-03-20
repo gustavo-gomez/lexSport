@@ -54,6 +54,12 @@ export const OPERATOR_ROLES = {
 	SCHEDULE: 'schedule'
 }
 
+export const OPERATOR_ROLES_TEXT = {
+	[OPERATOR_ROLES.MAKES]: 'confección',
+	[OPERATOR_ROLES.FILL]: 'llenados',
+	[OPERATOR_ROLES.SCHEDULE]: 'horarios',
+}
+
 export const SCHEDULE_ACTIONS = {
 	ENTER: 'enter',
 	BREAK: 'break',
