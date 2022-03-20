@@ -27,7 +27,7 @@ router.get('/', [verifyAuthJWToken], async (req, res) => {
 		const { startDate, endDate, workerId } = req.query
 		const { id, role } = req.tokenDecoded
 		const isAdmin = role === ROLES.ADMIN
-		const idToFilter = isAdmin ? null : id
+		const idToFilter = isAdmin ? null : id // todo: check if user sees only his activities, or just use role
 		const activitiesDB = await getActivitiesService(workerId, new Date(+startDate), new Date(+endDate), idToFilter)
 		const workers = await loadWorkersByRoleService()
 		const products = await loadAllProductsService({onlyFillPrice: false})
