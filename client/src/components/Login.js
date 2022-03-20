@@ -4,7 +4,6 @@ import { useDispatch, useSelector } from 'react-redux'
 import { auth, AUTH_TOKEN_KEY, login } from '../slices/authSlice'
 import jwtDecode from 'jwt-decode'
 import LoadingButton from '@mui/lab/LoadingButton'
-import { hashPassword } from '../utils/passUtils'
 import CssBaseline from '@mui/material/CssBaseline'
 import TextField from '@mui/material/TextField'
 import Box from '@mui/material/Box'
@@ -24,9 +23,7 @@ const Login = () => {
 		const token = localStorage.getItem(AUTH_TOKEN_KEY)
 		if (token !== null) {
 			const user = jwtDecode(token)
-			console.log('gustavo: ', user?.role)
 			if (user?.role === ROLES.ADMIN || user?.role === ROLES.OPERATOR) {
-				console.log('redirect to historial')
 				if (user?.permission === OPERATOR_ROLES.SCHEDULE)
 					navigate('/horarios')
 				else
@@ -38,10 +35,11 @@ const Login = () => {
 	const handleSubmit = (e) => {
 		e.preventDefault()
 		const data = new FormData(e.currentTarget)
-		const email = data.get('email')
-		const hashPass = hashPassword(data.get('password'))
 
-		dispatch(login({ email, password: hashPass }))
+		dispatch(login({
+			email: data.get('email'),
+			password: data.get('password')
+		}))
 	}
 
 	return (
