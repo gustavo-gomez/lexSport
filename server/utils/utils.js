@@ -7,7 +7,7 @@ import moment from 'moment'
 
 export const PERU_TIME_OFFSET = -5
 
-export const getGenericMessage = (message = 'Contacte al administrador') => ({
+export const getGenericMessage = (message = 'Ocurrió un error') => ({
 	responseMessage: message
 })
 
@@ -68,6 +68,12 @@ export const getPeruDay = milliseconds => {
 	return new Date(peruMoment.valueOf())
 }
 
+export const getPeruDayWithHour = (milliseconds, hour) => {
+	const peruMoment = moment(milliseconds).utcOffset(PERU_TIME_OFFSET)
+	peruMoment.set({ hour: hour, minute: 0, second: 0, millisecond: 0 })
+	return new Date(peruMoment.valueOf())
+}
+
 export const milliSecondsToMinutes = (millis) => {
 	const minutes = moment.duration(millis).minutes()
 	const hours = Math.trunc(moment.duration(millis).asHours())
@@ -82,6 +88,8 @@ export const minutesToHoursAndMinutes = (min) => {
 	return `${rHours.toString().padStart(2, '0')}:${rMinutes.toString().padStart(2, '0')}`
 }
 
+export const WEEKDAY_ENTER_HOUR = 7
+export const SATURDAY_ENTER_HOUR = 8
 export const SATURDAY = 6
 export const WEEKDAY_WORKING_MINUTES = 600 // 10 hours - 7am to 6pm - 1 hour break
 export const SATURDAY_WORKING_MINUTES = 300 // 5 hours - 8am to 1pm - no break
