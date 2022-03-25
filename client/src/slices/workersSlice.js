@@ -1,5 +1,5 @@
 import {createAsyncThunk, createSlice} from '@reduxjs/toolkit'
-import {getAllCosturerasAPI} from "../utils/apiUtils"
+import {getAllWorkersAPI} from "../utils/apiUtils"
 
 export const AUTH_TOKEN_KEY = 'authTokenLexSport'
 
@@ -9,10 +9,10 @@ const initialState = {
 	isLoading: false,
 }
 
-export const getAllCostureras = createAsyncThunk(
+export const getWorkers = createAsyncThunk(
 	'workers/getCostureras',
-	async (params, thunkAPI) => {
-		const {data, responseMessage, isError} = await getAllCosturerasAPI()
+	async ({ roles }, thunkAPI) => {
+		const {data, responseMessage, isError} = await getAllWorkersAPI(roles)
 		if (!isError) {
 			return data
 		} else {
@@ -33,16 +33,16 @@ export const workersSlice = createSlice({
 	},
 	extraReducers: (builder) => {
 		builder
-		.addCase(getAllCostureras.pending, (state, {payload}) => {
+		.addCase(getWorkers.pending, (state, {payload}) => {
 			state.isLoading = true
 		})
-		.addCase(getAllCostureras.fulfilled, (state, {payload}) => {
-			const {costureras} = payload
-			state.workerList = costureras
-			state.activeWorkerList = costureras.filter(costurera => costurera.hidden === 0)
+		.addCase(getWorkers.fulfilled, (state, {payload}) => {
+			const {workers} = payload
+			state.workerList = workers
+			state.activeWorkerList = workers.filter(worker => worker.hidden === 0)
 			state.isLoading = false
 		})
-		.addCase(getAllCostureras.rejected, (state, {payload}) => {
+		.addCase(getWorkers.rejected, (state, {payload}) => {
 			state.isLoading = false
 		})
 	}

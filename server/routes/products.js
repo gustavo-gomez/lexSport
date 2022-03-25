@@ -1,5 +1,11 @@
 import { Router } from 'express'
-import { getGenericMessage, getSuccessResponse, HTTP_STATUS_CODES, validationErrorsToArray } from '../utils/utils.js'
+import {
+	getGenericMessage,
+	getSuccessResponse,
+	HTTP_STATUS_CODES,
+	OPERATOR_ROLES,
+	validationErrorsToArray
+} from '../utils/utils.js'
 import { verifyAuthJWToken, verifyAuthJWTokenIsAdmin } from '../utils/passUtils.js'
 import {
 	deleteProductService,
@@ -16,13 +22,13 @@ const router = Router()
 //get all products
 router.get('/', [verifyAuthJWToken], async (req, res) => {
 	try {
-
-		const products = await loadAllProductsService()
+		const { permission } = req.tokenDecoded
+		const products = await loadAllProductsService({onlyFillPrice: permission === OPERATOR_ROLES.FILL})
 
 		return res.json(getSuccessResponse({products}))
 	} catch (e) {
 		console.log('Error: ', e)
-		return res.json(getGenericMessage())
+		return res.status(HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR).json(getGenericMessage())
 	}
 })
 
@@ -47,7 +53,7 @@ router.post('/', [newProductFormValidator, verifyAuthJWTokenIsAdmin], async (req
 
 	} catch (e) {
 		console.log('Error: ', e)
-		return res.json(getGenericMessage())
+		return res.status(HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR).json(getGenericMessage())
 	}
 })
 
@@ -78,7 +84,7 @@ router.put('/:id', [updateProductFormValidator, verifyAuthJWTokenIsAdmin], async
 
 	} catch (e) {
 		console.log('Error: ', e)
-		return res.json(getGenericMessage())
+		return res.status(HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR).json(getGenericMessage())
 	}
 })
 
@@ -93,7 +99,7 @@ router.delete('/:id', [verifyAuthJWToken], async (req, res) => {
 
 	} catch ( e ) {
 		console.log('Error: ', e)
-		return res.json(getGenericMessage())
+		return res.status(HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR).json(getGenericMessage())
 	}
 })
 

@@ -13,15 +13,16 @@ export const ENDPOINTS = {
 	ACTIVITY: '/activity',
 	PRODUCTS_DASHBOARD: '/dashboard/products',
 	PRODUCTS_WORKERS: '/dashboard/workers',
+	SCHEDULES: '/schedules',
 }
 
 export const loginAPI = async (user, password) => {
 	return await callAPI('post', BASE_URL + ENDPOINTS.LOGIN, { user, password })
 }
 
-// Get all costureras
-export const getAllCosturerasAPI = async () => {
-	return await callAPI('GET', BASE_URL + ENDPOINTS.WORKERS)
+// Get all workers
+export const getAllWorkersAPI = async (roles) => {
+	return await callAPI('GET', `${BASE_URL}${ENDPOINTS.WORKERS}${roles?.length > 0 ? `?roles=${roles?.join(',')}` : ''}`)
 }
 
 // create costurera
@@ -90,6 +91,16 @@ export const deleteCostureraAPI = async (id) => {
 }
 
 
+//new schedules
+export const newSchedulesAPI = async (schedules) => {
+	return await callAPI('POST', `${BASE_URL}${ENDPOINTS.SCHEDULES}`, { schedules })
+}
+
+// get schedules
+export const loadSchedulesAPI = async (starDate, endDate, workerId) => {
+	return await callAPI('GET', `${BASE_URL}${ENDPOINTS.SCHEDULES}?startDate=${starDate}&endDate=${endDate}${!isEmpty(workerId) ? `&workerId=${workerId}` : ''}`)
+}
+
 const callAPI = async (method, url, body) => {
 	const authToken = localStorage.getItem(AUTH_TOKEN_KEY)
 	const config = {
@@ -108,7 +119,7 @@ const callAPI = async (method, url, body) => {
 		return {
 			isError: true,
 			responseCode: error?.response?.status,
-			responseMessage: error?.response?.data?.responseMessage || 'Error'
+			responseMessage: error?.response?.data?.responseMessage || 'Ocurrió un error'
 		}
 	}
 }

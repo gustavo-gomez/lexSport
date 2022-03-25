@@ -13,12 +13,17 @@ export const loadProductById = async id => {
 	return rows || []
 }
 
-export const loadAllProducts = async () => {
+export const loadAllProducts = async ({ onlyFillPrice }) => {
 	const connection = await getConnection()
-	const sql = `
+	let sql = `
       select *
       from products
 	`
+	if(onlyFillPrice) {
+		sql += `
+			where fill_price > 0.00
+		`
+	}
 	const [rows] = await connection.execute(sql)
 	await connection.end()
 	return rows || []

@@ -6,7 +6,7 @@ import {
 	HTTP_STATUS_CODES,
 	validationErrorsToArray
 } from "../utils/utils.js";
-import {createAuthJWToken, verifyPassword} from "../utils/passUtils.js";
+import { createAuthJWToken, hashPassword, verifyPassword } from '../utils/passUtils.js'
 import omit from "lodash/omit.js";
 import {check, validationResult} from 'express-validator'
 import isEmpty from "lodash/isEmpty";
@@ -33,7 +33,7 @@ router.post('/login', [loginValidator], async (req, res) => {
 			return res.status(HTTP_STATUS_CODES.FORBIDDEN).send(loginError)
 
 		const {password: dbUserPassword} = userDB[0]
-		if (dbUserPassword === password) {
+		if (dbUserPassword === hashPassword(password)) {
 			const cleanedWorker = omit(userDB[0], ['password'])
 			const worker = {...cleanedWorker, token: await createAuthJWToken(cleanedWorker)}
 			return res.json(getSuccessResponse({worker}))
@@ -41,7 +41,7 @@ router.post('/login', [loginValidator], async (req, res) => {
 			return res.status(HTTP_STATUS_CODES.FORBIDDEN).json(loginError)
 		}
 	} catch (e) {
-		return res.json(getGenericMessage())
+		return res.status(HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR).json(getGenericMessage())
 	}
 })
 

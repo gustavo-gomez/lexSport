@@ -39,7 +39,8 @@ export const generateXlsAndDownload = async (object = [], xlsSheetName, xlsName)
 export const ROLES = {
 	ADMIN: 'admin',
 	COSTURERA: 'costurera',
-	OPERATOR: 'operator'
+	OPERATOR: 'operator',
+	JORNAL: 'jornalero',
 }
 
 export const scrollToTop = () => {
@@ -47,3 +48,28 @@ export const scrollToTop = () => {
 	document.body.scrollTop = 0
 }
 
+export const OPERATOR_ROLES = {
+	MAKES: 'makes',
+	FILL: 'fill',
+	SCHEDULE: 'schedule'
+}
+
+export const OPERATOR_ROLES_TEXT = {
+	[OPERATOR_ROLES.MAKES]: 'confección',
+	[OPERATOR_ROLES.FILL]: 'llenados',
+	[OPERATOR_ROLES.SCHEDULE]: 'horarios',
+}
+
+export const SCHEDULE_ACTIONS = {
+	ENTER: 'enter',
+	BREAK: 'break',
+	END_BREAK: 'endbreak',
+	EXIT: 'exit'
+}
+
+export const SCHEDULE_ACTIONS_TEXT = {
+	[SCHEDULE_ACTIONS.ENTER]: 'Ingreso',
+	[SCHEDULE_ACTIONS.BREAK]: 'Refrigerio',
+	[SCHEDULE_ACTIONS.END_BREAK]: 'Fin refrigerio',
+	[SCHEDULE_ACTIONS.EXIT]: 'Salida',
+}

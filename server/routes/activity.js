@@ -15,7 +15,7 @@ import {
 	getActivitiesService,
 	newActivityService
 } from '../services/activityService'
-import { loadAllCosturerasService } from '../services/workerService'
+import { loadWorkersByRoleService } from '../services/workerService'
 import { loadAllProductsService } from '../services/productsService'
 import { orderBy } from 'lodash'
 
@@ -27,10 +27,10 @@ router.get('/', [verifyAuthJWToken], async (req, res) => {
 		const { startDate, endDate, workerId } = req.query
 		const { id, role } = req.tokenDecoded
 		const isAdmin = role === ROLES.ADMIN
-		const idToFilter = isAdmin ? null : id
+		const idToFilter = isAdmin ? null : id // todo: check if user sees only his activities, or just use role
 		const activitiesDB = await getActivitiesService(workerId, new Date(+startDate), new Date(+endDate), idToFilter)
-		const workers = await loadAllCosturerasService()
-		const products = await loadAllProductsService()
+		const workers = await loadWorkersByRoleService()
+		const products = await loadAllProductsService({onlyFillPrice: false})
 
 		const activities = orderBy(activitiesDB, 'date', 'desc').map(activity => {
 			const worker = workers.find(worker => worker.id === activity.workerId)
@@ -54,7 +54,7 @@ router.get('/', [verifyAuthJWToken], async (req, res) => {
 
 	} catch ( e ) {
 		console.log('Error: ', e)
-		return res.json(getGenericMessage())
+		return res.status(HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR).json(getGenericMessage())
 	}
 })
 
@@ -78,7 +78,7 @@ router.post('/', [newActivityValidator, verifyAuthJWToken], async (req, res) => 
 
 	} catch ( e ) {
 		console.log('Error: ', e)
-		return res.json(getGenericMessage())
+		return res.status(HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR).json(getGenericMessage())
 	}
 })
 
@@ -101,7 +101,7 @@ router.delete('/:id', [verifyAuthJWToken], async (req, res) => {
 
 	} catch ( e ) {
 		console.log('Error: ', e)
-		return res.json(getGenericMessage())
+		return res.status(HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR).json(getGenericMessage())
 	}
 })
 
@@ -123,7 +123,7 @@ router.put('/', [editActivityValidator, verifyAuthJWToken], async (req, res) => 
 
 	} catch ( e ) {
 		console.log('Error: ', e)
-		return res.json(getGenericMessage())
+		return res.status(HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR).json(getGenericMessage())
 	}
 })
 

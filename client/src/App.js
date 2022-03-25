@@ -14,19 +14,21 @@ import History from './components/History'
 import Payments from './components/Payments'
 import jwtDecode from 'jwt-decode'
 import DashboardWorkers from './components/DashboardWorkers'
-import { ROLES } from './utils/utils'
+import { OPERATOR_ROLES, ROLES } from './utils/utils'
+import Schedule from './components/Schedule'
+import NewSchedule from './components/NewSchedule'
+import Operators from './components/Operators'
 
 const App = () => {
 
 	const dispatch = useDispatch()
-	const [isAdmin, setIsAdmin] = useState(false)
+	const [user, setUser] = useState()
 
 	useEffect(() => {
 		const isToken = localStorage.getItem(AUTH_TOKEN_KEY) !== null
 		if (isToken) {
 			const user = jwtDecode(localStorage.getItem(AUTH_TOKEN_KEY))
-
-			setIsAdmin(user?.role === ROLES.ADMIN)
+			setUser(user)
 			dispatch(updateLoggedUser(jwtDecode(localStorage.getItem(AUTH_TOKEN_KEY))))
 		}
 	}, [])
@@ -42,68 +44,153 @@ const App = () => {
 			<Navigate to={redirectTo}/>
 	}
 
+	const getRoutesByPermission = () => {
+		switch (user.permission) {
+			case OPERATOR_ROLES.FILL:
+			case OPERATOR_ROLES.MAKES:
+				return (
+					<>
+						<Route
+							path="/historial"
+							element={
+								<PrivateRedirect redirectTo="/">
+									<History/>
+								</PrivateRedirect>
+							}
+						/>
+						<Route
+							path="/historial/nuevo"
+							element={
+								<PrivateRedirect redirectTo="/">
+									<NewHistory/>
+								</PrivateRedirect>
+							}
+						/>
+					</>
+				)
+			case OPERATOR_ROLES.SCHEDULE:
+				return (
+					<>
+						<Route
+							path="/horarios"
+							element={
+								<PrivateRedirect redirectTo="/">
+									<Schedule/>
+								</PrivateRedirect>
+							}
+						/>
+						<Route
+							path="/horarios/nuevo"
+							element={
+								<PrivateRedirect redirectTo="/">
+									<NewSchedule/>
+								</PrivateRedirect>
+							}
+						/>
+					</>
+				)
+		}
+	}
+
+	const getRoutesByRole = () => {
+		switch (user?.role) {
+			case ROLES.ADMIN:
+				return (
+					<>
+						<Route path="/" index element={<Login/>}/>
+						<Route
+							path="/dashboard/productos"
+							element={
+								<PrivateRedirect redirectTo="/">
+									<DashboardProducts/>
+								</PrivateRedirect>
+							}
+						/>
+						<Route
+							path="/dashboard/trabajadores"
+							element={
+								<PrivateRedirect redirectTo="/">
+									<DashboardWorkers/>
+								</PrivateRedirect>
+							}
+						/>
+						<Route
+							path="/trabajadores"
+							element={
+								<PrivateRedirect redirectTo="/">
+									<Workers/>
+								</PrivateRedirect>
+							}
+						/>
+						<Route
+							path="/productos"
+							element={
+								<PrivateRedirect redirectTo="/">
+									<Products/>
+								</PrivateRedirect>
+							}
+						/>
+						<Route
+							path="/historial/nuevo"
+							element={
+								<PrivateRedirect redirectTo="/">
+									<NewHistory/>
+								</PrivateRedirect>
+							}
+						/>
+						<Route
+							path="/historial"
+							element={
+								<PrivateRedirect redirectTo="/">
+									<History/>
+								</PrivateRedirect>
+							}
+						/>
+						<Route
+							path="/pagos"
+							element={
+								<PrivateRedirect redirectTo="/">
+									<Payments/>
+								</PrivateRedirect>
+							}
+						/>
+						<Route
+							path="/horarios"
+							element={
+								<PrivateRedirect redirectTo="/">
+									<Schedule/>
+								</PrivateRedirect>
+							}
+						/>
+						<Route
+							path="/horarios/nuevo"
+							element={
+								<PrivateRedirect redirectTo="/">
+									<NewSchedule/>
+								</PrivateRedirect>
+							}
+						/>
+						<Route
+							path="/operadores"
+							element={
+								<PrivateRedirect redirectTo="/">
+									<Operators/>
+								</PrivateRedirect>
+							}
+						/>
+					</>
+				)
+			case ROLES.OPERATOR:
+				return getRoutesByPermission()
+		}
+	}
 
 	return (
 		<BrowserRouter>
 			<Suspense fallback={<div>Loading...</div>}>
 				<Routes>
-					<Route path="/" index element={<Login/>}/>
-					<Route
-						path="/dashboard/productos"
-						element={
-							<PrivateRedirect redirectTo="/">
-								<DashboardProducts/>
-							</PrivateRedirect>
-						}
-					/>
-					<Route
-						path="/dashboard/trabajadores"
-						element={
-							<PrivateRedirect redirectTo="/">
-								<DashboardWorkers/>
-							</PrivateRedirect>
-						}
-					/>
-					<Route
-						path="/trabajadores"
-						element={
-							<PrivateRedirect redirectTo="/">
-								<Workers/>
-							</PrivateRedirect>
-						}
-					/>
-					<Route
-						path="/productos"
-						element={
-							<PrivateRedirect redirectTo="/">
-								<Products/>
-							</PrivateRedirect>
-						}
-					/>
-					<Route
-						path="/historial/nuevo"
-						element={
-							<PrivateRedirect redirectTo="/">
-								<NewHistory/>
-							</PrivateRedirect>
-						}
-					/>
-					<Route
-						path="/historial"
-						element={
-							<PrivateRedirect redirectTo="/">
-								<History/>
-							</PrivateRedirect>
-						}
-					/>
-					<Route
-						path="/pagos"
-						element={
-							<PrivateRedirect redirectTo="/">
-								<Payments/>
-							</PrivateRedirect>
-						}
-					/>
+					<Route path="/" element={<Login/>}/>
+					{getRoutesByRole()}
 					<Route
 						path="*"
 						element={<Navigate to="/"/>}

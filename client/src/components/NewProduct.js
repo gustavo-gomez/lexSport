@@ -8,6 +8,7 @@ import {createProductAPI, updateProductAPI} from "../utils/apiUtils"
 import isEmpty from "lodash/isEmpty"
 import isNaN from "lodash/isNaN"
 import {getAllProducts} from "../slices/productsSlice";
+import { useAlert } from 'react-alert'
 
 const NewProduct = ({hideSection, productEdit}) => {
 
@@ -15,6 +16,7 @@ const NewProduct = ({hideSection, productEdit}) => {
 	const [isLoading, setIsLoading] = useState(false)
 	const [errors, setErrors] = useState({})
 	const dispatch = useDispatch()
+	const alert = useAlert()
 
 	useEffect(() => {
 		setProduct({...productEdit})
@@ -50,11 +52,16 @@ const NewProduct = ({hideSection, productEdit}) => {
 		if (!isValidForm())
 			return
 		setIsLoading(true)
-
+		let response = {}
 		if (product?.id)
-			await updateProductAPI(product.id, product)
+			response = await updateProductAPI(product.id, product)
 		else
-			await createProductAPI(product)
+			response = await createProductAPI(product)
+
+		if (response?.isError)
+			alert.error(response?.responseMessage)
+		else
+			alert.success('Se ha guardado el producto')
 
 		dispatch(getAllProducts())
 		setIsLoading(false)

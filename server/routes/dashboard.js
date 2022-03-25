@@ -39,7 +39,7 @@ router.get('/products', [verifyAuthJWTokenIsAdmin], async (req, res) => {
 
 	} catch ( e ) {
 		console.log('Error: ', e)
-		return res.json(getGenericMessage())
+		return res.status(HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR).json(getGenericMessage())
 	}
 })
 
@@ -86,7 +86,7 @@ router.get('/workers/:id', [newActivityValidator, verifyAuthJWTokenIsAdmin], asy
 
 	} catch ( e ) {
 		console.log('Error: ', e)
-		return res.json(getGenericMessage())
+		return res.status(HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR).json(getGenericMessage())
 	}
 })
 

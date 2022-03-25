@@ -11,64 +11,54 @@ import IATimeDatePicker from '../common/IATimeDatePicker'
 import FloatingButton from '../common/FloatingButton'
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined'
 import LoadingButton from '@mui/lab/LoadingButton'
-import { newActivitiesAPI } from '../utils/apiUtils'
+import { newActivitiesAPI, newSchedulesAPI } from '../utils/apiUtils'
 import { useNavigate } from 'react-router-dom'
-import { OPERATOR_ROLES, ROLES } from '../utils/utils'
+import { ROLES } from '../utils/utils'
 import { useAlert } from 'react-alert'
-import { auth } from '../slices/authSlice'
 
-const actionsData = [
+const actionOptions = [
 	{
-		label: 'Confección',
-		id: 'make'
+		label: 'Ingreso',
+		id: 'enter'
 	},
 	{
-		label: 'Relleno',
-		id: 'fill'
+		label: 'Refrigerio',
+		id: 'break'
+	},
+	{
+		label: 'Fin Refrigerio',
+		id: 'endbreak'
+	},
+	{
+		label: 'Salida',
+		id: 'exit'
 	}
 ]
 
-export const ACTIONS = {
-	MAKE: 'make',
-	FILL: 'fill',
-}
-
 const emptyRow = {
 	workerId: '',
-	productId: '',
-	quantity: '',
-	action: 'make',
-	price: 0,
+	action: 'enter',
 }
 
 const emptyError = {
 	workerId: '',
-	productId: '',
-	quantity: '',
 	action: '',
-	price: '',
 }
 
-const NewHistory = () => {
+const NewSchedule = () => {
 
-	const { loggedUser } = useSelector(auth)
-	const { permission } = loggedUser || {}
-	const { activeProductList } = useSelector(products)
 	const { activeWorkerList } = useSelector(workers)
 	const [errors, setErrors] = useState([{ ...emptyError }])
 	const [isLoading, setIsLoading] = useState(false)
-	const [activityDate, setActivityDate] = useState(new Date())
 	const [newHistoryData, setNewHistoryData] = useState([
-		{ ...emptyRow, action: permission === OPERATOR_ROLES.FILL ? 'fill' : 'make'}
+		{ ...emptyRow }
 	])
-
 	const dispatch = useDispatch()
 	const navigate = useNavigate()
 	const alert = useAlert()
 
 	useEffect(() => {
-		dispatch(getAllProducts())
-		dispatch(getWorkers({ roles: [ROLES.COSTURERA] }))
+		dispatch(getWorkers({ roles: [ROLES.JORNAL] }))
 	}, [])
 
 	if (isLoading) {
@@ -100,20 +90,12 @@ const NewHistory = () => {
 		let hasError = false
 		newHistoryData.forEach((row, index) => {
 			let errorRow = { ...emptyError }
-			if (row.workerId === '') {
+			if (isEmpty(row.workerId)) {
 				errorRow.workerId = 'El campo es requerido'
 				hasError = true
 			}
-			if (row.productId === '') {
-				errorRow.productId = 'El campo es requerido'
-				hasError = true
-			}
-			if (row.quantity === '') {
-				errorRow.quantity = 'El campo es requerido'
-				hasError = true
-			}
-			if (showAction(index) && row.action === '') {
-				errorRow.quantity = 'El campo es requerido'
+			if (isEmpty(row.action)) {
+				errorRow.action = 'El campo es requerido'
 				hasError = true
 			}
 			newErrors.push(errorRow)
@@ -127,67 +109,32 @@ const NewHistory = () => {
 			return
 		setIsLoading(true)
 
-		// calculate payments
-		const newData = newHistoryData.map((historyItem, index) => {
-			const currentProduct = activeProductList.find(p => p.id === historyItem.productId)
-			const currentWorker = activeWorkerList.find(w => w.id === historyItem.workerId)
-
-			let pricexProduct
-			if (historyItem.action === ACTIONS.FILL) {
-				pricexProduct = currentProduct?.fillPrice
-			} else {
-				if (currentWorker?.oldWorker) {
-					pricexProduct = currentProduct?.makingPriceHigh
-				} else {
-					pricexProduct = currentProduct?.makingPriceLow
-				}
-			}
-
-			return {
-				...historyItem,
-				price: historyItem.quantity * pricexProduct
-			}
-		})
-
-		const response = await newActivitiesAPI(activityDate.getTime(), newData)
-
+		const response = await newSchedulesAPI(newHistoryData)
 		if (response?.isError)
 			alert.error(response?.responseMessage)
 		else
-			alert.success('Se ha guardado la actividad')
+			alert.success('Registrado con éxito')
 
 		setIsLoading(false)
-		navigate('/historial')
+		navigate('/horarios')
 	}
-
-	// show action select (make, fill) only if the product has fill price
-	const showAction = (product) => {
-		return product && product?.fillPrice !== '0.00'
-	}
-
+	console.log(errors)
+	console.log('newHistoryData', newHistoryData)
 	return (
 		<div
 			className={'content-wrapper'}
 		>
 			<div className="history-container">
-				<h2>Registrar Trabajo del dia</h2>
-				<IATimeDatePicker
-					value={activityDate}
-					handleChange={(value) => {
-						setActivityDate(new Date(value))
-					}}
-				/>
+				<h2>Registrar Actividad</h2>
 				{
 					newHistoryData.map((item, index) => {
-						const selectedProduct = activeProductList.find(p => p.id === item.productId)
 						return (
 							<div
 								key={index}
 								className="history-row card"
 							>
 								<IASelect
-									label={'Costurera'}
-									key={`workerId-${index}`}
+									label={'Trabajador'}
 									value={activeWorkerList.find(worker => worker.id === item.workerId)}
 									data={activeWorkerList}
 									textToShow={(object) => {
@@ -198,46 +145,20 @@ const NewHistory = () => {
 									error={!isEmpty(errors?.[index]?.workerId)}
 									helperText={errors?.[index]?.workerId}
 								/>
+
 								<IASelect
-									label={'Producto'}
-									key={`productId-${index}`}
-									value={selectedProduct}
-									data={activeProductList}
+									label={'Acción'}
+									value={actionOptions.find(action => action.id === item.action)}
+									data={actionOptions}
 									textToShow={(object) => {
-										return object?.name
+										return object?.label
 									}}
-									onChange={(object) => onChange(index, 'productId', object?.id)}
-									error={!isEmpty(errors?.[index]?.productId)}
-									helperText={errors?.[index]?.productId}
+									onChange={(object) => onChange(index, 'action', object?.id)}
 									isRequired
+									error={!isEmpty(errors?.[index]?.action)}
+									helperText={errors?.[index]?.action}
 								/>
-								{
-									showAction(selectedProduct) &&
-									<IASelect
-										label={'Acción'}
-										key={`action-${index}`}
-										value={actionsData.find(action => action.id === item.action)}
-										data={actionsData}
-										textToShow={(object) => {
-											return object?.label
-										}}
-										onChange={(object) => onChange(index, 'action', object?.id)}
-										error={!isEmpty(errors?.[index]?.action)}
-										helperText={errors?.[index]?.action}
-										isRequired
-									/>
-								}
-								<IATextInput
-									type={'number'}
-									key={`quantity-${index}`}
-									label="Cantidad"
-									name={'quantity'}
-									value={item?.quantity}
-									isRequired
-									onChangeText={(e) => onChange(index, 'quantity', e.target.value)}
-									error={!isEmpty(errors?.[index]?.quantity)}
-									helperText={errors?.[index]?.quantity}
-								/>
+
 								{
 									!isEmpty(item?.id) &&
 									<IATextInput
@@ -294,4 +215,4 @@ const NewHistory = () => {
 	)
 }
 
-export default NewHistory
+export default NewSchedule

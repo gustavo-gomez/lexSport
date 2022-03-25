@@ -4,7 +4,6 @@ import { useDispatch, useSelector } from 'react-redux'
 import { auth, AUTH_TOKEN_KEY, login } from '../slices/authSlice'
 import jwtDecode from 'jwt-decode'
 import LoadingButton from '@mui/lab/LoadingButton'
-import { hashPassword } from '../utils/passUtils'
 import CssBaseline from '@mui/material/CssBaseline'
 import TextField from '@mui/material/TextField'
 import Box from '@mui/material/Box'
@@ -12,37 +11,38 @@ import Container from '@mui/material/Container'
 import { createTheme, ThemeProvider } from '@mui/material/styles'
 import { useNavigate } from 'react-router-dom'
 import logo from '../images/lex_sport.png'
-
-const initialData = {
-	email: '',
-	password: '',
-	confirmPassword: '',
-	isAdmin: false,
-	firstName: '',
-	lastName: ''
-}
+import { OPERATOR_ROLES, ROLES } from '../utils/utils'
+import { useAlert } from 'react-alert'
 
 const Login = () => {
 	const { isLoading } = useSelector(auth)
 	const dispatch = useDispatch()
 	const theme = createTheme()
 	const navigate = useNavigate()
+	const alert = useAlert()
 
 	useEffect(() => {
 		const token = localStorage.getItem(AUTH_TOKEN_KEY)
 		if (token !== null) {
 			const user = jwtDecode(token)
-			navigate('/historial')
+			if (user?.role === ROLES.ADMIN || user?.role === ROLES.OPERATOR) {
+				if (user?.permission === OPERATOR_ROLES.SCHEDULE)
+					navigate('/horarios')
+				else
+					navigate('/historial')
+			}
 		}
-	})
+	}, [])
 
 	const handleSubmit = (e) => {
 		e.preventDefault()
 		const data = new FormData(e.currentTarget)
-		const email = data.get('email')
-		const hashPass = hashPassword(data.get('password'))
 
-		dispatch(login({ email, password: hashPass }))
+		dispatch(login({
+			email: data.get('email'),
+			password: data.get('password'),
+			cb: (message) => alert.error(message)
+		}))
 	}
 
 	return (
@@ -97,7 +97,7 @@ const Login = () => {
 							type="submit"
 							fullWidth
 							variant="contained"
-							sx={{mt: 3, mb: 2}}
+							sx={{ mt: 3, mb: 2 }}
 							loading={isLoading}
 							loadingIndicator="Loading..."
 						>

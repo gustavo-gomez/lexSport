@@ -5,24 +5,37 @@ import Button from '@mui/material/Button'
 import IASelect from './IASelect'
 import isEmpty from 'lodash/isEmpty'
 import { useDispatch, useSelector } from 'react-redux'
-import { getAllCostureras, workers } from '../slices/workersSlice'
+import { getWorkers, workers } from '../slices/workersSlice'
 
-const IAFilters = ({ onSearch, isLoading, showWorkerFilter, defaultStartDate, onExport}) => {
+const IAFilters = ({
+	                   onSearch,
+	                   isLoading,
+	                   showWorkerFilter,
+	                   defaultStartDate,
+	                   onExport,
+	                   rolesToShow,
+	                   isWorkerRequired
+                   }) => {
 
-	const { workerList } = useSelector(workers)
+	const { activeWorkerList } = useSelector(workers)
 	const [isError, setIsError] = useState(false)
 	const [startDate, setStartDate] = useState(defaultStartDate || new Date())
 	const [endDate, setEndDate] = useState(new Date())
 	const [selectedWorker, setSelectedWorker] = useState(null)
+	const [workersToShow, setWorkersToShow] = useState([])
 
 	const dispatch = useDispatch()
 
 	useEffect(() => {
-		dispatch(getAllCostureras())
+		dispatch(getWorkers({}))
 	}, [])
 
+	useEffect(() => {
+		setWorkersToShow(activeWorkerList.filter(worker => rolesToShow.includes(worker?.role)))
+	}, [activeWorkerList])
+
 	const search = () => {
-		if (showWorkerFilter && isEmpty(selectedWorker)) {
+		if (showWorkerFilter && isWorkerRequired && isEmpty(selectedWorker)) {
 			setIsError(true)
 		} else {
 			onSearch({ startDate, endDate, workerId: selectedWorker?.id })
@@ -42,10 +55,10 @@ const IAFilters = ({ onSearch, isLoading, showWorkerFilter, defaultStartDate, on
 						className={'filter-item'}
 					>
 						<IASelect
-							label={'Costurera'}
+							label={'Trabajador'}
 							key={`worker-filter`}
-							value={workerList?.find(worker => worker.id === selectedWorker?.id)}
-							data={workerList}
+							value={workersToShow?.find(worker => worker.id === selectedWorker?.id)}
+							data={workersToShow}
 							textToShow={(object) => {
 								return `${object?.firstName}, ${object?.lastName}`
 							}}
@@ -53,7 +66,7 @@ const IAFilters = ({ onSearch, isLoading, showWorkerFilter, defaultStartDate, on
 								setIsError(false)
 								setSelectedWorker(object)
 							}}
-							isRequired
+							isRequired={isWorkerRequired}
 							error={isError}
 							// helperText={isError ? 'Campo requerido' : ''}
 							variant={'outlined'}
@@ -86,13 +99,13 @@ const IAFilters = ({ onSearch, isLoading, showWorkerFilter, defaultStartDate, on
 			<div className={'filter-buttons'}>
 				{
 					onExport &&
-				<Button
-					onClick={onExport}
-					variant="contained"
-					disabled={isLoading}
-				>
-					Exportar
-				</Button>
+					<Button
+						onClick={onExport}
+						variant="contained"
+						disabled={isLoading}
+					>
+						Exportar
+					</Button>
 				}
 				<Button
 					onClick={search}
@@ -113,5 +126,7 @@ IAFilters.defaultProps = {
 	defaultStartDate: null,
 	onExport: null,
 	onSearch: () => {},
-	isLoading: false
+	isLoading: false,
+	rolesToShow: [],
+	isWorkerRequired: true,
 }
