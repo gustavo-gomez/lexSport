@@ -6,7 +6,7 @@ import IALoader, { LOTTIE_TYPE } from '../common/IALoader'
 import { useNavigate } from 'react-router-dom'
 import FloatingButton from '../common/FloatingButton'
 import IAFilters from '../common/IAFilters'
-import { DATE_FORMAT, getEndDateMillis, getStartDateMillis } from '../utils/utils'
+import { DATE_FORMAT, getEndDateMillis, getStartDateMillis, ROLES } from '../utils/utils'
 import { deleteActivityAPI, loadActivitiesAPI } from '../utils/apiUtils'
 import { ACTIONS } from './NewHistory'
 import EditIcon from '@mui/icons-material/Edit'
@@ -120,14 +120,14 @@ const History = () => {
 		})
 	}
 
-	const searchHistory = async ({ startDate, endDate }) => {
+	const searchHistory = async ({ startDate, endDate, workerId }) => {
 		setIsLoading(true)
 		setStartDate(startDate)
 		setEndDate(endDate)
 		const startDateMillis = getStartDateMillis(startDate)
 		const endDateMillis = getEndDateMillis(endDate)
 
-		const response = await loadActivitiesAPI(startDateMillis, endDateMillis)
+		const response = await loadActivitiesAPI(startDateMillis, endDateMillis, workerId)
 		if (response?.data?.activities?.length > 0) {
 			setHistory(response?.data?.activities)
 		} else {
@@ -145,6 +145,9 @@ const History = () => {
 			<IAFilters
 				onSearch={searchHistory}
 				isLoading={isLoading}
+				showWorkerFilter
+				rolesToShow={[ROLES.COSTURERA]}
+				isWorkerRequired={false}
 			/>
 			<div
 				className="history-table"

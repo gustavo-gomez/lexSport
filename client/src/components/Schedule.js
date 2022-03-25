@@ -9,7 +9,7 @@ import IAFilters from '../common/IAFilters'
 import {
 	DATE_FORMAT,
 	getEndDateMillis,
-	getStartDateMillis,
+	getStartDateMillis, ROLES,
 	SCHEDULE_ACTIONS,
 	SCHEDULE_ACTIONS_TEXT
 } from '../utils/utils'
@@ -62,13 +62,6 @@ const tableHeader = [
 	}
 ]
 
-const actionColors = {
-	[SCHEDULE_ACTIONS.ENTER]: '#00C853',
-	[SCHEDULE_ACTIONS.BREAK]: '#FF9800',
-	[SCHEDULE_ACTIONS.END_BREAK]: '#F44336',
-	[SCHEDULE_ACTIONS.EXIT]: '#0a49e7',
-}
-
 const Schedule = () => {
 
 	const [history, setHistory] = useState([])
@@ -95,7 +88,7 @@ const Schedule = () => {
 
 	const getTableBody = () => {
 		return map(history, (historyItem, index) => {
-			const { milliseconds, worker, enter, break: refrigerio, endbreak, exit, workedHours, extraHours } = historyItem
+			const { milliseconds, worker, enter, break: refrigerio, endbreak, exit, workedHours, extraHours, lateHours } = historyItem
 			return {
 				date: moment(milliseconds).format(DATE_FORMAT.DATE_HYPHEN_PERU),
 				// hour: moment(milliseconds).format(DATE_FORMAT.TIME_PERIOD_24),
@@ -106,18 +99,19 @@ const Schedule = () => {
 				worker,
 				workedHours: workedHours === '00:00' ? '-' : workedHours,
 				extraHours: extraHours === '00:00' ? '-' : extraHours,
+				lateHours: lateHours === '00:00' ? '-' : lateHours,
 			}
 		})
 	}
 
-	const searchHistory = async ({ startDate, endDate }) => {
+	const searchHistory = async ({ startDate, endDate, workerId }) => {
 		setIsLoading(true)
 		setStartDate(startDate)
 		setEndDate(endDate)
 		const startDateMillis = getStartDateMillis(startDate)
 		const endDateMillis = getEndDateMillis(endDate)
 
-		const response = await loadSchedulesAPI(startDateMillis, endDateMillis)
+		const response = await loadSchedulesAPI(startDateMillis, endDateMillis, workerId)
 		if (response?.data?.schedules?.length > 0) {
 			setHistory(response?.data?.schedules)
 		} else {
@@ -135,6 +129,9 @@ const Schedule = () => {
 			<IAFilters
 				onSearch={searchHistory}
 				isLoading={isLoading}
+				showWorkerFilter
+				rolesToShow={[ROLES.JORNAL]}
+				isWorkerRequired={false}
 			/>
 			<div
 				className="history-table"

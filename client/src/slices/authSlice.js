@@ -15,11 +15,12 @@ const initialState = {
 
 export const login = createAsyncThunk(
 	'auth/login',
-	async ({email, password}, thunkAPI) => {
+	async ({email, password, cb}, thunkAPI) => {
 		const {data, responseMessage, isError} = await loginAPI(email, password)
 		if (!isError) {
 			return data
 		} else {
+			cb(responseMessage || 'Hubo un error')
 			return thunkAPI.rejectWithValue({responseMessage})
 		}
 	},
