@@ -57,6 +57,7 @@ const Header = () => {
 				sx={{
 					width: { md: `calc(100% - ${drawerWidth}px)` },
 					ml: { md: `${drawerWidth}px` },
+					zIndex: 1
 				}}
 				className={'header-container'}
 				elevation={0}

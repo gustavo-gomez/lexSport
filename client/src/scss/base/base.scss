@@ -41,7 +41,7 @@ html, body {
 }
 
 .form {
-  .MuiTextField-root, .MuiAutocomplete-hasPopupIcon {
+  .MuiTextField-root, .MuiAutocomplete-hasPopupIcon, .MuiFormControlLabel-root {
     margin-bottom: 20px;
     width: 70%;
   }

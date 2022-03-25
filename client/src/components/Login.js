@@ -12,12 +12,14 @@ import { createTheme, ThemeProvider } from '@mui/material/styles'
 import { useNavigate } from 'react-router-dom'
 import logo from '../images/lex_sport.png'
 import { OPERATOR_ROLES, ROLES } from '../utils/utils'
+import { useAlert } from 'react-alert'
 
 const Login = () => {
 	const { isLoading } = useSelector(auth)
 	const dispatch = useDispatch()
 	const theme = createTheme()
 	const navigate = useNavigate()
+	const alert = useAlert()
 
 	useEffect(() => {
 		const token = localStorage.getItem(AUTH_TOKEN_KEY)
@@ -38,7 +40,8 @@ const Login = () => {
 
 		dispatch(login({
 			email: data.get('email'),
-			password: data.get('password')
+			password: data.get('password'),
+			cb: (message) => alert.error(message)
 		}))
 	}
 
