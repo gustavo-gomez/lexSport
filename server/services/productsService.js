@@ -13,8 +13,8 @@ export const loadProductByIdService = async id => {
 	return camelize(usersDB)
 }
 
-export const loadAllProductsService = async () => {
-	const usersDB = await loadAllProducts()
+export const loadAllProductsService = async ({onlyFillPrice = false}) => {
+	const usersDB = await loadAllProducts({onlyFillPrice})
 	return camelize(usersDB)
 }
 
