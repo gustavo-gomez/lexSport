@@ -13,7 +13,9 @@ import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined'
 import LoadingButton from '@mui/lab/LoadingButton'
 import { newActivitiesAPI } from '../utils/apiUtils'
 import { useNavigate } from 'react-router-dom'
-import { ROLES } from '../utils/utils'
+import { OPERATOR_ROLES, ROLES } from '../utils/utils'
+import { useAlert } from 'react-alert'
+import { auth } from '../slices/authSlice'
 
 const actionsData = [
 	{
@@ -49,21 +51,24 @@ const emptyError = {
 
 const NewHistory = () => {
 
+	const { loggedUser } = useSelector(auth)
+	const { permission } = loggedUser || {}
 	const { activeProductList } = useSelector(products)
 	const { activeWorkerList } = useSelector(workers)
 	const [errors, setErrors] = useState([{ ...emptyError }])
 	const [isLoading, setIsLoading] = useState(false)
 	const [activityDate, setActivityDate] = useState(new Date())
 	const [newHistoryData, setNewHistoryData] = useState([
-		{ ...emptyRow }
+		{ ...emptyRow, action: permission === OPERATOR_ROLES.FILL ? 'fill' : 'make'}
 	])
 
 	const dispatch = useDispatch()
 	const navigate = useNavigate()
+	const alert = useAlert()
 
 	useEffect(() => {
 		dispatch(getAllProducts())
-		dispatch(getWorkers({roles: [ROLES.COSTURERA]}))
+		dispatch(getWorkers({ roles: [ROLES.COSTURERA] }))
 	}, [])
 
 	if (isLoading) {
@@ -143,7 +148,14 @@ const NewHistory = () => {
 				price: historyItem.quantity * pricexProduct
 			}
 		})
-		await newActivitiesAPI(activityDate.getTime(), newData)
+
+		const response = await newActivitiesAPI(activityDate.getTime(), newData)
+
+		if (response?.isError)
+			alert.error(response?.responseMessage)
+		else
+			alert.success('Se ha guardado la actividad')
+
 		setIsLoading(false)
 		navigate('/historial')
 	}

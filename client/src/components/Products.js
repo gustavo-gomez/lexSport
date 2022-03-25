@@ -15,6 +15,7 @@ import DeleteIcon from '@mui/icons-material/Delete'
 import Button from '@mui/material/Button'
 import LoadingButton from '@mui/lab/LoadingButton'
 import { deleteProductAPI } from '../utils/apiUtils'
+import { useAlert } from 'react-alert'
 
 const tableHeader = [
 	{
@@ -52,6 +53,7 @@ const Products = () => {
 	const [idToDelete, setIdToDelete] = useState(null)
 	const {width} = useDimension()
 	const dispatch = useDispatch()
+	const alert = useAlert()
 
 	useEffect(() => {
 		dispatch(getAllProducts())
@@ -109,7 +111,13 @@ const Products = () => {
 	)
 
 	const deleteProduct = async () => {
-		await deleteProductAPI(idToDelete)
+		const response = await deleteProductAPI(idToDelete)
+
+		if (response?.isError)
+			alert.error(response?.responseMessage)
+		else
+			alert.success('Se ha eliminado el producto')
+
 		setOpenDeleteModal(false)
 		setIdToDelete(null)
 		dispatch(getAllProducts())

@@ -15,6 +15,7 @@ import { getWorkers, workers } from '../slices/workersSlice'
 import { useDispatch, useSelector } from 'react-redux'
 import { useDimension } from '../utils/useDimension'
 import NewWorker from './NewWorkers'
+import { useAlert } from 'react-alert'
 
 const tableHeader = [
 	{
@@ -53,6 +54,7 @@ const Operators = () => {
 	const { activeWorkerList, isLoading } = useSelector(workers)
 	const { width } = useDimension()
 	const dispatch = useDispatch()
+	const alert = useAlert()
 
 	useEffect(() => {
 		dispatch(getWorkers({ roles: [ROLES.OPERATOR] }))
@@ -95,7 +97,13 @@ const Operators = () => {
 	}
 
 	const deleteWorker = async () => {
-		await deleteCostureraAPI(idToDelete)
+		const response = await deleteCostureraAPI(idToDelete)
+
+		if (response?.isError)
+			alert.error(response?.responseMessage)
+		else
+			alert.success('Se ha eliminado el operario')
+
 		setOpenDeleteModal(false)
 		setIdToDelete(null)
 		dispatch(getWorkers({ roles: [ROLES.OPERATOR] }))

@@ -15,6 +15,7 @@ import DeleteIcon from '@mui/icons-material/Delete'
 import { deleteCostureraAPI } from '../utils/apiUtils'
 import Button from '@mui/material/Button'
 import LoadingButton from '@mui/lab/LoadingButton'
+import { useAlert } from 'react-alert'
 
 const tableHeader = [
 	{
@@ -52,6 +53,7 @@ const Workers = () => {
 	const [idToDelete, setIdToDelete] = useState(null)
 	const { width } = useDimension()
 	const dispatch = useDispatch()
+	const alert = useAlert()
 
 	useEffect(() => {
 		dispatch(getWorkers({}))
@@ -115,7 +117,13 @@ const Workers = () => {
 	)
 
 	const deleteWorker = async () => {
-		await deleteCostureraAPI(idToDelete)
+		const response = await deleteCostureraAPI(idToDelete)
+
+		if (response?.isError)
+			alert.error(response?.responseMessage)
+		else
+			alert.success('Se ha eliminado el trabajador')
+
 		setOpenDeleteModal(false)
 		setIdToDelete(null)
 		dispatch(getWorkers({}))

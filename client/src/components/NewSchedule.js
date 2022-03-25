@@ -14,6 +14,7 @@ import LoadingButton from '@mui/lab/LoadingButton'
 import { newActivitiesAPI, newSchedulesAPI } from '../utils/apiUtils'
 import { useNavigate } from 'react-router-dom'
 import { ROLES } from '../utils/utils'
+import { useAlert } from 'react-alert'
 
 const actionOptions = [
 	{
@@ -52,9 +53,9 @@ const NewSchedule = () => {
 	const [newHistoryData, setNewHistoryData] = useState([
 		{ ...emptyRow }
 	])
-
 	const dispatch = useDispatch()
 	const navigate = useNavigate()
+	const alert = useAlert()
 
 	useEffect(() => {
 		dispatch(getWorkers({ roles: [ROLES.JORNAL] }))
@@ -108,7 +109,12 @@ const NewSchedule = () => {
 			return
 		setIsLoading(true)
 
-		await newSchedulesAPI(newHistoryData)
+		const response = await newSchedulesAPI(newHistoryData)
+		if (response?.isError)
+			alert.error(response?.responseMessage)
+		else
+			alert.success('Registrado con éxito')
+
 		setIsLoading(false)
 		navigate('/horarios')
 	}

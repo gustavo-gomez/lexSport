@@ -11,6 +11,7 @@ import { getWorkers } from '../slices/workersSlice'
 import IASwitch from '../common/IASwitch'
 import IASelect from '../common/IASelect'
 import { OPERATOR_ROLES, OPERATOR_ROLES_TEXT, ROLES } from '../utils/utils'
+import { useAlert } from 'react-alert'
 
 const rolesOptions = [
 	{
@@ -46,6 +47,7 @@ const NewWorker = ({ hideSection, workerEdit, isOperator = false }) => {
 	const [isEdit, setIsEdit] = useState(false)
 	const [changePassword, setChangePassword] = useState(false)
 	const dispatch = useDispatch()
+	const alert = useAlert()
 
 	useEffect(() => {
 		setWorker({ ...workerEdit })
@@ -90,11 +92,16 @@ const NewWorker = ({ hideSection, workerEdit, isOperator = false }) => {
 		if (!isValidForm())
 			return
 		setIsLoading(true)
-
+		let response = {}
 		if (worker?.id)
-			await updateCostureraAPI(worker.id, worker)
+			response = await updateCostureraAPI(worker.id, worker)
 		else
-			await createCostureraAPI({ ...worker, role: isOperator ? ROLES.OPERATOR : worker.role })
+			response = await createCostureraAPI({ ...worker, role: isOperator ? ROLES.OPERATOR : worker.role })
+
+		if (response?.isError)
+			alert.error(response?.responseMessage)
+		else
+			alert.success('Se ha guardado el trabajador')
 
 		dispatch(getWorkers({}))
 		setIsLoading(false)
