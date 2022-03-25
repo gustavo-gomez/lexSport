@@ -120,7 +120,7 @@ const callAPI = async (method, url, body) => {
 		return {
 			isError: true,
 			responseCode: error?.response?.status,
-			responseMessage: error?.response?.data?.responseMessage || 'Error'
+			responseMessage: error?.response?.data?.responseMessage || 'Ocurrió un error'
 		}
 	}
 }
