@@ -2,10 +2,10 @@ import { Router } from 'express'
 import {
 	calcExtraMinutes,
 	getGenericMessage,
-	getPeruDay,
+	getPeruDay, getPeruDayWithHour,
 	getSuccessResponse,
-	HTTP_STATUS_CODES, milliSecondsToMinutes, minutesToHoursAndMinutes, SATURDAY, SCHEDULE_ACTIONS,
-	validationErrorsToArray
+	HTTP_STATUS_CODES, milliSecondsToMinutes, minutesToHoursAndMinutes, SATURDAY, SATURDAY_ENTER_HOUR, SCHEDULE_ACTIONS,
+	validationErrorsToArray, WEEKDAY_ENTER_HOUR
 } from '../utils/utils.js'
 import { verifyAuthJWToken } from '../utils/passUtils.js'
 import { loadSchedulesService, newSchedulesService } from '../services/scheduleService'
@@ -44,17 +44,21 @@ router.get('/', [verifyAuthJWToken], async (req, res) => {
 				const exitMillis = activitiesPerWorkerOneDay.find(activity => activity.action === SCHEDULE_ACTIONS.EXIT)?.milliseconds
 
 				let workedMinutes = 0
-				console.log(moment(enterMillis).weekday())
+				let lateHoursMinutes = 0
 				const isSaturday = enterMillis && moment(enterMillis).weekday() === SATURDAY
-				if (enterMillis && breakMillis && endBreakMillis && exitMillis) {
+
+				if (enterMillis && exitMillis) {
 					const firstHoursMillis = moment(breakMillis).diff(enterMillis)
 					const secondHoursMillis = moment(exitMillis).diff(endBreakMillis)
 					workedMinutes = milliSecondsToMinutes(firstHoursMillis + secondHoursMillis)
 
+					let enterHour = getPeruDayWithHour(enterMillis, WEEKDAY_ENTER_HOUR)
 					if (isSaturday) {
+						enterHour = getPeruDayWithHour(enterMillis, SATURDAY_ENTER_HOUR)
 						workedMinutes = milliSecondsToMinutes(moment(exitMillis).diff(enterMillis))
 					}
-
+					const lateHoursMillis = moment(enterMillis).diff(enterHour.getTime())
+					lateHoursMinutes = milliSecondsToMinutes(lateHoursMillis)
 				}
 				schedules.push({
 					milliseconds: activitiesInOneDay[0]?.milliseconds,
@@ -65,7 +69,7 @@ router.get('/', [verifyAuthJWToken], async (req, res) => {
 					exit: exitMillis,
 					extraHours: minutesToHoursAndMinutes(calcExtraMinutes(workedMinutes, isSaturday)),
 					workedHours: minutesToHoursAndMinutes(workedMinutes),
-
+					lateHours: minutesToHoursAndMinutes(lateHoursMinutes),
 				})
 			})
 		})
@@ -75,7 +79,7 @@ router.get('/', [verifyAuthJWToken], async (req, res) => {
 
 	} catch ( e ) {
 		console.log('Error: ', e)
-		return res.json(getGenericMessage())
+		return res.status(HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR).json(getGenericMessage())
 	}
 })
 
@@ -100,7 +104,7 @@ router.post('/', [newScheduleValidator, verifyAuthJWToken], async (req, res) => 
 
 	} catch ( e ) {
 		console.log('Error: ', e)
-		return res.json(getGenericMessage())
+		return res.status(HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR).json(getGenericMessage())
 	}
 })
 
