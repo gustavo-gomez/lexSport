@@ -4,7 +4,7 @@ import map from 'lodash/map'
 import CommonTable from '../common/CommonTable'
 import IALoader, { LOTTIE_TYPE } from '../common/IALoader'
 import IAFilters from '../common/IAFilters'
-import { DATE_FORMAT, generateXlsAndDownload, getEndDateMillis, getStartDateMillis } from '../utils/utils'
+import { DATE_FORMAT, generateXlsAndDownload, getEndDateMillis, getStartDateMillis, ROLES } from '../utils/utils'
 import { loadActivitiesAPI } from '../utils/apiUtils'
 import { ACTIONS } from './NewHistory'
 import { useSelector } from 'react-redux'
@@ -133,6 +133,7 @@ const Payments = () => {
 				isLoading={isLoading}
 				showWorkerFilter
 				onExport={history?.length > 0 ? onExport : null}
+				rolesToShow={[ROLES.COSTURERA]}
 			/>
 			<div
 				className="history-table"

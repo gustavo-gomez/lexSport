@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Chart } from 'react-google-charts'
 import IAFilters from '../common/IAFilters'
-import { getEndDateMillis, getStartDateMillis } from '../utils/utils'
+import { getEndDateMillis, getStartDateMillis, ROLES } from '../utils/utils'
 import { loadWorkersDashboardAPI } from '../utils/apiUtils'
 import IALoader, { LOTTIE_TYPE } from '../common/IALoader'
 import moment from 'moment'
@@ -43,6 +43,7 @@ const DashboardProducts = () => {
 				isLoading={isLoading}
 				defaultStartDate={new Date(moment().subtract(1, 'months'))}
 				showWorkerFilter
+				rolesToShow={[ROLES.COSTURERA]}
 			/>
 			{
 				isLoading ?
