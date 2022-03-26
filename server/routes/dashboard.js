@@ -15,7 +15,7 @@ router.get('/products', [verifyAuthJWTokenIsAdmin], async (req, res) => {
 		const { startDate, endDate } = req.query
 
 		const activitiesDB = await loadActivitiesQuantitiesService(new Date(+startDate), new Date(+endDate))
-		const products = await loadAllProductsService()
+		const products = await loadAllProductsService({})
 
 		const history = [
 			[
@@ -62,7 +62,7 @@ router.get('/workers/:id', [newActivityValidator, verifyAuthJWTokenIsAdmin], asy
 
 
 		const activitiesDB = await loadActivitiesQuantitiesService(new Date(+startDate), new Date(+endDate), id)
-		const products = await loadAllProductsService()
+		const products = await loadAllProductsService({})
 
 		const history = [
 			[
