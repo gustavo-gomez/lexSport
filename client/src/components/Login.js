@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import '../scss/base/base.scss'
 import { useDispatch, useSelector } from 'react-redux'
 import { auth, AUTH_TOKEN_KEY, login } from '../slices/authSlice'
@@ -13,9 +13,17 @@ import { useNavigate } from 'react-router-dom'
 import logo from '../images/lex_sport.png'
 import { OPERATOR_ROLES, ROLES } from '../utils/utils'
 import { useAlert } from 'react-alert'
+import Visibility from '@mui/icons-material/Visibility'
+import VisibilityOff from '@mui/icons-material/VisibilityOff'
+import IconButton from '@mui/material/IconButton'
+import InputAdornment from '@mui/material/InputAdornment'
+import OutlinedInput from '@mui/material/OutlinedInput'
+import InputLabel from '@mui/material/InputLabel'
+import FormControl from '@mui/material/FormControl'
 
 const Login = () => {
 	const { isLoading } = useSelector(auth)
+	const [showPassword, setShowPassword] = useState(false)
 	const dispatch = useDispatch()
 	const theme = createTheme()
 	const navigate = useNavigate()
@@ -83,16 +91,32 @@ const Login = () => {
 							autoComplete="email"
 							autoFocus
 						/>
-						<TextField
-							margin="normal"
-							required
-							fullWidth
-							name="password"
-							label="Clave"
-							type="password"
-							id="password"
-							autoComplete="current-password"
-						/>
+						<FormControl sx={{ width: '100%' }} variant="outlined">
+							<InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
+							<OutlinedInput
+								margin="normal"
+								required
+								fullWidth
+								name="password"
+								label="Clave"
+								type={showPassword ? 'text' : 'password'}
+								id="password"
+								autoComplete="current-password"
+								endAdornment={
+									<InputAdornment position="end">
+										<IconButton
+											aria-label="toggle password visibility"
+											onClick={() => setShowPassword(prevState => !prevState)}
+											onMouseDown={() => {
+											}}
+											edge="end"
+										>
+											{showPassword ? <VisibilityOff/> : <Visibility/>}
+										</IconButton>
+									</InputAdornment>
+								}
+							/>
+						</FormControl>
 						<LoadingButton
 							type="submit"
 							fullWidth

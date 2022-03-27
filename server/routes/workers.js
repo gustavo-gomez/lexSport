@@ -13,7 +13,7 @@ import {
 	ROLES,
 	validationErrorsToArray
 } from '../utils/utils.js'
-import { verifyAuthJWToken, verifyAuthJWTokenIsAdmin } from '../utils/passUtils.js'
+import { hashPassword, verifyAuthJWToken, verifyAuthJWTokenIsAdmin } from '../utils/passUtils.js'
 import { check, validationResult } from 'express-validator'
 import isEmpty from 'lodash/isEmpty'
 import { deleteActivityService } from '../services/activityService'
@@ -86,7 +86,12 @@ router.put('/:id', [updateUserFormValidator, verifyAuthJWTokenIsAdmin], async (r
 		if (isEmpty(workerDB?.[0]))
 			return res.status(HTTP_STATUS_CODES.BAD_REQUEST).json(getGenericMessage('Costurera no encontrada'))
 
-		await updateCostureraService(id, worker)
+		//changing operator password
+		let newPassword = null
+		if(worker?.role === ROLES.OPERATOR && !isEmpty(worker?.password)){
+			newPassword = hashPassword(worker.password)
+		}
+		await updateCostureraService(id, { ...worker, password: newPassword })
 
 		return res.status(HTTP_STATUS_CODES.OK).json(getGenericMessage('Costurera actualizada con exito'))
 
