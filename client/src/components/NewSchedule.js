@@ -58,7 +58,7 @@ const NewSchedule = () => {
 	const alert = useAlert()
 
 	useEffect(() => {
-		dispatch(getWorkers({ roles: [ROLES.JORNAL] }))
+		dispatch(getWorkers({ roles: [ROLES.JORNAL, ROLES.COSTURERA] }))
 	}, [])
 
 	if (isLoading) {
@@ -118,8 +118,7 @@ const NewSchedule = () => {
 		setIsLoading(false)
 		navigate('/horarios')
 	}
-	console.log(errors)
-	console.log('newHistoryData', newHistoryData)
+
 	return (
 		<div
 			className={'content-wrapper'}

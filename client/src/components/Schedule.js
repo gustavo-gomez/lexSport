@@ -106,7 +106,7 @@ const Schedule = () => {
 				onSearch={searchHistory}
 				isLoading={isLoading}
 				showWorkerFilter
-				rolesToShow={[ROLES.JORNAL]}
+				rolesToShow={[ROLES.JORNAL, ROLES.COSTURERA]}
 				isWorkerRequired={false}
 			/>
 			<div
