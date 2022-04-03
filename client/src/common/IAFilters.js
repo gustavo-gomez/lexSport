@@ -14,7 +14,7 @@ const IAFilters = ({
 	                   defaultStartDate,
 	                   onExport,
 	                   rolesToShow,
-	                   isWorkerRequired
+	                   isWorkerRequired,
                    }) => {
 
 	const { activeWorkerList } = useSelector(workers)
@@ -125,7 +125,8 @@ IAFilters.defaultProps = {
 	showWorkerFilter: false,
 	defaultStartDate: null,
 	onExport: null,
-	onSearch: () => {},
+	onSearch: () => {
+	},
 	isLoading: false,
 	rolesToShow: [],
 	isWorkerRequired: true,

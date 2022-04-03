@@ -28,6 +28,7 @@ const FloatingButton = ({ onClick, fixed, size, style, icon}) => {
 				color={'primary'}
 				onClick={onClick}
 				size={size}
+				data-testid={'floating-button'}
 			>
 				<AddIcon/>
 			</Fab>

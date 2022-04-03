@@ -1,6 +1,6 @@
 import React from 'react'
-import TextField from '@mui/material/TextField';
-import PropTypes from "prop-types";
+import TextField from '@mui/material/TextField'
+import PropTypes from 'prop-types'
 
 const IATextInput = ({
 	                     isRequired,
@@ -13,7 +13,8 @@ const IATextInput = ({
 	                     error,
 	                     value,
 	                     onChangeText,
-	                     name
+	                     name,
+	                     testId
                      }) => {
 
 	return (
@@ -30,6 +31,8 @@ const IATextInput = ({
 			variant="standard"
 			onChange={onChangeText}
 			name={name}
+			data-testid={'qwertyuil'}
+
 		/>
 	)
 }
