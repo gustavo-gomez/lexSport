@@ -21,7 +21,7 @@ test('render TextInput', async () => {
 	// const name = getByText(commonProps.label)
 	const value = screen.getByRole('textbox')
 	expect(screen.getByTestId('test123')).toHaveValue(commonProps.value);
-	// debug()
+	// debug() // show all the elements
 
 	// expect(name).toBeInTheDocument()
 	// expect(value).toHaveValue(commonProps.value+'qwe')
