@@ -26,19 +26,3 @@ test('render TextInput', async () => {
 	// expect(name).toBeInTheDocument()
 	// expect(value).toHaveValue(commonProps.value+'qwe')
 })
-//
-// test('TextInput: show error message', async () => {
-// 	const { getByText } = render(ge
-// 		<IATextInput
-// 			{...commonProps}
-// 			isRequired={true}
-// 			error={true}
-// 			helperText={'required field'}
-// 		/>
-// 	)
-// 	const asterisk = getByText('*')
-// 	const required = getByText('required field')
-//
-// 	expect(asterisk).toBeInTheDocument()
-// 	expect(required).toBeInTheDocument()
-// })
