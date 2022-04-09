@@ -31,8 +31,6 @@ const IATextInput = ({
 			variant="standard"
 			onChange={onChangeText}
 			name={name}
-			data-testid={'qwertyuil'}
-
 		/>
 	)
 }

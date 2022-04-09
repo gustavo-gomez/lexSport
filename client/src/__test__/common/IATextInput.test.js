@@ -4,25 +4,24 @@ import IATextInput from '../../common/IATextInput'
 
 const commonProps = {
 	id: 'test123',
-	label: 'Name',
+	label: 'NameTest',
 	name: 'name',
 	value: 'value test',
-	// isRequired: true,
-	// onChangeText: {onChange},
-	// helperText: 'required field',
+	testId: 'inputtest'
 }
 
 test('render TextInput', async () => {
 	const { getByText, debug, getByRole } = render(
 		<IATextInput
 			{...commonProps}
+			helperText={'required field'}
 		/>
 	)
-	// const name = getByText(commonProps.label)
+	const name = getByText(commonProps.label)
+	const helperText = getByText('required field')
 	const value = screen.getByRole('textbox')
-	expect(screen.getByTestId('test123')).toHaveValue(commonProps.value);
-	// debug() // show all the elements
 
-	// expect(name).toBeInTheDocument()
-	// expect(value).toHaveValue(commonProps.value+'qwe')
+	expect(value).toHaveValue(commonProps.value)
+	expect(name).toBeInTheDocument()
+	expect(helperText).toBeInTheDocument()
 })
