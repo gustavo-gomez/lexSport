@@ -4,7 +4,7 @@ import '../scss/components/newworkers.scss'
 import map from 'lodash/map'
 import CommonTable from '../common/CommonTable'
 import FloatingButton from '../common/FloatingButton'
-import { MOBILE_WIDTH, OPERATOR_ROLES_TEXT, ROLES, scrollToTop, textToCamelCase } from '../utils/utils'
+import { MOBILE_WIDTH, OPERATOR_ROLES, OPERATOR_ROLES_TEXT, ROLES, scrollToTop, textToCamelCase } from '../utils/utils'
 import { deleteCostureraAPI } from '../utils/apiUtils'
 import EditIcon from '@mui/icons-material/Edit'
 import DeleteIcon from '@mui/icons-material/Delete'
@@ -27,12 +27,12 @@ const tableHeader = [
 		key: 'name'
 	},
 	{
-		label: 'Teléfono',
-		key: 'phone'
-	},
-	{
 		label: 'Rol',
 		key: 'role'
+	},
+	{
+		label: 'Teléfono',
+		key: 'phone'
 	},
 	{
 		label: 'Usuario',
@@ -64,12 +64,17 @@ const Operators = () => {
 		setOperatorsList(activeWorkerList.filter(worker => worker.role === ROLES.OPERATOR))
 	}, [activeWorkerList])
 
+	const getRoles = (permission) => {
+		return permission.replace(OPERATOR_ROLES.MAKES, OPERATOR_ROLES_TEXT[OPERATOR_ROLES.MAKES])
+		.replace(OPERATOR_ROLES.FILL, OPERATOR_ROLES_TEXT[OPERATOR_ROLES.FILL])
+		.replace(OPERATOR_ROLES.SCHEDULE, OPERATOR_ROLES_TEXT[OPERATOR_ROLES.SCHEDULE])
+	}
 	const getTableBody = () => {
 		return map(operatorsList, ({ id, firstName, lastName, phone, user, role, permission }, index) => {
 			return {
 				index: index + 1,
 				name: textToCamelCase(`${lastName}, ${firstName}`),
-				role: OPERATOR_ROLES_TEXT[permission],
+				role: getRoles(permission),
 				phone,
 				user,
 				actions: (

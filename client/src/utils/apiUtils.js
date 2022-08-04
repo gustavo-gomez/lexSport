@@ -2,8 +2,8 @@ import axios from 'axios'
 import { AUTH_TOKEN_KEY } from '../slices/authSlice'
 import isEmpty from 'lodash/isEmpty'
 
-// const BASE_URL = process.env.REACT_APP_LEX_SPORT_IP_BACKEND || 'http://192.168.18.6:9000'
-const BASE_URL = 'https://ilterflores.com'
+const BASE_URL = process.env.REACT_APP_LEX_SPORT_IP_BACKEND || 'http://192.168.18.6:9000'
+// const BASE_URL = 'https://ilterflores.com'
 
 
 export const ENDPOINTS = {

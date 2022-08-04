@@ -1,20 +1,19 @@
 import React, { useEffect, useState } from 'react'
 import '../scss/components/newhistory.scss'
 import { useDispatch, useSelector } from 'react-redux'
-import { getAllProducts, products } from '../slices/productsSlice'
 import IALoader from '../common/IALoader'
 import { getWorkers, workers } from '../slices/workersSlice'
 import IASelect from '../common/IASelect'
 import IATextInput from '../common/IATextInput'
 import isEmpty from 'lodash/isEmpty'
-import IATimeDatePicker from '../common/IATimeDatePicker'
 import FloatingButton from '../common/FloatingButton'
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined'
 import LoadingButton from '@mui/lab/LoadingButton'
-import { newActivitiesAPI, newSchedulesAPI } from '../utils/apiUtils'
+import { newSchedulesAPI } from '../utils/apiUtils'
 import { useNavigate } from 'react-router-dom'
 import { ROLES } from '../utils/utils'
 import { useAlert } from 'react-alert'
+import IATimePicker from '../common/IATimePicker'
 
 const actionOptions = [
 	{
@@ -208,6 +207,11 @@ const NewSchedule = () => {
 					>
 						Guardar
 					</LoadingButton>
+					<IATimePicker
+						label={'hora'}
+						value={new Date()}
+						handleChange={(value) => console.log(new Date(value).getTime())}
+					/>
 				</div>
 			</div>
 		</div>

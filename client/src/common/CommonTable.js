@@ -23,12 +23,12 @@ const CommonTable = ({ tableHeader, body, onClickRow }) => {
 				<TableHead className={'table-header'}>
 					<TableRow>
 						{
-							map(tableHeader, item => {
+							map(tableHeader, (item, index) => {
 								if (item.onlyAdmin && !isAdmin) return null
 								return (
 									<TableCell
 										key={`header-${item.key}`}
-										// align={item?.align}
+										// sx={index === 0 ? { width: 5 } : {}}
 									>
 										{item.label}
 									</TableCell>
@@ -52,7 +52,7 @@ const CommonTable = ({ tableHeader, body, onClickRow }) => {
 
 										<TableCell
 											key={`row-${row.id}-${header.key}`}
-											style={header.label === '' ? { width: 105 } : { maxWidth: 80 }}
+											style={header.label === '' ? { width: 60 } : { maxWidth: 80 }}
 											// align={header?.align}
 										>
 											{row[header.key]}

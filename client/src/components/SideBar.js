@@ -113,7 +113,8 @@ const SideBar = () => {
 				{
 					menuOptions.map(({ name, icon, path, type, roles, permissions, props }, index) => {
 						if (!roles?.includes(loggedUser?.role)) return null
-						if (!isAdmin && !permissions?.includes(loggedUser?.permission)) return null
+						const userHasAtLeastOnePermission = loggedUser?.permissions?.some(userPermission => permissions?.includes(userPermission))
+						if (!isAdmin && !userHasAtLeastOnePermission) return null
 
 						return (
 							<ListItem

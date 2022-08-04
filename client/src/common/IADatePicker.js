@@ -9,7 +9,7 @@ import DateAdapter from '@mui/lab/AdapterMoment'
 import LocalizationProvider from '@mui/lab/LocalizationProvider'
 import { MOBILE_WIDTH } from '../utils/utils'
 
-const IATimeDatePicker = ({ value, label, handleChange, defaultStartDate }) => {
+const IADatePicker = ({ value, label, handleChange, defaultStartDate }) => {
 
 	const { width } = useDimension()
 
@@ -37,16 +37,16 @@ const IATimeDatePicker = ({ value, label, handleChange, defaultStartDate }) => {
 	)
 }
 
-export default IATimeDatePicker
+export default IADatePicker
 
-IATimeDatePicker.defaultProps = {
+IADatePicker.defaultProps = {
 	value: new Date(),
 	label: '',
 	handleChange: () => {
 	}
 }
 
-IATimeDatePicker.propTypes = {
+IADatePicker.propTypes = {
 	value: PropTypes.instanceOf(Date),
 	label: PropTypes.string,
 	handleChange: PropTypes.func

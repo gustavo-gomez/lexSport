@@ -33,8 +33,11 @@ const Login = () => {
 		const token = localStorage.getItem(AUTH_TOKEN_KEY)
 		if (token !== null) {
 			const user = jwtDecode(token)
-			if (user?.role === ROLES.ADMIN || user?.role === ROLES.OPERATOR) {
-				if (user?.permission === OPERATOR_ROLES.SCHEDULE)
+			const userPermissions = user?.permission?.split(',')
+
+			if (user?.role === ROLES.ADMIN || user?.role === ROLES.OPERATOR) { // only those roles can login
+				// if (user?.permission === OPERATOR_ROLES.SCHEDULE)
+				if (userPermissions?.includes(OPERATOR_ROLES.SCHEDULE))
 					navigate('/horarios')
 				else
 					navigate('/historial')

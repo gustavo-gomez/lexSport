@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import IATimeDatePicker from './IATimeDatePicker'
+import IADatePicker from './IADatePicker'
 import '../scss/components/iafilters.scss'
 import Button from '@mui/material/Button'
 import IASelect from './IASelect'
@@ -77,7 +77,7 @@ const IAFilters = ({
 					className={'filter-item'}
 				>
 					<label>Fecha Inicio</label>
-					<IATimeDatePicker
+					<IADatePicker
 						value={startDate}
 						handleChange={(value) => {
 							setStartDate(new Date(value))
@@ -88,7 +88,7 @@ const IAFilters = ({
 					className={'filter-item'}
 				>
 					<label>Fecha Final</label>
-					<IATimeDatePicker
+					<IADatePicker
 						value={endDate}
 						handleChange={(value) => {
 							setEndDate(new Date(value))
