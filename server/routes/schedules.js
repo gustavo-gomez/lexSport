@@ -8,7 +8,7 @@ import {
 	validationErrorsToArray, WEEKDAY_ENTER_HOUR
 } from '../utils/utils.js'
 import { verifyAuthJWToken } from '../utils/passUtils.js'
-import { loadSchedulesService, newSchedulesService } from '../services/scheduleService'
+import { loadSchedulesService, newSchedulesService, updateSchedulesService } from '../services/scheduleService'
 import { check, validationResult } from 'express-validator'
 import isEmpty from 'lodash/isEmpty'
 import { loadWorkersByRoleService } from '../services/workerService'
@@ -38,10 +38,17 @@ router.get('/', [verifyAuthJWToken], async (req, res) => {
 		let schedules = []
 		forEach(groupBy(allActivities, 'peruDay'), activitiesInOneDay => {
 			forEach(groupBy(activitiesInOneDay, 'workerId'), activitiesPerWorkerOneDay => {
-				const enterMillis = activitiesPerWorkerOneDay.find(activity => activity.action === SCHEDULE_ACTIONS.ENTER)?.milliseconds
-				const breakMillis = activitiesPerWorkerOneDay.find(activity => activity.action === SCHEDULE_ACTIONS.BREAK)?.milliseconds
-				const endBreakMillis = activitiesPerWorkerOneDay.find(activity => activity.action === SCHEDULE_ACTIONS.END_BREAK)?.milliseconds
-				const exitMillis = activitiesPerWorkerOneDay.find(activity => activity.action === SCHEDULE_ACTIONS.EXIT)?.milliseconds
+				const enterActivity = activitiesPerWorkerOneDay.find(activity => activity.action === SCHEDULE_ACTIONS.ENTER)
+				const enterMillis = enterActivity?.milliseconds
+
+				const breakActivity = activitiesPerWorkerOneDay.find(activity => activity.action === SCHEDULE_ACTIONS.BREAK)
+				const breakMillis = breakActivity?.milliseconds
+
+				const endBreakActivity = activitiesPerWorkerOneDay.find(activity => activity.action === SCHEDULE_ACTIONS.END_BREAK)
+				const endBreakMillis = endBreakActivity?.milliseconds
+
+				const exitActivity = activitiesPerWorkerOneDay.find(activity => activity.action === SCHEDULE_ACTIONS.EXIT)
+				const exitMillis = exitActivity?.milliseconds
 
 				let workedMinutes = 0
 				let lateHoursMinutes = 0
@@ -64,12 +71,17 @@ router.get('/', [verifyAuthJWToken], async (req, res) => {
 					milliseconds: activitiesInOneDay[0]?.milliseconds,
 					worker: activitiesPerWorkerOneDay[0]?.worker,
 					enter: enterMillis,
+					enterId: enterActivity?.id,
 					break: breakMillis,
+					breakId: breakActivity?.id,
 					endbreak: endBreakMillis,
+					endbreakId: endBreakActivity?.id,
 					exit: exitMillis,
+					exitId: exitActivity?.id,
 					extraHours: minutesToHoursAndMinutes(calcExtraMinutes(workedMinutes, isSaturday)),
 					workedHours: minutesToHoursAndMinutes(workedMinutes),
 					lateHours: minutesToHoursAndMinutes(lateHoursMinutes),
+					workerId: enterActivity?.workerId || breakActivity?.workerId || endBreakActivity?.workerId || exitActivity?.workerId
 				})
 			})
 		})
@@ -101,6 +113,30 @@ router.post('/', [newScheduleValidator, verifyAuthJWToken], async (req, res) => 
 		await newSchedulesService(schedules, id)
 
 		return res.status(HTTP_STATUS_CODES.CREATED).json(getGenericMessage('Horarios creados con éxito'))
+
+	} catch ( e ) {
+		console.log('Error: ', e)
+		return res.status(HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR).json(getGenericMessage())
+	}
+})
+
+const updateScheduleValidator = [
+	check('schedule', 'Actividad es requerida').not().isEmpty(),
+]
+// insert schedules
+router.put('/', [updateScheduleValidator, verifyAuthJWToken], async (req, res) => {
+	try {
+		const { errors } = validationResult(req)
+
+		if (!isEmpty(errors)) {
+			return res.status(HTTP_STATUS_CODES.BAD_REQUEST).json(getGenericMessage(validationErrorsToArray(errors)))
+		}
+		const { schedule } = req.body
+		const { id } = req.tokenDecoded
+
+		await updateSchedulesService(schedule, id)
+
+		return res.status(HTTP_STATUS_CODES.CREATED).json(getGenericMessage('Horarios actualizados con éxito'))
 
 	} catch ( e ) {
 		console.log('Error: ', e)

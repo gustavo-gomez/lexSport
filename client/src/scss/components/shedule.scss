@@ -1,0 +1,42 @@
+@import '../abstracts/placeholders';
+
+.edit-schedule-container {
+  display: flex;
+  flex-direction: column;
+  padding: 30px;
+  min-width: 470px;
+
+  .edit-schedule-title {
+    text-align: center;
+    font-weight: 600;
+    font-size: 20px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid grey;
+  }
+
+  .worker-edit {
+    font-size: 16px;
+    margin-bottom: 10px;
+  }
+
+  .date-edit {
+    font-size: 16px;
+    margin-bottom: 30px;
+  }
+
+  .MuiTextField-root {
+    margin-bottom: 30px;
+  }
+}
+
+@media (min-width: 1200px) {
+}
+
+@media (max-width: 850px) {
+}
+
+@media (max-width: 480px) {
+  .edit-schedule-container {
+    min-width: 320px;
+  }
+}

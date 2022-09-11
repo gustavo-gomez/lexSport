@@ -1,12 +1,10 @@
 import React from 'react'
 import '../scss/components/ialoader.scss'
-import { useDimension } from '../utils/useDimension'
 import TimePicker from '@mui/lab/TimePicker'
 import TextField from '@mui/material/TextField'
 import PropTypes from 'prop-types'
 import DateAdapter from '@mui/lab/AdapterMoment'
 import LocalizationProvider from '@mui/lab/LocalizationProvider'
-import { MOBILE_WIDTH } from '../utils/utils'
 
 const IATimePicker = ({ value, label, handleChange }) => {
 
@@ -15,7 +13,8 @@ const IATimePicker = ({ value, label, handleChange }) => {
 		label,
 		value,
 		onChange: handleChange,
-		renderInput: (params) => <TextField {...params} />,
+		renderInput: (params) => <TextField {...params}/>,
+		error: false
 	}
 	return (
 		<LocalizationProvider dateAdapter={DateAdapter}>

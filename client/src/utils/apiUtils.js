@@ -101,6 +101,11 @@ export const loadSchedulesAPI = async (starDate, endDate, workerId) => {
 	return await callAPI('GET', `${BASE_URL}${ENDPOINTS.SCHEDULES}?startDate=${starDate}&endDate=${endDate}${!isEmpty(workerId) ? `&workerId=${workerId}` : ''}`)
 }
 
+// update schedule
+export const updateSchedulesAPI = async (schedule) => {
+	return await callAPI('PUT', `${BASE_URL}${ENDPOINTS.SCHEDULES}`, {schedule})
+}
+
 const callAPI = async (method, url, body) => {
 	const authToken = localStorage.getItem(AUTH_TOKEN_KEY)
 	const config = {
