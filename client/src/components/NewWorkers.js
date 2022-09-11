@@ -77,10 +77,10 @@ const NewWorker = ({ hideSection, workerEdit, isOperator = false }) => {
 			if (isEmpty(worker?.user))
 				newErrors.user = 'Usuario requerido'
 
-			if(!isEdit && isEmpty(worker?.password))
+			if (!isEdit && isEmpty(worker?.password))
 				newErrors.password = 'Contraseña requerida'
 
-			if(isEdit && changePassword && isEmpty(worker?.password))
+			if (isEdit && changePassword && isEmpty(worker?.password))
 				newErrors.password = 'Contraseña requerida'
 		}
 
@@ -126,12 +126,31 @@ const NewWorker = ({ hideSection, workerEdit, isOperator = false }) => {
 
 	const onChangeSelect = (name, value) => {
 		setWorker(prevState => ({
-			...prevState, [name]: value
+			...prevState,
+			[name]: value
 		}))
 		setErrors(prevState => ({
-			...prevState, [name]: ''
+			...prevState,
+			[name]: ''
 		}))
 	}
+
+	const updatePermissions = (selectedPerms) => {
+		console.log('selectedPerms: ', selectedPerms)
+
+		setWorker(prevState => ({
+			...prevState,
+			permission: selectedPerms?.map(perm => perm.id).join(',')
+		}))
+		setErrors(prevState => ({
+			...prevState,
+			permission: ''
+		}))
+	}
+
+	// support multiple select
+	const workerPermissions = worker.permission?.split(',')
+	const perm = permissions?.filter(permission => workerPermissions?.includes(permission.id))
 
 	return (
 		<div className="new-worker-container form">
@@ -196,39 +215,38 @@ const NewWorker = ({ hideSection, workerEdit, isOperator = false }) => {
 					/>
 					<IASelect
 						label={'Rol del operador'}
-						value={permissions.find(option => option.id === worker?.permission)}
+						value={perm}
 						data={permissions}
-						textToShow={(object) => {
-							return object?.label
-						}}
-						onChange={(object) => onChangeSelect('permission', object?.id)}
+						textToShow={(object) => object?.label}
+						onChange={(selectedPerms) => updatePermissions(selectedPerms)}
 						error={!isEmpty(errors?.permission)}
 						helperText={errors?.permission}
 						isRequired
+						multiple
 					/>
 					{
 						isEdit ?
-						<>
-							<IASwitch
-								name={'changePassword'}
-								checked={changePassword}
-								onChange={(e) => setChangePassword(e.target.checked)}
-								label={'Cambiar clave'}
-							/>
-							{
-								changePassword &&
-								<IATextInput
-									label="Clave"
-									name={'password'}
-									value={worker?.password}
-									type={'password'}
-									onChangeText={onChange}
-									error={!isEmpty(errors?.password)}
-									helperText={errors?.password}
-									isRequired
+							<>
+								<IASwitch
+									name={'changePassword'}
+									checked={changePassword}
+									onChange={(e) => setChangePassword(e.target.checked)}
+									label={'Cambiar clave'}
 								/>
-							}
-						</> :
+								{
+									changePassword &&
+									<IATextInput
+										label="Clave"
+										name={'password'}
+										value={worker?.password}
+										type={'password'}
+										onChangeText={onChange}
+										error={!isEmpty(errors?.password)}
+										helperText={errors?.password}
+										isRequired
+									/>
+								}
+							</> :
 							<IATextInput
 								label="Clave"
 								name={'password'}

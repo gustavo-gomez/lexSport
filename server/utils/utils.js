@@ -81,6 +81,7 @@ export const milliSecondsToMinutes = (millis) => {
 }
 
 export const minutesToHoursAndMinutes = (min) => {
+	if(min < 0) return '00:00'
 	const hours = (min / 60)
 	const rHours = Math.floor(hours)
 	const minutes = (hours - rHours) * 60

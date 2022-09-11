@@ -23,9 +23,10 @@ const IALoader = ({ type }) => {
 		<div
 			className="ia-loader-container"
 			style={type.source === empty ? { position: 'relative' } : { position: 'absolute', zIndex: 9999 }}
+			data-testid="ia-loader"
 		>
 			<Lottie
-				className={type.source === empty ? 'ia-lottie': 'ia-loader'}
+				className={type.source === empty ? 'ia-lottie' : 'ia-loader'}
 				animationData={type.source}
 				loop
 				autoplay

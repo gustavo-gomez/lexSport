@@ -48,6 +48,7 @@ export const authSlice = createSlice({
 			})
 			.addCase(login.fulfilled, (state, {payload}) => {
 				const {worker = {}} = payload
+				console.log('loggedUser: ', worker)
 				state.loggedUser = worker
 				state.isLoading = false
 				localStorage.setItem(AUTH_TOKEN_KEY, worker?.token)

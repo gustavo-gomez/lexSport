@@ -7,7 +7,7 @@ import { getWorkers, workers } from '../slices/workersSlice'
 import IASelect from '../common/IASelect'
 import IATextInput from '../common/IATextInput'
 import isEmpty from 'lodash/isEmpty'
-import IATimeDatePicker from '../common/IATimeDatePicker'
+import IADatePicker from '../common/IADatePicker'
 import FloatingButton from '../common/FloatingButton'
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined'
 import LoadingButton from '@mui/lab/LoadingButton'
@@ -171,7 +171,7 @@ const NewHistory = () => {
 		>
 			<div className="history-container">
 				<h2>Registrar Trabajo del dia</h2>
-				<IATimeDatePicker
+				<IADatePicker
 					value={activityDate}
 					handleChange={(value) => {
 						setActivityDate(new Date(value))

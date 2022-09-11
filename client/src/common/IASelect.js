@@ -4,12 +4,17 @@ import Autocomplete from '@mui/material/Autocomplete'
 import '../scss/components/ialoader.scss'
 import PropTypes from 'prop-types'
 
-const IASelect = ({ data, textToShow, value, onChange, label, isRequired, error, helperText, variant}) => {
+const IASelect = ({ data, textToShow, value, onChange, label, isRequired, error, helperText, variant, multiple }) => {
+
+	console.log('data: ', data)
+	console.log('value: ', value)
+	console.log('label: ', label)
 
 	if (data?.length === 0)
 		return null
 	return (
 		<Autocomplete
+			multiple={multiple}
 			options={data}
 			getOptionLabel={textToShow}
 			id="disable-close-on-select"
@@ -48,7 +53,8 @@ IASelect.defaultProps = {
 	isRequired: false,
 	error: false,
 	helperText: '',
-	variant: 'standard'
+	variant: 'standard',
+	multiple: false
 }
 
 IASelect.propTypes = {
@@ -60,4 +66,5 @@ IASelect.propTypes = {
 	isRequired: PropTypes.bool,
 	error: PropTypes.bool,
 	helperText: PropTypes.string,
+	multiple: PropTypes.bool,
 }

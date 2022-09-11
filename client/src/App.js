@@ -1,23 +1,25 @@
-import React, { Suspense, useEffect, useState } from 'react'
+import React, { Suspense, useEffect, useState, lazy } from 'react'
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
-import Login from './components/Login'
 import './scss/index.scss'
 import { useDispatch } from 'react-redux'
-import Header from './components/Header'
-import SideBar from './components/SideBar'
 import { AUTH_TOKEN_KEY, updateLoggedUser } from './slices/authSlice'
-import DashboardProducts from './components/DashboardProducts'
-import Products from './components/Products'
-import Workers from './components/Workers'
-import NewHistory from './components/NewHistory'
-import History from './components/History'
-import Payments from './components/Payments'
 import jwtDecode from 'jwt-decode'
-import DashboardWorkers from './components/DashboardWorkers'
 import { OPERATOR_ROLES, ROLES } from './utils/utils'
-import Schedule from './components/Schedule'
-import NewSchedule from './components/NewSchedule'
-import Operators from './components/Operators'
+
+const Login = lazy(() => import('./components/Login'))
+const History = lazy(() => import('./components/History'))
+const DashboardProducts = lazy(() => import('./components/DashboardProducts'))
+const Products = lazy(() => import('./components/Products'))
+const Workers = lazy(() => import('./components/Workers'))
+const NewHistory = lazy(() => import('./components/NewHistory'))
+const Schedule = lazy(() => import('./components/Schedule'))
+const Payments = lazy(() => import('./components/Payments'))
+const NewSchedule = lazy(() => import('./components/NewSchedule'))
+const Operators = lazy(() => import('./components/Operators'))
+const DashboardWorkers = lazy(() => import('./components/DashboardWorkers'))
+const Header = lazy(() => import('./components/Header'))
+const SideBar = lazy(() => import('./components/SideBar'))
+
 
 const App = () => {
 
@@ -45,51 +47,62 @@ const App = () => {
 	}
 
 	const getRoutesByPermission = () => {
-		switch (user.permission) {
-			case OPERATOR_ROLES.FILL:
-			case OPERATOR_ROLES.MAKES:
-				return (
-					<>
-						<Route
-							path="/historial"
-							element={
-								<PrivateRedirect redirectTo="/">
-									<History/>
-								</PrivateRedirect>
-							}
-						/>
-						<Route
-							path="/historial/nuevo"
-							element={
-								<PrivateRedirect redirectTo="/">
-									<NewHistory/>
-								</PrivateRedirect>
-							}
-						/>
-					</>
-				)
-			case OPERATOR_ROLES.SCHEDULE:
-				return (
-					<>
-						<Route
-							path="/horarios"
-							element={
-								<PrivateRedirect redirectTo="/">
-									<Schedule/>
-								</PrivateRedirect>
-							}
-						/>
-						<Route
-							path="/horarios/nuevo"
-							element={
-								<PrivateRedirect redirectTo="/">
-									<NewSchedule/>
-								</PrivateRedirect>
-							}
-						/>
-					</>
-				)
+
+		let fillAndMakesRoutes = null
+		let scheduleRoutes = null
+		const userPermissions = user?.permission?.split(',') // support more than one permission
+		console.log(userPermissions)
+		if (userPermissions.includes(OPERATOR_ROLES.FILL) || userPermissions.includes(OPERATOR_ROLES.MAKES)) {
+			fillAndMakesRoutes = (
+				<>
+					<Route
+						path="/historial"
+						element={
+							<PrivateRedirect redirectTo="/">
+								<History/>
+							</PrivateRedirect>
+						}
+					/>
+					<Route
+						path="/historial/nuevo"
+						element={
+							<PrivateRedirect redirectTo="/">
+								<NewHistory/>
+							</PrivateRedirect>
+						}
+					/>
+				</>
+			)
 		}
+
+		if (userPermissions.includes(OPERATOR_ROLES.SCHEDULE)) {
+			scheduleRoutes = (
+				<>
+					<Route
+						path="/horarios"
+						element={
+							<PrivateRedirect redirectTo="/">
+								<Schedule/>
+							</PrivateRedirect>
+						}
+					/>
+					<Route
+						path="/horarios/nuevo"
+						element={
+							<PrivateRedirect redirectTo="/">
+								<NewSchedule/>
+							</PrivateRedirect>
+						}
+					/>
+				</>
+			)
+		}
+		return(
+			<>
+				{fillAndMakesRoutes}
+				{scheduleRoutes}
+			</>
+		)
 	}
 
 	const getRoutesByRole = () => {
