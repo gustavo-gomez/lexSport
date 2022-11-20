@@ -30,19 +30,19 @@ const Login = () => {
 	const alert = useAlert()
 
 	useEffect(() => {
-		const token = localStorage.getItem(AUTH_TOKEN_KEY)
-		if (token !== null) {
-			const user = jwtDecode(token)
-			const userPermissions = user?.permission?.split(',')
-
-			if (user?.role === ROLES.ADMIN || user?.role === ROLES.OPERATOR) { // only those roles can login
-				// if (user?.permission === OPERATOR_ROLES.SCHEDULE)
-				if (userPermissions?.includes(OPERATOR_ROLES.SCHEDULE))
-					navigate('/horarios')
-				else
-					navigate('/historial')
-			}
-		}
+		// const token = localStorage.getItem(AUTH_TOKEN_KEY)
+		// if (token !== null) {
+		// 	const user = jwtDecode(token)
+		// 	const userPermissions = user?.permission?.split(',')
+		//
+		// 	if (user?.role === ROLES.ADMIN || user?.role === ROLES.OPERATOR) { // only those roles can login
+		// 		// if (user?.permission === OPERATOR_ROLES.SCHEDULE)
+		// 		if (userPermissions?.includes(OPERATOR_ROLES.SCHEDULE))
+		// 			navigate('/horarios')
+		// 		else
+		// 			navigate('/historial')
+		// 	}
+		// }
 	}, [])
 
 	const handleSubmit = (e) => {

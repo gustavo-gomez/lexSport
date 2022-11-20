@@ -2,11 +2,6 @@ import express from 'express'
 import bodyParser from 'body-parser'
 import cors from 'cors'
 import authentication from "./routes/authentication"
-import workers from "./routes/workers"
-import products from "./routes/products"
-import activity from "./routes/activity"
-import dashboard from "./routes/dashboard"
-import schedules from "./routes/schedules"
 
 const PORT = process.env.PORT || 9000
 const PROD = process.env.NODE_ENV === 'production'
@@ -24,11 +19,6 @@ app.get('/', (req, res) => {
 })
 
 app.use('/', authentication)
-app.use('/workers', workers)
-app.use('/products', products)
-app.use('/activity', activity)
-app.use('/dashboard', dashboard)
-app.use('/schedules', schedules)
 
 
 if (PROD) {
