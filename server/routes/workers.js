@@ -1,8 +1,8 @@
 import { Router } from 'express'
 import {
 	deleteCostureraService,
-	loadWorkersByRoleService,
 	loadWorkerByIdService,
+	loadWorkersByRoleService,
 	newWorkerService,
 	updateCostureraService
 } from '../services/workerService.js'
@@ -16,7 +16,6 @@ import {
 import { hashPassword, verifyAuthJWToken, verifyAuthJWTokenIsAdmin } from '../utils/passUtils.js'
 import { check, validationResult } from 'express-validator'
 import isEmpty from 'lodash/isEmpty'
-import { deleteActivityService } from '../services/activityService'
 
 const router = Router()
 

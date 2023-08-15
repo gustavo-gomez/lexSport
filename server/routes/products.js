@@ -24,7 +24,8 @@ router.get('/', [verifyAuthJWToken], async (req, res) => {
 	try {
 		const { permission } = req.tokenDecoded
 		const products = await loadAllProductsService({onlyFillPrice: permission === OPERATOR_ROLES.FILL})
-
+		// sort asc products by products.code
+		products.sort((a, b) => a.code - b.code)
 		return res.json(getSuccessResponse({products}))
 	} catch (e) {
 		console.log('Error: ', e)
