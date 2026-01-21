@@ -18,9 +18,8 @@ function hashPassword(password: string): string {
 async function main() {
   const { PrismaClient } = await import('@prisma/client')
 
-  const prisma = new PrismaClient({
-    datasourceUrl: process.env.DATABASE_URL,
-  })
+  // Prisma usa DATABASE_URL del .env automáticamente
+  const prisma = new PrismaClient()
 
   try {
     // Datos del admin de prueba
