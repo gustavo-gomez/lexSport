@@ -9,10 +9,10 @@ import sha256 from 'crypto-js/sha256'
 import hmacSHA512 from 'crypto-js/hmac-sha512'
 import Base64 from 'crypto-js/enc-base64'
 import { PrismaMariaDb } from '@prisma/adapter-mariadb'
-import path from 'path'
+import { join } from 'path'
 
-// Dynamic import for generated Prisma client
-const prismaPath = path.join(__dirname, '../src/generated/prisma')
+// Dynamic import using process.cwd() (run from project root)
+const prismaPath = join(process.cwd(), 'src/generated/prisma')
 const { PrismaClient } = require(prismaPath)
 
 const PRIVATE_KEY = process.env.PRIVATE_KEY || 'keylexsportsystem'
