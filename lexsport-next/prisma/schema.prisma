@@ -1,0 +1,85 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Worker {
+  id         String   @id @default(uuid()) @db.VarChar(40)
+  firstName  String   @map("first_name") @db.VarChar(50)
+  lastName   String   @map("last_name") @db.VarChar(50)
+  phone      String?  @db.VarChar(50)
+  user       String?  @unique @db.VarChar(50)
+  password   String?  @db.VarChar(255)
+  role       String?  @db.VarChar(40)
+  permission String?  @db.VarChar(40)
+  canLogin   Int      @default(0) @map("can_login") @db.TinyInt
+  hidden     Int      @default(0) @db.TinyInt
+  oldWorker  Int      @default(0) @map("old_worker") @db.TinyInt
+  createDate DateTime @default(now()) @map("create_date")
+
+  // Relations
+  activities         Activity[] @relation("WorkerActivities")
+  submittedActivities Activity[] @relation("SubmitterActivities")
+  schedules          Schedule[] @relation("WorkerSchedules")
+  submittedSchedules Schedule[] @relation("SubmitterSchedules")
+
+  @@map("workers")
+}
+
+model Product {
+  id              String   @id @default(uuid()) @db.VarChar(40)
+  code            String   @db.VarChar(40)
+  name            String   @db.VarChar(50)
+  description     String?  @db.VarChar(255)
+  makingPriceLow  Decimal  @map("making_price_low") @db.Decimal(5, 2)
+  makingPriceHigh Decimal  @map("making_price_high") @db.Decimal(5, 2)
+  fillPrice       Decimal  @default(0) @map("fill_price") @db.Decimal(5, 2)
+  hidden          Int      @default(0) @db.TinyInt
+  createDate      DateTime @default(now()) @map("create_date")
+
+  // Relations
+  activities Activity[]
+
+  @@map("products")
+}
+
+model Activity {
+  id          String   @id @default(uuid()) @db.VarChar(40)
+  workerId    String   @map("worker_id") @db.VarChar(40)
+  productId   String   @map("product_id") @db.VarChar(40)
+  quantity    Int      @db.TinyInt
+  action      String   @db.VarChar(50)
+  price       Decimal  @db.Decimal(5, 2)
+  submitterId String   @map("submitter_id") @db.VarChar(40)
+  date        DateTime @default(now())
+  createDate  DateTime @default(now()) @map("create_date")
+
+  // Relations
+  worker    Worker  @relation("WorkerActivities", fields: [workerId], references: [id])
+  product   Product @relation(fields: [productId], references: [id])
+  submitter Worker  @relation("SubmitterActivities", fields: [submitterId], references: [id])
+
+  @@map("activities")
+}
+
+model Schedule {
+  id          String   @id @default(uuid()) @db.VarChar(40)
+  workerId    String   @map("worker_id") @db.VarChar(40)
+  action      String   @db.VarChar(50)
+  submitterId String   @map("submitter_id") @db.VarChar(40)
+  date        DateTime @default(now())
+  createDate  DateTime @default(now()) @map("create_date")
+
+  // Relations
+  worker    Worker @relation("WorkerSchedules", fields: [workerId], references: [id])
+  submitter Worker @relation("SubmitterSchedules", fields: [submitterId], references: [id])
+
+  @@map("schedules")
+}
