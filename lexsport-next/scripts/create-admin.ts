@@ -8,6 +8,8 @@ import 'dotenv/config'
 import sha256 from 'crypto-js/sha256'
 import hmacSHA512 from 'crypto-js/hmac-sha512'
 import Base64 from 'crypto-js/enc-base64'
+import { PrismaMariaDb } from '@prisma/adapter-mariadb'
+import { PrismaClient } from '../src/generated/prisma'
 
 const PRIVATE_KEY = process.env.PRIVATE_KEY || 'keylexsportsystem'
 
@@ -15,11 +17,42 @@ function hashPassword(password: string): string {
   return Base64.stringify(hmacSHA512(sha256(password), PRIVATE_KEY))
 }
 
-async function main() {
-  const { PrismaClient } = await import('@prisma/client')
+function parseConnectionUrl(url: string) {
+  const regex = /mysql:\/\/([^:]+):([^@]+)@([^:]+):(\d+)\/(.+)/
+  const match = url.match(regex)
 
-  // Prisma usa DATABASE_URL del .env automáticamente
-  const prisma = new PrismaClient()
+  if (!match) {
+    throw new Error('Invalid DATABASE_URL format. Expected: mysql://user:password@host:port/database')
+  }
+
+  return {
+    user: match[1],
+    password: match[2],
+    host: match[3],
+    port: parseInt(match[4], 10),
+    database: match[5].split('?')[0],
+  }
+}
+
+async function main() {
+  const connectionUrl = process.env.DATABASE_URL
+
+  if (!connectionUrl) {
+    console.error('DATABASE_URL no está configurada en .env')
+    process.exit(1)
+  }
+
+  const { user, password, host, port, database } = parseConnectionUrl(connectionUrl)
+
+  const adapter = new PrismaMariaDb({
+    host,
+    port,
+    user,
+    password,
+    database,
+  })
+
+  const prisma = new PrismaClient({ adapter })
 
   try {
     // Datos del admin de prueba
