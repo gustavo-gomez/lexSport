@@ -6,73 +6,64 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 lexSport is a full-stack business management application for tracking workers, products, activities (production), and schedules in a clothing/textile manufacturing context. The UI is in Spanish.
 
+**Tech Stack:** Next.js 16, React 19, TypeScript, Prisma 7, MySQL, Tailwind CSS 4, Auth.js v5
+
 ## Commands
 
-### Root Level (Server + Client Build)
 ```bash
-npm run dev           # Development: build server + copy client + run
-npm run prod          # Production: build server + copy client + run
-npm run watch:dev     # Development with nodemon (hot reload)
-npm run build         # Transpile server with Babel
-```
-
-### Client (React)
-```bash
-cd client
-npm start             # Start React dev server (port 3000)
-npm test              # Run Jest tests in watch mode
+npm run dev           # Start development server with Turbopack
 npm run build         # Production build
+npm run start         # Start production server
+npm run lint          # Run ESLint
+npm run db:generate   # Generate Prisma client
+npm run db:push       # Push schema to database
+npm run db:migrate    # Run migrations
+npm run db:studio     # Open Prisma Studio
 ```
-
-Server runs on port 9000 (configurable via PORT env var). Client proxies to localhost:3001 in development.
 
 ## Architecture
 
-### Backend (Express + MySQL)
+### App Router Structure
 
-**Layered architecture:**
-- `server/routes/` - Express route handlers with validation (express-validator)
-- `server/services/` - Business logic, data transformation
-- `server/repositories/` - Direct MySQL queries using mysql2/promise
-- `server/database/conectDB.js` - Database connection factory
+- `src/app/(auth)/` - Authentication pages (login)
+- `src/app/(dashboard)/` - Protected dashboard pages
+- `src/app/api/` - API routes (auth handlers)
+- `src/actions/` - Server Actions for CRUD operations
+- `src/components/` - Reusable UI components
+- `src/lib/` - Utilities (auth, db, utils)
+- `src/generated/prisma/` - Generated Prisma client
 
-**Authentication:** JWT tokens with middleware in `server/utils/passUtils.js`. Two auth middlewares:
-- `verifyAuthJWToken` - Validates any authenticated user
-- `verifyAuthJWTokenIsAdmin` - Validates admin role only
+### Authentication
+
+- Auth.js v5 with Credentials provider
+- Server Layout Guards pattern (not middleware) for route protection
+- JWT session strategy with 30-day expiration
+- Roles: `admin`, `costurera`, `operator`, `jornalero`
+
+### Database (Prisma 7)
+
+- MySQL with `@prisma/adapter-mariadb` driver adapter
+- Schema in `prisma/schema.prisma`
+- Config in `prisma.config.ts`
 
 **Key entities:**
-- Workers (costureraas, operators, jornaleros) - with roles and permissions
+- Workers - with roles and permissions
 - Products - with making/fill prices
 - Activities - production records linking workers to products
 - Schedules - time tracking (enter/break/endbreak/exit)
 
-### Frontend (React + Redux Toolkit + MUI)
+### Environment Variables
 
-**State management:**
-- `client/src/store.js` - Redux store configuration
-- `client/src/slices/` - Redux Toolkit slices (auth, workers, products, generalSettings)
-
-**API layer:**
-- `client/src/utils/apiUtils.js` - Centralized API calls with axios, JWT auth headers
-
-**Routing:** React Router v6 with role-based route access (admin vs operator permissions)
-
-**Components:** `client/src/components/` - Page-level components with lazy loading
-
-## Database
-
-MySQL database named `lexsport`. Schema in `server/database/database.sql`.
-
-**Environment variables:**
-- `LEX_SPORT_DB_CONNECT_URL` (default: localhost)
-- `LEX_SPORT_DB_USERNAME` (default: root)
-- `LEX_SPORT_DB_PASSWORD` (default: root)
-- `LEX_SPORT_DB_PORT` (default: 3306)
+```env
+DATABASE_URL=mysql://user:password@host:port/database
+AUTH_SECRET=your-secret-key
+PRIVATE_KEY=keylexsportsystem
+```
 
 ## Conventions
 
-- Database columns use snake_case, JavaScript uses camelCase (auto-converted via `camelize` utility)
-- Soft deletes use `hidden` column (0/1) rather than actual deletion
-- Roles: `admin`, `costurera`, `operator`, `jornalero`
-- Operator permissions: `makes`, `fill`, `schedule`
-- Peru timezone (UTC-5) used for date calculations
+- Database columns use snake_case, TypeScript uses camelCase (Prisma auto-converts)
+- Soft deletes use `hidden` column (0/1)
+- Peru timezone (UTC-5) for date calculations
+- Server Actions include authorization checks
+- UI components in `src/components/ui/`
