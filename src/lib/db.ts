@@ -6,7 +6,7 @@
  */
 
 import { PrismaMariaDb } from '@prisma/adapter-mariadb'
-import { PrismaClient } from '@/generated/prisma'
+import { PrismaClient } from '@/generated/prisma/client'
 
 declare const globalThis: {
   prisma: PrismaClient | undefined
@@ -45,6 +45,9 @@ function createPrismaClient(): PrismaClient {
     user,
     password,
     database,
+    ssl: {
+      rejectUnauthorized: false, // DigitalOcean managed databases
+    },
   })
 
   return new PrismaClient({ adapter })
