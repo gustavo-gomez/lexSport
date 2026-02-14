@@ -12,7 +12,8 @@ export const getConnection = async () => {
 		user: DB_USERNAME,
 		password: DB_PASSWORD,
 		database: 'lexsport',
-		port: DB_PORT
+		port: DB_PORT,
+		ssl: { rejectUnauthorized: false }
 	})
 }
 
