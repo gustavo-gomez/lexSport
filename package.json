@@ -17,12 +17,14 @@
     "@prisma/adapter-mariadb": "^7.2.0",
     "@prisma/client": "^7.2.0",
     "crypto-js": "^4.2.0",
-    "mariadb": "^3.4.0",
     "dotenv": "^17.2.3",
+    "mariadb": "^3.4.0",
     "next": "^16.1.4",
     "next-auth": "^5.0.0-beta.30",
     "react": "^19.2.3",
-    "react-dom": "^19.2.3"
+    "react-dom": "^19.2.3",
+    "recharts": "^3.7.0",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.3",

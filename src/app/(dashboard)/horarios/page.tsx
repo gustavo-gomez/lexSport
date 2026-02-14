@@ -1,27 +1,19 @@
-import Link from 'next/link'
-import { Button, Card, CardHeader, CardTitle, CardContent } from '@/components/ui'
+import { getWorkers } from '@/actions/workers'
+import { HorariosClient } from '@/components/horarios'
+import { auth } from '@/lib/auth'
+import { ROLES } from '@/types'
 
-export default function HorariosPage() {
-  return (
-    <div>
-      <div className="mb-6 flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-gray-800">Horarios</h1>
-        <Link href="/horarios/nuevo">
-          <Button>Nuevo Registro</Button>
-        </Link>
-      </div>
+export default async function HorariosPage() {
+  const session = await auth()
+  const isAdmin = session?.user?.role === ROLES.ADMIN
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Registros de Horario</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-gray-500">
-            Seleccione un rango de fechas para ver los registros de horario.
-          </p>
-          {/* Aquí iría el componente de filtros y la tabla de horarios */}
-        </CardContent>
-      </Card>
-    </div>
-  )
+  let workers: { id: string; firstName: string; lastName: string }[] = []
+
+  try {
+    workers = await getWorkers([ROLES.COSTURERA, ROLES.JORNALERO])
+  } catch (error) {
+    console.error('Error loading workers:', error)
+  }
+
+  return <HorariosClient workers={workers} isAdmin={isAdmin} />
 }

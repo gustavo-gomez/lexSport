@@ -29,7 +29,7 @@ export async function getActivities(filters: ActivityFilters) {
   const where: Record<string, unknown> = {
     date: {
       gte: filters.startDate,
-      lt: filters.endDate,
+      lte: filters.endDate,
     },
   }
 
@@ -41,7 +41,7 @@ export async function getActivities(filters: ActivityFilters) {
     where.action = filters.action
   }
 
-  return prisma.activity.findMany({
+  const activities = await prisma.activity.findMany({
     where,
     include: {
       worker: {
@@ -49,6 +49,7 @@ export async function getActivities(filters: ActivityFilters) {
           id: true,
           firstName: true,
           lastName: true,
+          oldWorker: true,
         },
       },
       product: {
@@ -56,6 +57,9 @@ export async function getActivities(filters: ActivityFilters) {
           id: true,
           code: true,
           name: true,
+          makingPriceLow: true,
+          makingPriceHigh: true,
+          fillPrice: true,
         },
       },
       submitter: {
@@ -68,6 +72,31 @@ export async function getActivities(filters: ActivityFilters) {
     },
     orderBy: { date: 'desc' },
   })
+
+  // Serializar Decimal y Date
+  return activities.map(a => ({
+    id: a.id,
+    workerId: a.workerId,
+    productId: a.productId,
+    quantity: a.quantity,
+    action: a.action,
+    price: Number(a.price),
+    date: a.date.toISOString(),
+    worker: a.worker ? {
+      id: a.worker.id,
+      firstName: a.worker.firstName,
+      lastName: a.worker.lastName,
+      oldWorker: a.worker.oldWorker,
+    } : null,
+    product: a.product ? {
+      id: a.product.id,
+      code: a.product.code,
+      name: a.product.name,
+      makingPriceLow: Number(a.product.makingPriceLow),
+      makingPriceHigh: Number(a.product.makingPriceHigh),
+      fillPrice: Number(a.product.fillPrice),
+    } : null,
+  }))
 }
 
 interface CreateActivityData {
@@ -81,7 +110,7 @@ interface CreateActivityData {
 /**
  * Crear actividades (admin o operador con permisos)
  */
-export async function createActivities(activities: CreateActivityData[]) {
+export async function createActivities(activities: CreateActivityData[], activityDate?: string) {
   const session = await auth()
   if (!session?.user) {
     throw new Error('No autorizado')
@@ -103,7 +132,11 @@ export async function createActivities(activities: CreateActivityData[]) {
   }
 
   const submitterId = session.user.id
-  const now = new Date()
+  // Si se pasa una fecha específica (YYYY-MM-DD), interpretarla como mediodía en Perú (UTC-5)
+  // para evitar problemas de cambio de día por zona horaria
+  const date = activityDate
+    ? new Date(activityDate + 'T12:00:00-05:00')
+    : new Date()
 
   // Crear todas las actividades
   for (const activity of activities) {
@@ -125,7 +158,7 @@ export async function createActivities(activities: CreateActivityData[]) {
         action: activity.action,
         price: activity.price,
         submitterId,
-        date: now,
+        date,
       },
     })
   }
@@ -223,8 +256,79 @@ export async function getActivitiesQuantities(
     },
   })
 
-  return activities.map((a: { productId: string; _sum: { quantity: number | null } }) => ({
-    productId: a.productId,
-    quantity: a._sum.quantity || 0,
-  }))
+  // Get product details
+  const productIds = activities.map((a: { productId: string }) => a.productId)
+  const products = await prisma.product.findMany({
+    where: { id: { in: productIds } },
+    select: { id: true, code: true, name: true },
+  })
+
+  const productMap = new Map(products.map((p: { id: string; code: string; name: string }) => [p.id, p]))
+
+  return activities.map((a: { productId: string; _sum: { quantity: number | null } }) => {
+    const product = productMap.get(a.productId)
+    return {
+      productId: a.productId,
+      code: product?.code || '',
+      name: product?.name || 'Producto desconocido',
+      quantity: a._sum.quantity || 0,
+    }
+  })
+}
+
+/**
+ * Obtener cantidades agrupadas por trabajador (para dashboard trabajadores)
+ */
+export async function getActivitiesByWorker(
+  startDate: Date,
+  endDate: Date,
+  workerId?: string
+) {
+  const session = await auth()
+  if (session?.user?.role !== ROLES.ADMIN) {
+    throw new Error('No autorizado - Se requiere rol admin')
+  }
+
+  const prisma = getPrismaClient()
+  if (!prisma) {
+    throw new Error('Base de datos no disponible')
+  }
+
+  const where: Record<string, unknown> = {
+    date: {
+      gte: startDate,
+      lt: endDate,
+    },
+  }
+
+  if (workerId) {
+    where.workerId = workerId
+  }
+
+  // Agrupar por trabajador y sumar cantidades
+  const activities = await prisma.activity.groupBy({
+    by: ['workerId'],
+    where,
+    _sum: {
+      quantity: true,
+    },
+  })
+
+  // Get worker details
+  const workerIds = activities.map((a: { workerId: string }) => a.workerId)
+  const workers = await prisma.worker.findMany({
+    where: { id: { in: workerIds } },
+    select: { id: true, firstName: true, lastName: true },
+  })
+
+  const workerMap = new Map(workers.map((w: { id: string; firstName: string; lastName: string }) => [w.id, w]))
+
+  return activities.map((a: { workerId: string; _sum: { quantity: number | null } }) => {
+    const worker = workerMap.get(a.workerId)
+    return {
+      workerId: a.workerId,
+      name: worker ? `${worker.lastName}, ${worker.firstName}` : 'Trabajador desconocido',
+      quantity: a._sum.quantity || 0,
+    }
+  })
 }

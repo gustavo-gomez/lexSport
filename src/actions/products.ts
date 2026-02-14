@@ -28,10 +28,18 @@ export async function getProducts(search?: string) {
     ]
   }
 
-  return prisma.product.findMany({
+  const products = await prisma.product.findMany({
     where,
     orderBy: { code: 'asc' },
   })
+
+  // Convertir Decimal a number para serialización
+  return products.map(p => ({
+    ...p,
+    makingPriceLow: Number(p.makingPriceLow),
+    makingPriceHigh: Number(p.makingPriceHigh),
+    fillPrice: Number(p.fillPrice),
+  }))
 }
 
 /**
@@ -48,9 +56,19 @@ export async function getProductById(id: string) {
     throw new Error('Base de datos no disponible')
   }
 
-  return prisma.product.findUnique({
+  const product = await prisma.product.findUnique({
     where: { id },
   })
+
+  if (!product) return null
+
+  // Convertir Decimal a number para serialización
+  return {
+    ...product,
+    makingPriceLow: Number(product.makingPriceLow),
+    makingPriceHigh: Number(product.makingPriceHigh),
+    fillPrice: Number(product.fillPrice),
+  }
 }
 
 /**

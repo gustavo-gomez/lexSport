@@ -17,3 +17,7 @@ export {
   CardContent,
   CardFooter,
 } from './card'
+export { Modal, type ModalProps } from './modal'
+export { Switch, type SwitchProps } from './switch'
+export { MultiSelect, type MultiSelectProps, type MultiSelectOption } from './multi-select'
+export { TimePicker, type TimePickerProps } from './time-picker'

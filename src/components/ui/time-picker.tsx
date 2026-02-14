@@ -1,13 +1,15 @@
+'use client'
+
 import { cn } from '@/lib/utils'
 import { forwardRef, type InputHTMLAttributes } from 'react'
 
-export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
+export interface TimePickerProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'type'> {
   label?: string
   error?: string
   helperText?: string
 }
 
-const Input = forwardRef<HTMLInputElement, InputProps>(
+const TimePicker = forwardRef<HTMLInputElement, TimePickerProps>(
   ({ className, label, error, helperText, id, ...props }, ref) => {
     const inputId = id || props.name
 
@@ -24,10 +26,11 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
         )}
         <input
           ref={ref}
+          type="time"
           id={inputId}
           className={cn(
             'block w-full rounded-md border px-3 py-2 shadow-sm transition-colors',
-            'text-gray-900 placeholder:text-gray-400',
+            'text-gray-900',
             'focus:outline-none focus:ring-1',
             error
               ? 'border-red-300 focus:border-red-500 focus:ring-red-500'
@@ -46,6 +49,6 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
   }
 )
 
-Input.displayName = 'Input'
+TimePicker.displayName = 'TimePicker'
 
-export { Input }
+export { TimePicker }

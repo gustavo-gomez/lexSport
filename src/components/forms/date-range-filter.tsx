@@ -3,6 +3,10 @@
 import { useState } from 'react'
 import { Button, Input, Select, type SelectOption } from '@/components/ui'
 
+function getPeruDateString(date: Date = new Date()): string {
+  return date.toLocaleDateString('en-CA', { timeZone: 'America/Lima' })
+}
+
 interface DateRangeFilterProps {
   onSearch: (filters: {
     startDate: Date
@@ -28,12 +32,10 @@ export function DateRangeFilter({
 }: DateRangeFilterProps) {
   const [startDate, setStartDate] = useState<string>(
     defaultStartDate
-      ? defaultStartDate.toISOString().split('T')[0]
-      : new Date().toISOString().split('T')[0]
+      ? getPeruDateString(defaultStartDate)
+      : getPeruDateString()
   )
-  const [endDate, setEndDate] = useState<string>(
-    new Date().toISOString().split('T')[0]
-  )
+  const [endDate, setEndDate] = useState<string>(getPeruDateString())
   const [workerId, setWorkerId] = useState<string>('')
   const [error, setError] = useState<string | null>(null)
 
@@ -45,9 +47,10 @@ export function DateRangeFilter({
       return
     }
 
+    // Fechas en hora de Perú (UTC-5)
     onSearch({
-      startDate: new Date(startDate),
-      endDate: new Date(endDate + 'T23:59:59'),
+      startDate: new Date(`${startDate}T00:00:00-05:00`),
+      endDate: new Date(`${endDate}T23:59:59.999-05:00`),
       workerId: workerId || undefined,
     })
   }

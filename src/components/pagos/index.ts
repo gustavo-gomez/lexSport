@@ -1,0 +1,1 @@
+export { PagosClient } from './PagosClient'

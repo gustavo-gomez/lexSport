@@ -1,23 +1,21 @@
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui'
+import { getWorkers } from '@/actions/workers'
+import { PagosClient } from '@/components/pagos'
+import { ROLES } from '@/types'
 
-export default function PagosPage() {
-  return (
-    <div>
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-800">Pagos</h1>
-      </div>
+export default async function PagosPage() {
+  let workers: { id: string; firstName: string; lastName: string }[] = []
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Registro de Pagos</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-gray-500">
-            Seleccione un trabajador y rango de fechas para calcular pagos.
-          </p>
-          {/* Aquí iría el componente de cálculo de pagos */}
-        </CardContent>
-      </Card>
-    </div>
-  )
+  try {
+    // Solo obtener costureras para el filtro
+    const allWorkers = await getWorkers([ROLES.COSTURERA])
+    workers = allWorkers.map(w => ({
+      id: w.id,
+      firstName: w.firstName,
+      lastName: w.lastName,
+    }))
+  } catch (error) {
+    console.error('Error loading workers:', error)
+  }
+
+  return <PagosClient workers={workers} />
 }
