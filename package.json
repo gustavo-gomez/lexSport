@@ -10,7 +10,7 @@
     "prod": "NODE_ENV=production npm-run-all build copyclient server",
     "server": "node ./build/index.js",
     "clean": "rimraf build",
-    "transpile": "babel ./ ./server --ignore ./client,./build,./node_modules -s -d ./build",
+    "transpile": "babel ./ ./server --ignore ./client,./build,./node_modules,./.heroku -s -d ./build",
     "watch:dev": "nodemon --exec babel-node ./server/index.js",
     "build": "npm-run-all clean transpile"
   },
