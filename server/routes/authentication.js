@@ -44,6 +44,7 @@ router.post('/login', [loginValidator], async (req, res) => {
 			return res.status(HTTP_STATUS_CODES.FORBIDDEN).json(loginError)
 		}
 	} catch (e) {
+		console.error('Login error:', e)
 		return res.status(HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR).json(getGenericMessage())
 	}
 })
